@@ -25,7 +25,7 @@ export const AboutSection = () => (
             href="https://github.com/fastfingertips/sahibinden-manager"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-xs text-[#417abb] hover:underline font-medium"
+            className="flex items-center text-xs text-[#417abb] hover:underline font-bold"
           >
             github.com/sahibinden-manager
           </a>

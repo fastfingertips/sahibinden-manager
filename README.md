@@ -13,7 +13,11 @@ Sahibinden.com kullanıcı arayüzü ve veri erişimi için geliştirilmiş tara
 
 ## Kurulum
 
-### Geliştirici Modu
+### Son Sürümü İndir
+
+En güncel sürümü (v1.0.0) doğrudan [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından `.zip` formatında indirip tarayıcınıza yükleyebilirsiniz.
+
+### Geliştirici Modu (Manuel)
 
 1. Depoyu klonlayın:
    ```bash
@@ -46,5 +50,3 @@ Hata bildirimleri ve geliştirmeler için Issues sayfasını kullanabilir veya P
 Bu eklenti bağımsız bir projedir. sahibinden.com (Sahibinden Bilgi Teknolojileri Paz. ve Tic. A.Ş.) ile resmi bir bağı bulunmamaktadır.
 
 ---
-
-Geliştirici: [fastfingertips](https://github.com/fastfingertips)
