@@ -23,4 +23,9 @@ web-ext.config.ts
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+
+# Local data
+sahibinden_dump/
+dist/
+.env
+.env.*

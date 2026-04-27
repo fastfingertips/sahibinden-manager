@@ -1,8 +1,8 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
+  "name": "sahibinden-manager",
+  "description": "Sahibinden.com için modern arayüz ve kullanıcı deneyimi araçları.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -15,7 +15,8 @@
     "postinstall": "wxt prepare",
     "prepare": "husky",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "jscpd": "jscpd entrypoints"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -43,6 +44,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "husky": "^9.1.7",
+    "jscpd": "^4.0.9",
     "lint-staged": "^16.4.0",
     "postcss": "^8.5.12",
     "prettier": "^3.8.3",
