@@ -15,7 +15,7 @@ Sahibinden.com kullanıcı arayüzü ve veri erişimi için geliştirilmiş tara
 
 ### Son Sürümü İndir
 
-En güncel sürümü (v1.0.0) doğrudan [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından `.zip` formatında indirip tarayıcınıza yükleyebilirsiniz.
+En güncel sürümü doğrudan [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından `.zip` formatında indirip tarayıcınıza yükleyebilirsiniz.
 
 ### Geliştirici Modu (Manuel)
 

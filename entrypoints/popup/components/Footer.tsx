@@ -38,6 +38,8 @@ export const Footer = () => (
         <span className="text-[10px] font-bold uppercase ml-1.5 tracking-wider">Hata</span>
       </a>
     </div>
-    <span className="text-[10px] text-[#bbb] font-bold tracking-widest">v1.0.0</span>
+    <span className="text-[10px] text-[#bbb] font-bold tracking-widest">
+      v{browser.runtime.getManifest().version || '1.0.0'}
+    </span>
   </footer>
 );
