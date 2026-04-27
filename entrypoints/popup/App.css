@@ -1,1 +1,71 @@
-/* App specific styles if any */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sh-yellow: #ffda00;
+  --sh-blue: #417abb;
+  --sh-blue-hover: #366196;
+  --sh-border: #dbdbdb;
+  --sh-bg: #f8f8f8;
+  --sh-text: #333333;
+  --sh-text-muted: #666666;
+}
+
+body {
+  background-color: var(--sh-bg);
+  color: var(--sh-text);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+/* Custom switch based on Sahibinden style */
+.sh-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sh-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sh-switch .slider {
+  width: 2.75rem;
+  height: 1.5rem;
+  background-color: #d1d5db;
+  border-radius: 9999px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.sh-switch .slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  height: 1.25rem;
+  width: 1.25rem;
+  transition: all 0.2s;
+}
+
+.sh-switch input:checked + .slider {
+  background-color: var(--sh-blue);
+}
+
+.sh-switch input:checked + .slider::after {
+  transform: translateX(1.25rem);
+  border-color: white;
+}

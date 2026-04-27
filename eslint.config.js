@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-plugin-prettier/recommended';
 
 export default tseslint.config(
-  { ignores: ['.output', '.wxt', 'node_modules'] },
+  { ignores: ['.output', '.wxt', 'node_modules', 'sahibinden_dump'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
