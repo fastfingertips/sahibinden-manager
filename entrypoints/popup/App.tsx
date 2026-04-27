@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './App.css';
 
 function App() {
@@ -18,7 +17,9 @@ function App() {
 
       <main className="space-y-4">
         <section className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm">
-          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">İstatistikler</h2>
+          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            İstatistikler
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
               <p className="text-xs text-slate-500">Yoksayılanlar</p>
@@ -32,17 +33,23 @@ function App() {
         </section>
 
         <section className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm">
-          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Hızlı Ayarlar</h2>
+          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            Hızlı Ayarlar
+          </h2>
           <div className="space-y-3">
             <label className="flex items-center justify-between group cursor-pointer">
-              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Otomatik Gizle</span>
+              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
+                Otomatik Gizle
+              </span>
               <div className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" defaultChecked />
                 <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
               </div>
             </label>
             <label className="flex items-center justify-between group cursor-pointer">
-              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Fotoğraf İndirici</span>
+              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
+                Fotoğraf İndirici
+              </span>
               <div className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" defaultChecked />
                 <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
