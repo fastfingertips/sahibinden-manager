@@ -25,6 +25,12 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 ### 3. Medya
 
-- [ ] İlan detay sayfasındaki (DOM üzerindeki) yüksek çözünürlüklü fotoğraf URL'lerinin tespit edilmesi.
-- [ ] Fotoğraflarını indirebilmek: İlan detay sayfasında bulunan fotoğrafları yerel cihaza indirebilme yeteneği.
+- [x] İlan detay sayfasındaki (DOM üzerindeki) yüksek çözünürlüklü fotoğraf URL'lerinin tespit edilmesi.
+- [x] Fotoğraflarını indirebilmek: İlan detay sayfasında bulunan fotoğrafları yerel cihaza indirebilme yeteneği.
   - Gerekçe: Geneldir. Örneğin fatura gibi metinsel medyaların yakınlaştırılmasında işe yarayabilir.
+- [x] İlan küçük resimlerinin (thumbnails) sayfalama yerine tek bir sayfada ızgara (grid) şeklinde listelenmesi.
+
+### 4. Kullanıcı Deneyimi (UX)
+
+- [ ] Kullanıcı Sahibinden.com dışında farklı bir sayfadayken eklentiye tıklandığında, arayüzde "Bu eklenti yalnızca sahibinden.com üzerinde çalışır" şeklinde bilgilendirici bir uyarı gösterilmesi.
+- [ ] Özelliklerin (Izgara Görünümü ve Fotoğraf İndirici) ilk kurulumda varsayılan olarak Açık (True) gelmesinin sağlanması. (Kullanıcının eklentiyi kurar kurmaz etkiyi görebilmesi için).
