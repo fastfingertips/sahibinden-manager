@@ -17,8 +17,15 @@ export const notesStyles = `
     cursor: help !important;
   }
 
+  /* Sahibinden'in 300px genişlik sınırını yeni buton eklendiğinde genişlet */
+  .classifiedDetailTitle .classifiedEvents {
+    width: auto !important;
+    max-width: 440px !important;
+  }
+
   /* --- İlan Detay Yerel Aksiyon Butonu (Favoriler ve Yazdır Yanı) --- */
   ul.classifiedEvents li.sm-classified-note-action {
+    width: auto !important;
     float: left !important;
     list-style-type: none !important;
     margin: 0 10px 0 0 !important;

@@ -48,22 +48,37 @@ export default defineContentScript({
 
     const activeAdId = adId || 'ilan';
 
-    const observer = new MutationObserver(() => {
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const runTasks = () => {
       handleMegaPhotoLightbox(activeAdId);
       handleMainPageThumbnails(activeAdId);
       handleMainPhoto(activeAdId);
       applyVisitedToListings();
       applyRefurbishedIgnore();
       applyNotesToListings();
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      // Eklentinin kendi oluşturduğu öğelerdeki mutasyonları yok say
+      const isInternal = mutations.every((m) => {
+        const target = m.target as HTMLElement;
+        return (
+          target.closest?.('[class*="sm-"]') !== null ||
+          target.classList?.value?.includes('sm-') === true
+        );
+      });
+      if (isInternal) return;
+
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        runTasks();
+      }, 75);
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
 
     // İlk çalıştırma
-    handleMainPageThumbnails(activeAdId);
-    handleMainPhoto(activeAdId);
-    applyVisitedToListings();
-    applyRefurbishedIgnore();
-    applyNotesToListings();
+    runTasks();
   },
 });

@@ -22,7 +22,8 @@ export const getTimestamp = (
 
 export const extractClassifiedId = (): string | null => {
   // 1. Gizli DOM input öğesi kontrolü (en güvenilir yöntem)
-  const idInput = document.getElementById('classifiedId') as HTMLInputElement | null;
+  const idInput = (document.getElementById('classifiedIdValue') ||
+    document.getElementById('classifiedId')) as HTMLInputElement | null;
   if (idInput?.value && /^\d+$/.test(idInput.value.trim())) {
     return idInput.value.trim();
   }

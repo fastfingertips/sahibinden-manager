@@ -199,6 +199,11 @@ const updateNoteLinkState = (li: Element, adId: string) => {
   const note = cachedNotes[adId];
   const hasNote = Boolean(note?.text?.trim());
 
+  // Durum zaten güncelse tekrar DOM mutasyonu yapma (Sonsuz observer döngüsünü önler)
+  if (link.dataset.hasNote === String(hasNote) && link.querySelector('.sm-classified-note-icon')) {
+    return;
+  }
+  link.dataset.hasNote = String(hasNote);
   link.classList.toggle('has-note', hasNote);
 
   link.innerHTML = `
