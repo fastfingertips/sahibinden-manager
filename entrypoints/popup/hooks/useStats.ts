@@ -1,19 +1,50 @@
 import { useState, useEffect } from 'react';
 
+export interface HistoryItem {
+  id: string;
+  title: string;
+  url: string;
+  visitedAt: number;
+}
+
+const parseHistory = (records: Record<string, unknown> | null): HistoryItem[] => {
+  if (!records) return [];
+  const items: HistoryItem[] = [];
+  for (const [id, val] of Object.entries(records)) {
+    if (typeof val === 'number') {
+      items.push({
+        id,
+        title: `İlan #${id}`,
+        url: `https://www.sahibinden.com/ilan/${id}/detay`,
+        visitedAt: val,
+      });
+    } else if (val && typeof val === 'object' && 'visitedAt' in val) {
+      const obj = val as { id?: string; title?: string; url?: string; visitedAt: number };
+      items.push({
+        id: obj.id || id,
+        title: obj.title || `İlan #${id}`,
+        url: obj.url || `https://www.sahibinden.com/ilan/${id}/detay`,
+        visitedAt: obj.visitedAt,
+      });
+    }
+  }
+  return items.sort((a, b) => b.visitedAt - a.visitedAt);
+};
+
 export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
-  const [viewedCount, setViewedCount] = useState(0);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   useEffect(() => {
     const fetchSettings = async () => {
       const fullGrid = await storage.getItem<boolean>('local:isFullGridEnabled');
       const downloader = await storage.getItem<boolean>('local:sm-downloader-enabled');
-      const viewed = await storage.getItem<Record<string, number>>('local:viewed-listings');
+      const viewed = await storage.getItem<Record<string, unknown>>('local:viewed-listings');
 
       setIsFullGridEnabled(fullGrid !== false);
       setIsDownloaderEnabled(downloader !== false);
-      setViewedCount(viewed ? Object.keys(viewed).length : 0);
+      setHistory(parseHistory(viewed));
     };
     fetchSettings();
 
@@ -23,10 +54,10 @@ export const useStats = () => {
     const unwatchDownloader = storage.watch<boolean>('local:sm-downloader-enabled', (newVal) => {
       setIsDownloaderEnabled(newVal !== false);
     });
-    const unwatchViewed = storage.watch<Record<string, number>>(
+    const unwatchViewed = storage.watch<Record<string, unknown>>(
       'local:viewed-listings',
       (newVal) => {
-        setViewedCount(newVal ? Object.keys(newVal).length : 0);
+        setHistory(parseHistory(newVal));
       },
     );
 
@@ -49,17 +80,26 @@ export const useStats = () => {
     await storage.setItem('local:sm-downloader-enabled', newVal);
   };
 
+  const removeHistoryItem = async (id: string) => {
+    const records = (await storage.getItem<Record<string, unknown>>('local:viewed-listings')) || {};
+    delete records[id];
+    await storage.setItem('local:viewed-listings', records);
+    setHistory((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const clearHistory = async () => {
     await storage.removeItem('local:viewed-listings');
-    setViewedCount(0);
+    setHistory([]);
   };
 
   return {
     isFullGridEnabled,
     isDownloaderEnabled,
-    viewedCount,
+    history,
+    viewedCount: history.length,
     toggleFullGrid,
     toggleDownloader,
+    removeHistoryItem,
     clearHistory,
   };
 };

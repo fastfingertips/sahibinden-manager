@@ -2,7 +2,23 @@ import { highlightVisitedDetail, highlightVisitedListings } from './ui/visited';
 
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
-let cachedRecords: Record<string, number> = {};
+export interface VisitedListingRecord {
+  id: string;
+  title: string;
+  url: string;
+  visitedAt: number;
+}
+
+export type StoredViewedListings = Record<string, VisitedListingRecord | number>;
+
+let cachedRecords: StoredViewedListings = {};
+
+export const getTimestamp = (
+  val: VisitedListingRecord | number | undefined,
+): number | undefined => {
+  if (!val) return undefined;
+  return typeof val === 'number' ? val : val.visitedAt;
+};
 
 export const extractClassifiedId = (): string | null => {
   // 1. Gizli DOM input öğesi kontrolü (en güvenilir yöntem)
@@ -26,22 +42,36 @@ export const extractClassifiedId = (): string | null => {
   return null;
 };
 
+export const extractClassifiedTitle = (): string => {
+  const h1 = document.querySelector('.classifiedDetailTitle h1');
+  if (h1?.textContent?.trim()) {
+    return h1.textContent.trim();
+  }
+  return document.title.replace(/\s*-\s*\d+$/, '').trim() || 'İlan';
+};
+
 export const initVisitedTracking = async () => {
   try {
-    cachedRecords = (await storage.getItem<Record<string, number>>('local:viewed-listings')) || {};
+    cachedRecords = (await storage.getItem<StoredViewedListings>('local:viewed-listings')) || {};
 
     const adId = extractClassifiedId();
     if (adId) {
-      if (cachedRecords[adId]) {
-        highlightVisitedDetail(adId, cachedRecords[adId]);
+      const existingTime = getTimestamp(cachedRecords[adId]);
+      if (existingTime) {
+        highlightVisitedDetail(adId, existingTime);
       }
-      cachedRecords[adId] = Date.now();
+      cachedRecords[adId] = {
+        id: adId,
+        title: extractClassifiedTitle(),
+        url: window.location.href,
+        visitedAt: Date.now(),
+      };
       await storage.setItem('local:viewed-listings', cachedRecords);
     }
 
     highlightVisitedListings(cachedRecords);
 
-    storage.watch<Record<string, number>>('local:viewed-listings', (newVal) => {
+    storage.watch<StoredViewedListings>('local:viewed-listings', (newVal) => {
       cachedRecords = newVal || {};
       if (!newVal || Object.keys(newVal).length === 0) {
         document.querySelectorAll('.sm-visited-listing').forEach((el) => {

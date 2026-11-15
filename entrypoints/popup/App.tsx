@@ -2,26 +2,29 @@ import { useState } from 'react';
 import './App.css';
 import { useStats } from './hooks/useStats';
 import { useCurrentTab } from './hooks/useCurrentTab';
-import { Header } from './components/Header';
+import { Header, type TabType } from './components/Header';
 import { SettingsSection } from './components/SettingsSection';
+import { HistorySection } from './components/HistorySection';
 import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'settings' | 'about'>('settings');
+  const [activeTab, setActiveTab] = useState<TabType>('settings');
   const {
     isFullGridEnabled,
     isDownloaderEnabled,
+    history,
     viewedCount,
     toggleFullGrid,
     toggleDownloader,
+    removeHistoryItem,
     clearHistory,
   } = useStats();
   const { isSahibinden } = useCurrentTab();
 
   return (
     <div className="min-w-[500px] p-4 bg-[#f8f8f8] text-[#333] font-sans">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header activeTab={activeTab} onTabChange={setActiveTab} historyCount={viewedCount} />
 
       {isSahibinden === false && (
         <div className="mt-3 px-3 py-2 bg-[#f4f7fa] border border-[#ccd8e5] rounded text-[11px] text-[#335577] leading-relaxed">
@@ -31,7 +34,7 @@ function App() {
       )}
 
       <main className="mt-4">
-        {activeTab === 'settings' ? (
+        {activeTab === 'settings' && (
           <SettingsSection
             isFullGridEnabled={isFullGridEnabled}
             onToggleFullGrid={toggleFullGrid}
@@ -40,9 +43,17 @@ function App() {
             viewedCount={viewedCount}
             onClearHistory={clearHistory}
           />
-        ) : (
-          <AboutSection />
         )}
+
+        {activeTab === 'history' && (
+          <HistorySection
+            history={history}
+            onClearHistory={clearHistory}
+            onRemoveItem={removeHistoryItem}
+          />
+        )}
+
+        {activeTab === 'about' && <AboutSection />}
       </main>
 
       <Footer />

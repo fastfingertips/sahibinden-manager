@@ -8,7 +8,7 @@ export const formatVisitedDate = (timestamp: number): string => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
-export const highlightVisitedListings = (records: Record<string, number>) => {
+export const highlightVisitedListings = (records: Record<string, unknown>) => {
   if (!records || Object.keys(records).length === 0) return;
 
   // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
