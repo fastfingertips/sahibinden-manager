@@ -9,7 +9,14 @@ import { Footer } from './components/Footer';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'settings' | 'about'>('settings');
-  const { isFullGridEnabled, isDownloaderEnabled, toggleFullGrid, toggleDownloader } = useStats();
+  const {
+    isFullGridEnabled,
+    isDownloaderEnabled,
+    viewedCount,
+    toggleFullGrid,
+    toggleDownloader,
+    clearHistory,
+  } = useStats();
   const { isSahibinden } = useCurrentTab();
 
   return (
@@ -30,6 +37,8 @@ function App() {
             onToggleFullGrid={toggleFullGrid}
             isDownloaderEnabled={isDownloaderEnabled}
             onToggleDownloader={toggleDownloader}
+            viewedCount={viewedCount}
+            onClearHistory={clearHistory}
           />
         ) : (
           <AboutSection />

@@ -1,5 +1,6 @@
 import { initGridMode } from './content/grid';
 import { setupDownloaderState } from './content/downloader';
+import { extractClassifiedId, trackCurrentClassified } from './content/tracker';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
@@ -10,11 +11,6 @@ export default defineContentScript({
   matches: ['*://www.sahibinden.com/*'],
   async main() {
     console.log('Sahibinden Manager: SUI Tasarım Modu Aktif');
-
-    const getAdId = () => {
-      const match = document.title.match(/(\d+)$/);
-      return match ? match[1] : 'ilan';
-    };
 
     const injectStyles = () => {
       const style = document.createElement('style');
@@ -30,8 +26,9 @@ export default defineContentScript({
     injectStyles();
     initGridMode();
     setupDownloaderState();
+    trackCurrentClassified();
 
-    const adId = getAdId();
+    const adId = extractClassifiedId() || 'ilan';
 
     const observer = new MutationObserver(() => {
       handleMegaPhotoLightbox(adId);

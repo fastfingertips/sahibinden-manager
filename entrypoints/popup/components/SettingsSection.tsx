@@ -3,6 +3,8 @@ interface SettingsSectionProps {
   onToggleFullGrid: () => void;
   isDownloaderEnabled: boolean;
   onToggleDownloader: () => void;
+  viewedCount?: number;
+  onClearHistory?: () => void;
 }
 
 export const SettingsSection = ({
@@ -10,6 +12,8 @@ export const SettingsSection = ({
   onToggleFullGrid,
   isDownloaderEnabled,
   onToggleDownloader,
+  viewedCount = 0,
+  onClearHistory,
 }: SettingsSectionProps) => (
   <section className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
     <h2 className="text-xs font-bold text-[#666] uppercase tracking-wide mb-3">Hızlı Ayarlar</h2>
@@ -42,6 +46,21 @@ export const SettingsSection = ({
         <p className="text-[11px] text-[#777] leading-relaxed">
           İlan resimleri ve Mega Slideshow üzerindeki görsellerin indirilmesini sağlar.
         </p>
+      </div>
+
+      <div className="pt-4 border-t border-[#eee] flex items-center justify-between text-xs">
+        <span className="text-[#666]">
+          İncelenen İlan Kaydı: <strong className="text-[#333]">{viewedCount}</strong>
+        </span>
+        {viewedCount > 0 && onClearHistory && (
+          <button
+            type="button"
+            onClick={onClearHistory}
+            className="text-[11px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+          >
+            Geçmişi Temizle
+          </button>
+        )}
       </div>
     </div>
   </section>
