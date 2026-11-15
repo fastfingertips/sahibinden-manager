@@ -10,6 +10,13 @@ Sahibinden.com kullanıcı arayüzü ve veri erişimi için geliştirilmiş tara
 - **Fotoğraf İndirici**:
   - İlan fotoğraflarının indirilmesini sağlar.
   - Mega Slideshow (Slideshow) üzerinden veri erişimi ve indirme desteği sunar.
+- **Ziyaret Geçmişi ve Takip**:
+  - İncelenen ilanları yerel hafızada saklar ve popup arayüzünde listeler.
+  - Arama sonuçlarında ve ilan detayında ilanın ne kadar süre önce incelendiğini (göreceli zaman ile) gösterir.
+
+## Dağıtım Durumu
+
+Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacaktır. Bu aşamaya kadar güncel sürümlere [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfası üzerinden veya depodan derleyerek erişebilirsiniz.
 
 ## Kurulum
 
