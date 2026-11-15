@@ -148,6 +148,7 @@ export const setupDetailNotes = (adId: string, title: string, url: string) => {
         delete cachedNotes[adId];
       }
       await storage.setItem('local:listing-notes', cachedNotes);
+      delete link.dataset.hasNote;
       updateNoteLinkState(li, adId);
       closeDropdown();
     };
@@ -162,6 +163,7 @@ export const setupDetailNotes = (adId: string, title: string, url: string) => {
         e.stopPropagation();
         delete cachedNotes[adId];
         await storage.setItem('local:listing-notes', cachedNotes);
+        delete link.dataset.hasNote;
         updateNoteLinkState(li, adId);
         closeDropdown();
       };
@@ -211,7 +213,7 @@ const updateNoteLinkState = (li: Element, adId: string) => {
       <path d="M12 20h9"></path>
       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
     </svg>
-    <span>Not Al</span>
+    <span>${hasNote ? 'Notu Düzenle' : 'Not Al'}</span>
     ${hasNote ? '<span class="sm-classified-note-dot" title="Kayıtlı not mevcut"></span>' : ''}
   `;
 
@@ -253,6 +255,8 @@ export const initNotesMode = async (
       if (activeListingContext) {
         const action = document.querySelector('.sm-classified-note-action');
         if (action) {
+          const lk = action.querySelector<HTMLAnchorElement>('.sm-classified-note-link');
+          if (lk) delete lk.dataset.hasNote;
           updateNoteLinkState(action, activeListingContext.adId);
         }
       }
