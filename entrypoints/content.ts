@@ -5,12 +5,14 @@ import {
   initVisitedTracking,
   applyVisitedToListings,
 } from './content/tracker';
+import { initRefurbishedMode, applyRefurbishedIgnore } from './content/refurbished';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
+import { refurbishedStyles } from './content/styles/refurbished';
 
 export default defineContentScript({
   matches: ['*://www.sahibinden.com/*'],
@@ -25,6 +27,7 @@ export default defineContentScript({
         ${lightboxStyles}
         ${mainPhotoStyles}
         ${visitedStyles}
+        ${refurbishedStyles}
       `;
       document.head.appendChild(style);
     };
@@ -33,6 +36,7 @@ export default defineContentScript({
     initGridMode();
     setupDownloaderState();
     initVisitedTracking();
+    initRefurbishedMode();
 
     const adId = extractClassifiedId() || 'ilan';
 
@@ -41,6 +45,7 @@ export default defineContentScript({
       handleMainPageThumbnails(adId);
       handleMainPhoto(adId);
       applyVisitedToListings();
+      applyRefurbishedIgnore();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
@@ -49,5 +54,6 @@ export default defineContentScript({
     handleMainPageThumbnails(adId);
     handleMainPhoto(adId);
     applyVisitedToListings();
+    applyRefurbishedIgnore();
   },
 });

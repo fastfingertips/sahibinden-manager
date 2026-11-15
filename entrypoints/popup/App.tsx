@@ -13,10 +13,12 @@ function App() {
   const {
     isFullGridEnabled,
     isDownloaderEnabled,
+    isHideRefurbishedEnabled,
     history,
     viewedCount,
     toggleFullGrid,
     toggleDownloader,
+    toggleHideRefurbished,
     removeHistoryItem,
     clearHistory,
   } = useStats();
@@ -40,6 +42,8 @@ function App() {
             onToggleFullGrid={toggleFullGrid}
             isDownloaderEnabled={isDownloaderEnabled}
             onToggleDownloader={toggleDownloader}
+            isHideRefurbishedEnabled={isHideRefurbishedEnabled}
+            onToggleHideRefurbished={toggleHideRefurbished}
             viewedCount={viewedCount}
             onClearHistory={clearHistory}
           />

@@ -3,6 +3,8 @@ interface SettingsSectionProps {
   onToggleFullGrid: () => void;
   isDownloaderEnabled: boolean;
   onToggleDownloader: () => void;
+  isHideRefurbishedEnabled?: boolean;
+  onToggleHideRefurbished?: () => void;
   viewedCount?: number;
   onClearHistory?: () => void;
 }
@@ -12,6 +14,8 @@ export const SettingsSection = ({
   onToggleFullGrid,
   isDownloaderEnabled,
   onToggleDownloader,
+  isHideRefurbishedEnabled = false,
+  onToggleHideRefurbished,
   viewedCount = 0,
   onClearHistory,
 }: SettingsSectionProps) => (
@@ -47,6 +51,27 @@ export const SettingsSection = ({
           İlan resimleri ve Mega Slideshow üzerindeki görsellerin indirilmesini sağlar.
         </p>
       </div>
+
+      {onToggleHideRefurbished && (
+        <div className="flex flex-col space-y-2">
+          <label className="flex items-center justify-between group cursor-pointer">
+            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+              Yenilenmiş Cihazları Gizle (Yepy)
+            </span>
+            <div className="sh-switch">
+              <input
+                type="checkbox"
+                checked={isHideRefurbishedEnabled}
+                onChange={onToggleHideRefurbished}
+              />
+              <div className="slider"></div>
+            </div>
+          </label>
+          <p className="text-[11px] text-[#777] leading-relaxed">
+            Arama listelerinde yer alan kurumsal yenilenmiş telefon ve cihaz bloklarını gizler.
+          </p>
+        </div>
+      )}
 
       <div className="pt-4 border-t border-[#eee] flex items-center justify-between text-xs">
         <span className="text-[#666]">

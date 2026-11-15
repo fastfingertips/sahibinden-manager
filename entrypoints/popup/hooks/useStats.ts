@@ -34,16 +34,19 @@ const parseHistory = (records: Record<string, unknown> | null): HistoryItem[] =>
 export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
+  const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
   useEffect(() => {
     const fetchSettings = async () => {
       const fullGrid = await storage.getItem<boolean>('local:isFullGridEnabled');
       const downloader = await storage.getItem<boolean>('local:sm-downloader-enabled');
+      const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
       const viewed = await storage.getItem<Record<string, unknown>>('local:viewed-listings');
 
       setIsFullGridEnabled(fullGrid !== false);
       setIsDownloaderEnabled(downloader !== false);
+      setIsHideRefurbishedEnabled(hideRefurbished === true);
       setHistory(parseHistory(viewed));
     };
     fetchSettings();
@@ -54,6 +57,12 @@ export const useStats = () => {
     const unwatchDownloader = storage.watch<boolean>('local:sm-downloader-enabled', (newVal) => {
       setIsDownloaderEnabled(newVal !== false);
     });
+    const unwatchRefurbished = storage.watch<boolean>(
+      'local:isHideRefurbishedEnabled',
+      (newVal) => {
+        setIsHideRefurbishedEnabled(newVal === true);
+      },
+    );
     const unwatchViewed = storage.watch<Record<string, unknown>>(
       'local:viewed-listings',
       (newVal) => {
@@ -64,6 +73,7 @@ export const useStats = () => {
     return () => {
       unwatchGrid();
       unwatchDownloader();
+      unwatchRefurbished();
       unwatchViewed();
     };
   }, []);
@@ -78,6 +88,12 @@ export const useStats = () => {
     const newVal = !isDownloaderEnabled;
     setIsDownloaderEnabled(newVal);
     await storage.setItem('local:sm-downloader-enabled', newVal);
+  };
+
+  const toggleHideRefurbished = async () => {
+    const newVal = !isHideRefurbishedEnabled;
+    setIsHideRefurbishedEnabled(newVal);
+    await storage.setItem('local:isHideRefurbishedEnabled', newVal);
   };
 
   const removeHistoryItem = async (id: string) => {
@@ -95,10 +111,12 @@ export const useStats = () => {
   return {
     isFullGridEnabled,
     isDownloaderEnabled,
+    isHideRefurbishedEnabled,
     history,
     viewedCount: history.length,
     toggleFullGrid,
     toggleDownloader,
+    toggleHideRefurbished,
     removeHistoryItem,
     clearHistory,
   };
