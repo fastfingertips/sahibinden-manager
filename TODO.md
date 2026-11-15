@@ -15,6 +15,8 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 ### 1. Yoksayma (Ignore)
 
 - [ ] Kullanıcının spesifik bir ilanı butona basarak arayüzden gizleyebilmesi.
+- [ ] Sahibinden Yepy yenilenmiş cihazlarında (`.refurbishment-content-box`) sunulmayan 'İlgilenmiyorum / Gizle' butonunun eklenti tarafından sağlanması ve `data-template-id` / URL bazlı gizlenebilmesi.
+  - Gerekçe: Sahibinden'in kurumsal pazaryeri statüsünde sunduğu yenilenmiş telefonlarda yerel `mark-as-ignored` butonu bulunmamaktadır.
 - [ ] Belirli kurallara (örn. anahtar kelime, fiyat) uymayan ilanları arama sonuçlarından otomatik çıkaran filtrenin eklenmesi.
 - [x] Hafızada kayıtlı olan "incelenmiş ilanların" arama sonuçları listesinde otomatik olarak silik gösterilmesi/vurgulanması ve detay sayfasında belirtilmesi.
   - Gerekçe: Vakit kaybının önlenmesi.
