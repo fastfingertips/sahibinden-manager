@@ -28,7 +28,10 @@ const MONTHS: Record<string, number> = {
 };
 
 const parseTurkishDate = (str: string): number => {
-  const clean = str.toLowerCase().replace(/[^a-z0-9şğıüöç\s]/gi, ' ');
+  const spaced = str
+    .replace(/([a-zA-ZçğıöşüÇĞİÖŞÜ])(\d)/g, '$1 $2')
+    .replace(/(\d)([a-zA-ZçğıöşüÇĞİÖŞÜ])/g, '$1 $2');
+  const clean = spaced.toLowerCase().replace(/[^a-z0-9şğıüöç\s]/gi, ' ');
   const parts = clean.split(/\s+/).filter(Boolean);
 
   let day = 1;
@@ -83,7 +86,8 @@ export const handlePriceHistoryAnalytics = () => {
     const priceCell = tr.querySelector<HTMLTableCellElement>('td.price-col, td:last-child');
     if (!dateCell || !priceCell) continue;
 
-    const dateStr = dateCell.textContent || '';
+    const innerDate = dateCell.querySelector('.inner-date');
+    const dateStr = innerDate?.textContent?.trim() || dateCell.textContent || '';
     const priceStr = priceCell.textContent || '';
 
     const timestamp = parseTurkishDate(dateStr);
@@ -251,4 +255,19 @@ export const handlePriceHistoryAnalytics = () => {
   } else if (table.parentNode) {
     table.parentNode.insertBefore(card, table);
   }
+};
+
+export const initPriceHistory = () => {
+  if (!window.location.pathname.includes('/favori-ilan-fiyat-tarihcesi')) return;
+
+  handlePriceHistoryAnalytics();
+
+  let attempts = 0;
+  const interval = setInterval(() => {
+    attempts++;
+    handlePriceHistoryAnalytics();
+    if (document.querySelector('.sm-price-analytics-card') || attempts > 25) {
+      clearInterval(interval);
+    }
+  }, 200);
 };

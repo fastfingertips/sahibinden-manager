@@ -8,7 +8,7 @@ import {
 } from './content/tracker';
 import { initRefurbishedMode, applyRefurbishedIgnore } from './content/refurbished';
 import { initNotesMode, applyNotesToListings } from './content/ui/notes';
-import { handlePriceHistoryAnalytics } from './content/priceHistory';
+import { handlePriceHistoryAnalytics, initPriceHistory } from './content/priceHistory';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
@@ -44,6 +44,7 @@ export default defineContentScript({
     setupDownloaderState();
     initVisitedTracking();
     initRefurbishedMode();
+    initPriceHistory();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
@@ -63,15 +64,19 @@ export default defineContentScript({
       handlePriceHistoryAnalytics();
     };
 
+    const isOurOwnElement = (node: Node | null): boolean => {
+      if (!node) return false;
+      const el = node instanceof HTMLElement ? node : node.parentElement;
+      if (!el) return false;
+      return (
+        Boolean(el.closest('[class*="sm-"]')) ||
+        (typeof el.className === 'string' && el.className.includes('sm-'))
+      );
+    };
+
     const observer = new MutationObserver((mutations) => {
-      // Eklentinin kendi oluşturduğu öğelerdeki mutasyonları yok say
-      const isInternal = mutations.every((m) => {
-        const target = m.target as HTMLElement;
-        return (
-          target.closest?.('[class*="sm-"]') !== null ||
-          target.classList?.value?.includes('sm-') === true
-        );
-      });
+      // Sadece eklentinin kendi oluşturduğu öğelerdeki mutasyonları yok say
+      const isInternal = mutations.every((m) => isOurOwnElement(m.target));
       if (isInternal) return;
 
       if (debounceTimer) clearTimeout(debounceTimer);
