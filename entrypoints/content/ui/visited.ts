@@ -70,7 +70,16 @@ const createOrUpdateBadge = (
   const primaryTime = lastTimestamp || firstTimestamp;
   if (primaryTime) {
     const timeAgo = formatTimeAgo(primaryTime);
-    badge.textContent = `Ziyaret: ${timeAgo}`;
+    const labelText = `Ziyaret: ${timeAgo}`;
+    if (badge.dataset.label !== labelText) {
+      badge.dataset.label = labelText;
+      badge.innerHTML = `
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
+          <path d="M8 3c-4 0-7 5-7 5s3 5 7 5 7-5 7-5-3-5-7-5zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+        </svg>
+        <span>${labelText}</span>
+      `;
+    }
 
     if (firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp) {
       const countText = visitCount && visitCount > 1 ? ` (${visitCount} kez)` : '';
@@ -78,8 +87,14 @@ const createOrUpdateBadge = (
     } else {
       badge.title = `Son ziyaret: ${formatVisitedDate(primaryTime)}`;
     }
-  } else {
-    badge.textContent = 'Ziyaret Edildi';
+  } else if (badge.dataset.label !== 'Ziyaret Edildi') {
+    badge.dataset.label = 'Ziyaret Edildi';
+    badge.innerHTML = `
+      <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
+        <path d="M8 3c-4 0-7 5-7 5s3 5 7 5 7-5 7-5-3-5-7-5zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+      </svg>
+      <span>Ziyaret Edildi</span>
+    `;
   }
 };
 
