@@ -17,164 +17,195 @@ export const notesStyles = `
     cursor: help !important;
   }
 
-  /* --- İlan Detay Yüzen Not Butonu (FAB) --- */
-  .sm-notes-fab {
-    position: fixed !important;
-    right: 24px !important;
-    bottom: 24px !important;
-    z-index: 99999 !important;
-    background-color: #417abb !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 4px !important;
-    padding: 8px 12px !important;
+  /* --- İlan Detay Yerel Aksiyon Butonu (Favoriler ve Yazdır Yanı) --- */
+  ul.classifiedEvents li.sm-classified-note-action {
+    float: left !important;
+    list-style-type: none !important;
+    margin: 0 10px 0 0 !important;
+    padding: 10px 0 0 !important;
+    position: relative !important;
+  }
+
+  .sm-classified-note-link {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    line-height: normal !important;
+    color: #00339f !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
     cursor: pointer !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    transition: all 0.2s ease !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
   }
 
-  .sm-notes-fab:hover {
-    background-color: #366196 !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25) !important;
+  .sm-classified-note-link:hover {
+    text-decoration: underline !important;
   }
 
-  .sm-notes-fab-badge {
-    width: 7px !important;
-    height: 7px !important;
-    background-color: #ffda00 !important;
-    border-radius: 50% !important;
+  .sm-classified-note-link.has-note {
+    font-weight: 700 !important;
+    color: #00339f !important;
+  }
+
+  .sm-classified-note-icon {
+    width: 13px !important;
+    height: 13px !important;
+    color: #00339f !important;
     display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
   }
 
-  /* --- İlan Detay Not Penceresi (Modal / Drawer) --- */
-  .sm-notes-modal-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    background-color: rgba(0, 0, 0, 0.45) !important;
-    z-index: 999999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    backdrop-filter: blur(1px) !important;
+  .sm-classified-note-link.has-note .sm-classified-note-icon {
+    color: #c98a00 !important;
   }
 
-  .sm-notes-modal {
-    background-color: #ffffff !important;
+  .sm-classified-note-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background-color: #fdb813 !important;
+    display: inline-block !important;
+    margin-left: 2px !important;
+  }
+
+  /* --- Not Düzenleme Açılır Paneli (Inline Dropdown) --- */
+  .sm-note-dropdown {
+    position: absolute !important;
+    top: calc(100% + 5px) !important;
+    left: 0 !important;
+    z-index: 10000 !important;
+    width: 330px !important;
+    background: #ffffff !important;
     border: 1px solid #dbdbdb !important;
     border-radius: 2px !important;
-    width: 440px !important;
-    max-width: 90vw !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     box-sizing: border-box !important;
+    animation: smNoteFadeIn 0.15s ease-out !important;
   }
 
-  .sm-notes-header {
-    background-color: #f9f9f9 !important;
-    border-bottom: 1px solid #dbdbdb !important;
-    padding: 12px 16px !important;
+  @keyframes smNoteFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .sm-note-dropdown-header {
+    background-color: #f7f7f7 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    padding: 8px 12px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
   }
 
-  .sm-notes-header h3 {
-    margin: 0 !important;
-    font-size: 13px !important;
+  .sm-note-dropdown-title {
+    font-size: 11px !important;
     font-weight: 700 !important;
     color: #333333 !important;
   }
 
-  .sm-notes-close-btn {
+  .sm-note-dropdown-close {
     background: none !important;
     border: none !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
     line-height: 1 !important;
     color: #888888 !important;
     cursor: pointer !important;
-    padding: 0 !important;
+    padding: 0 2px !important;
   }
 
-  .sm-notes-close-btn:hover {
+  .sm-note-dropdown-close:hover {
     color: #333333 !important;
   }
 
-  .sm-notes-body {
-    padding: 16px !important;
+  .sm-note-dropdown-body {
+    padding: 10px 12px !important;
   }
 
-  .sm-notes-textarea {
+  .sm-note-dropdown-textarea {
     width: 100% !important;
-    min-height: 110px !important;
-    border: 1px solid #dbdbdb !important;
+    min-height: 85px !important;
+    max-height: 220px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #cccccc !important;
     border-radius: 2px !important;
-    padding: 10px !important;
+    padding: 8px !important;
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     font-size: 12px !important;
     color: #333333 !important;
+    line-height: 1.4 !important;
     resize: vertical !important;
-    box-sizing: border-box !important;
     outline: none !important;
-    line-height: 1.5 !important;
+    transition: border-color 0.2s ease !important;
   }
 
-  .sm-notes-textarea:focus {
+  .sm-note-dropdown-textarea:focus {
     border-color: #417abb !important;
+    box-shadow: 0 0 0 1px #417abb !important;
   }
 
-  .sm-notes-footer {
+  .sm-note-dropdown-footer {
+    padding: 8px 12px !important;
+    background-color: #fafafa !important;
     border-top: 1px solid #eeeeee !important;
-    padding: 10px 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    background-color: #fafafa !important;
   }
 
-  .sm-notes-status {
+  .sm-note-dropdown-status {
     font-size: 10px !important;
     color: #888888 !important;
   }
 
-  .sm-notes-actions {
+  .sm-note-dropdown-actions {
     display: flex !important;
-    gap: 8px !important;
+    gap: 6px !important;
+    align-items: center !important;
   }
 
-  .sm-notes-btn {
-    border-radius: 2px !important;
+  .sm-note-btn {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     font-size: 11px !important;
     font-weight: 700 !important;
-    padding: 6px 12px !important;
+    padding: 4px 10px !important;
+    border-radius: 2px !important;
     cursor: pointer !important;
+    border: 1px solid transparent !important;
     transition: all 0.15s ease !important;
   }
 
-  .sm-notes-btn-save {
-    background-color: #417abb !important;
-    color: #ffffff !important;
-    border: 1px solid #366196 !important;
+  .sm-note-btn-save {
+    background-color: #ffe800 !important;
+    color: #333333 !important;
+    border: 1px solid #e6d100 !important;
   }
 
-  .sm-notes-btn-save:hover {
-    background-color: #366196 !important;
+  .sm-note-btn-save:hover {
+    background-color: #ffd600 !important;
   }
 
-  .sm-notes-btn-delete {
+  .sm-note-btn-delete {
     background-color: transparent !important;
     color: #cc0000 !important;
-    border: 1px solid transparent !important;
+    border: 1px solid #ffcccc !important;
   }
 
-  .sm-notes-btn-delete:hover {
-    background-color: #fff0f0 !important;
-    border-color: #ffcccc !important;
+  .sm-note-btn-delete:hover {
+    background-color: #ffebee !important;
+    border-color: #ff9999 !important;
   }
 `;

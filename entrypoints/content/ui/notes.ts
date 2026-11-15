@@ -7,6 +7,7 @@ export interface ListingNote {
 }
 
 let cachedNotes: Record<string, ListingNote> = {};
+let activeListingContext: { adId: string; title: string; url: string } | null = null;
 
 export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
   if (!notes || Object.keys(notes).length === 0) return;
@@ -52,123 +53,169 @@ export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
   });
 };
 
-export const openNotesModal = (
-  adId: string,
-  title: string,
-  url: string,
-  onSaveCallback: () => void,
-) => {
-  if (document.querySelector('.sm-notes-modal-overlay')) return;
+export const setupDetailNotes = (adId: string, title: string, url: string) => {
+  const eventsList = document.querySelector<HTMLUListElement>(
+    'div.classifiedDetailTitle ul.classifiedEvents, ul.classifiedEvents',
+  );
+  if (!eventsList) return;
 
-  const currentNote = cachedNotes[adId]?.text || '';
+  if (eventsList.querySelector('.sm-classified-note-action')) {
+    updateNoteLinkState(eventsList.querySelector('.sm-classified-note-action')!, adId);
+    return;
+  }
 
-  const overlay = document.createElement('div');
-  overlay.className = 'sm-notes-modal-overlay';
+  const li = document.createElement('li');
+  li.className = 'sm-classified-note-action';
 
-  overlay.innerHTML = `
-    <div class="sm-notes-modal" role="dialog" aria-modal="true">
-      <div class="sm-notes-header">
-        <h3>İlana Özel Not (#${adId})</h3>
-        <button type="button" class="sm-notes-close-btn" aria-label="Kapat">&times;</button>
+  const link = document.createElement('a');
+  link.href = '#';
+  link.setAttribute('rel', 'nofollow');
+  link.className = 'sm-classified-note-link';
+
+  li.appendChild(link);
+  eventsList.insertBefore(li, eventsList.firstChild);
+
+  let dropdown: HTMLDivElement | null = null;
+
+  const closeDropdown = () => {
+    if (dropdown) {
+      dropdown.remove();
+      dropdown = null;
+    }
+  };
+
+  const handleDocumentClick = (e: MouseEvent) => {
+    if (dropdown && !li.contains(e.target as Node)) {
+      closeDropdown();
+    }
+  };
+
+  document.addEventListener('click', handleDocumentClick);
+
+  const openDropdown = () => {
+    closeDropdown();
+
+    const currentNote = cachedNotes[adId]?.text || '';
+
+    dropdown = document.createElement('div');
+    dropdown.className = 'sm-note-dropdown';
+    dropdown.innerHTML = `
+      <div class="sm-note-dropdown-header">
+        <span class="sm-note-dropdown-title">İlana Özel Not (#${adId})</span>
+        <button type="button" class="sm-note-dropdown-close" aria-label="Kapat">&times;</button>
       </div>
-      <div class="sm-notes-body">
+      <div class="sm-note-dropdown-body">
         <textarea 
-          class="sm-notes-textarea" 
-          placeholder="Bu ilanla ilgili kişisel notlarınızı buraya yazabilirsiniz (örn. satıcıyla görüşme, son teklif, ekspertiz randevusu)..."
+          class="sm-note-dropdown-textarea" 
+          placeholder="Bu ilana özel notlarınızı buraya yazabilirsiniz (örn. son teklif, satıcı görüşmesi, randevu)..."
         >${currentNote}</textarea>
       </div>
-      <div class="sm-notes-footer">
-        <span class="sm-notes-status">${currentNote ? 'Kayıtlı not mevcut' : 'Not yazılmadı'}</span>
-        <div class="sm-notes-actions">
-          ${currentNote ? '<button type="button" class="sm-notes-btn sm-notes-btn-delete">Notu Sil</button>' : ''}
-          <button type="button" class="sm-notes-btn sm-notes-btn-save">Kaydet</button>
+      <div class="sm-note-dropdown-footer">
+        <span class="sm-note-dropdown-status">${currentNote ? 'Kayıtlı not var' : 'Henüz not yok'}</span>
+        <div class="sm-note-dropdown-actions">
+          ${currentNote ? '<button type="button" class="sm-note-btn sm-note-btn-delete">Sil</button>' : ''}
+          <button type="button" class="sm-note-btn sm-note-btn-save">Kaydet</button>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-  document.body.appendChild(overlay);
+    li.appendChild(dropdown);
 
-  const textarea = overlay.querySelector<HTMLTextAreaElement>('.sm-notes-textarea')!;
-  const saveBtn = overlay.querySelector<HTMLButtonElement>('.sm-notes-btn-save')!;
-  const deleteBtn = overlay.querySelector<HTMLButtonElement>('.sm-notes-btn-delete');
-  const closeBtn = overlay.querySelector<HTMLButtonElement>('.sm-notes-close-btn')!;
+    const textarea = dropdown.querySelector<HTMLTextAreaElement>('.sm-note-dropdown-textarea')!;
+    const closeBtn = dropdown.querySelector<HTMLButtonElement>('.sm-note-dropdown-close')!;
+    const saveBtn = dropdown.querySelector<HTMLButtonElement>('.sm-note-btn-save')!;
+    const deleteBtn = dropdown.querySelector<HTMLButtonElement>('.sm-note-btn-delete');
 
-  textarea.focus();
-  textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
 
-  const closeModal = () => {
-    overlay.remove();
-  };
-
-  closeBtn.onclick = closeModal;
-  overlay.onclick = (e) => {
-    if (e.target === overlay) closeModal();
-  };
-
-  const handleSave = async () => {
-    const text = textarea.value.trim();
-    if (text) {
-      cachedNotes[adId] = {
-        adId,
-        text,
-        title,
-        url,
-        updatedAt: Date.now(),
-      };
-    } else {
-      delete cachedNotes[adId];
-    }
-    await storage.setItem('local:listing-notes', cachedNotes);
-    onSaveCallback();
-    closeModal();
-  };
-
-  saveBtn.onclick = handleSave;
-
-  textarea.onkeydown = (e) => {
-    if (e.key === 'Escape') closeModal();
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      handleSave();
-    }
-  };
-
-  if (deleteBtn) {
-    deleteBtn.onclick = async () => {
-      delete cachedNotes[adId];
-      await storage.setItem('local:listing-notes', cachedNotes);
-      onSaveCallback();
-      closeModal();
+    closeBtn.onclick = (e) => {
+      e.stopPropagation();
+      closeDropdown();
     };
-  }
+
+    const handleSave = async () => {
+      const text = textarea.value.trim();
+      if (text) {
+        cachedNotes[adId] = {
+          adId,
+          text,
+          title,
+          url,
+          updatedAt: Date.now(),
+        };
+      } else {
+        delete cachedNotes[adId];
+      }
+      await storage.setItem('local:listing-notes', cachedNotes);
+      updateNoteLinkState(li, adId);
+      closeDropdown();
+    };
+
+    saveBtn.onclick = (e) => {
+      e.stopPropagation();
+      handleSave();
+    };
+
+    if (deleteBtn) {
+      deleteBtn.onclick = async (e) => {
+        e.stopPropagation();
+        delete cachedNotes[adId];
+        await storage.setItem('local:listing-notes', cachedNotes);
+        updateNoteLinkState(li, adId);
+        closeDropdown();
+      };
+    }
+
+    textarea.onkeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDropdown();
+      }
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+  };
+
+  link.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dropdown) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  };
+
+  updateNoteLinkState(li, adId);
 };
 
-export const setupDetailNotes = (adId: string, title: string, url: string) => {
-  if (document.querySelector('.sm-notes-fab')) return;
+const updateNoteLinkState = (li: Element, adId: string) => {
+  const link = li.querySelector<HTMLAnchorElement>('.sm-classified-note-link');
+  if (!link) return;
 
-  const fab = document.createElement('button');
-  fab.type = 'button';
-  fab.className = 'sm-notes-fab';
+  const note = cachedNotes[adId];
+  const hasNote = Boolean(note?.text?.trim());
 
-  const updateFab = () => {
-    const hasNote = Boolean(cachedNotes[adId]?.text?.trim());
-    fab.innerHTML = `
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"></path>
-        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-      </svg>
-      <span>Özel Not</span>
-      ${hasNote ? '<span class="sm-notes-fab-badge" title="Bu ilanda notunuz var"></span>' : ''}
-    `;
-  };
+  link.classList.toggle('has-note', hasNote);
 
-  updateFab();
+  link.innerHTML = `
+    <svg class="sm-classified-note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"></path>
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+    </svg>
+    <span>Not Al</span>
+    ${hasNote ? '<span class="sm-classified-note-dot" title="Kayıtlı not mevcut"></span>' : ''}
+  `;
 
-  fab.onclick = () => {
-    openNotesModal(adId, title, url, updateFab);
-  };
-
-  document.body.appendChild(fab);
+  if (hasNote && note) {
+    const preview = note.text.trim();
+    link.title = `Özel Not: ${preview.length > 80 ? `${preview.slice(0, 80)}...` : preview}`;
+  } else {
+    link.title = 'Bu ilana özel not ekle';
+  }
 };
 
 export const initNotesMode = async (
@@ -177,9 +224,15 @@ export const initNotesMode = async (
   currentUrl: string,
 ) => {
   try {
+    // Eski FAB ve modal kalıntılarını temizle
+    document
+      .querySelectorAll('.sm-notes-fab, .sm-notes-modal-overlay')
+      .forEach((el) => el.remove());
+
     cachedNotes = (await storage.getItem<Record<string, ListingNote>>('local:listing-notes')) || {};
 
     if (currentAdId) {
+      activeListingContext = { adId: currentAdId, title: currentTitle, url: currentUrl };
       setupDetailNotes(currentAdId, currentTitle, currentUrl);
     }
 
@@ -192,6 +245,12 @@ export const initNotesMode = async (
       } else {
         highlightListingNotes(cachedNotes);
       }
+      if (activeListingContext) {
+        const action = document.querySelector('.sm-classified-note-action');
+        if (action) {
+          updateNoteLinkState(action, activeListingContext.adId);
+        }
+      }
     });
   } catch (err) {
     console.error('Sahibinden Manager: Notlar başlatılamadı', err);
@@ -201,5 +260,12 @@ export const initNotesMode = async (
 export const applyNotesToListings = () => {
   if (cachedNotes && Object.keys(cachedNotes).length > 0) {
     highlightListingNotes(cachedNotes);
+  }
+  if (activeListingContext) {
+    setupDetailNotes(
+      activeListingContext.adId,
+      activeListingContext.title,
+      activeListingContext.url,
+    );
   }
 };
