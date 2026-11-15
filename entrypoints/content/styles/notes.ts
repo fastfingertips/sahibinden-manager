@@ -17,19 +17,49 @@ export const notesStyles = `
     cursor: help !important;
   }
 
-  /* Sahibinden'in 300px genişlik sınırını yeni buton eklendiğinde genişlet */
+  /* Sahibinden'in sabit 300px float sınırını kaldırıp sağa dayalı esnek flex düzenine geçir */
   .classifiedDetailTitle .classifiedEvents {
     width: auto !important;
-    max-width: 440px !important;
+    max-width: 520px !important;
+    float: right !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 14px !important;
+    margin-top: 10px !important;
+    padding: 0 !important;
+  }
+
+  /* Eski float ve padding-top miraslarını temizle, tüm seçenekleri kusursuz hizala */
+  .classifiedDetailTitle .classifiedEvents li {
+    float: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding-top: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+  }
+
+  .classifiedDetailTitle .classifiedEvents li:first-child {
+    width: auto !important;
+    margin-right: 0 !important;
+  }
+
+  .classifiedDetailTitle .classifiedEvents li.share-icons {
+    float: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    gap: 6px !important;
   }
 
   /* --- İlan Detay Yerel Aksiyon Butonu (Favoriler ve Yazdır Yanı) --- */
   ul.classifiedEvents li.sm-classified-note-action {
     width: auto !important;
-    float: left !important;
+    float: none !important;
     list-style-type: none !important;
-    margin: 0 10px 0 0 !important;
-    padding: 10px 0 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
     position: relative !important;
   }
 
