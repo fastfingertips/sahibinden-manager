@@ -83,7 +83,8 @@ export const highlightVisitedDetail = (adId: string, timestamp?: number) => {
     banner.innerHTML = `
       <div>
         <span class="sm-badge">Ziyaret Edildi</span>
-        <span>Bu ilanı daha önce incelediniz (Son ziyaret: ${formatVisitedDate(timestamp)})</span>
+        <span>Bu ilanı daha önce incelediniz</span>
+        <span class="sm-date">(Son ziyaret: ${formatVisitedDate(timestamp)})</span>
       </div>
     `;
     titleContainer.prepend(banner);

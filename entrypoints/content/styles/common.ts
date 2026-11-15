@@ -10,7 +10,8 @@ export const commonStyles = `
     height: 24px !important;
     background: #417abb !important;
     color: #fff !important;
-    border-radius: 4px !important;
+    border-radius: 2px !important;
+    font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;

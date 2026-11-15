@@ -1,8 +1,8 @@
 export const visitedStyles = `
-  /* Liste ve Galeri Ziyaret Edilmiş İlan Satırları */
+  /* --- Sahibinden Temalı Ziyaret Edilmiş İlan Satırları --- */
   .sm-visited-listing {
-    opacity: 0.68;
-    background-color: #f7f9fa !important;
+    opacity: 0.65;
+    background-color: #f9f9f9 !important;
     transition: opacity 0.2s ease;
   }
 
@@ -10,44 +10,55 @@ export const visitedStyles = `
     opacity: 1 !important;
   }
 
+  /* --- Sahibinden Uyumlu Rozet (Badge) --- */
   .sm-visited-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    color: #41688c;
-    background-color: #eaf1f7;
-    border: 1px solid #cddde9;
-    border-radius: 3px;
-    padding: 1px 5px;
-    margin-right: 6px;
-    vertical-align: middle;
-    letter-spacing: 0.02em;
-    line-height: 14px;
+    font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
+    display: inline-block !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #386696 !important;
+    background-color: #eaf1f7 !important;
+    border: 1px solid #cddde9 !important;
+    border-radius: 2px !important;
+    padding: 1px 5px !important;
+    margin-right: 6px !important;
+    vertical-align: middle !important;
+    letter-spacing: 0.02em !important;
+    line-height: 14px !important;
   }
 
-  /* İlan Detay Sayfası Ziyaret Bilgilendirme Kutusu */
+  /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli (Orijinal uiBox / safety-warnnings çizgisi) --- */
   .sm-detail-visited-banner {
-    display: flex;
-    align-items: center;
-    background-color: #f2f6fa;
-    border: 1px solid #d0deec;
-    color: #2c4d6f;
-    border-radius: 4px;
-    padding: 8px 12px;
-    margin: 10px 0;
-    font-size: 12px;
-    font-weight: 500;
+    font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #f9f9f9 !important;
+    border: 1px solid #dbdbdb !important;
+    border-radius: 0px !important;
+    color: #333333 !important;
+    padding: 10px 14px !important;
+    margin: 10px 0 !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    box-sizing: border-box !important;
   }
 
   .sm-detail-visited-banner .sm-badge {
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.05em;
-    background-color: #417abb;
-    color: #ffffff;
-    padding: 2px 6px;
-    border-radius: 2px;
-    margin-right: 8px;
+    font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 10px !important;
+    letter-spacing: 0.05em !important;
+    background-color: #417abb !important;
+    color: #ffffff !important;
+    padding: 2px 6px !important;
+    border-radius: 2px !important;
+    margin-right: 10px !important;
+    line-height: 14px !important;
+  }
+
+  .sm-detail-visited-banner .sm-date {
+    color: #666666 !important;
+    margin-left: 4px !important;
   }
 `;
