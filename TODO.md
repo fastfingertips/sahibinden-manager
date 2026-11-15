@@ -24,6 +24,8 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 ### 2. Otomasyon
 
 - [x] Kullanıcının detaylarına girdiği (incelediği) ilanların ID'lerinin yerel hafızada (Local Storage vb.) tutulması.
+- [ ] Sıfır ağ isteği (Zero-Network) ile çalışan yerel fiyat değişim hafızası (fiyat düşüş/artış ve manipülasyon takibi).
+- [ ] İlan detay sayfasında kişisel notlar alabilme (Lokal Not Defteri).
 
 ### 3. Medya
 
@@ -36,8 +38,14 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [x] Kullanıcı Sahibinden.com dışında farklı bir sayfadayken eklentiye tıklandığında, arayüzde "Bu eklenti yalnızca sahibinden.com üzerinde çalışır" şeklinde bilgilendirici bir uyarı gösterilmesi.
 - [x] Özelliklerin (Izgara Görünümü ve Fotoğraf İndirici) ilk kurulumda varsayılan olarak Açık (True) gelmesinin sağlanması. (Kullanıcının eklentiyi kurar kurmaz etkiyi görebilmesi için).
+- [ ] Gecikmesiz ve beyaz parlama (flashbang) yaratmayan Karanlık Mod (Dark Theme).
 
 ### 5. Arayüz Temizliği
 
 - [ ] Arama listelerindeki harici reklam satırlarının (`#searchResultsTable tr.nativeAd`, `tr.classicNativeAd`) ve ilan detayındaki reklam kutularının (`div[id^="div-gpt-ad-"]`) temizlenmesi için isteğe bağlı arayüz anahtarının sağlanması.
   - Gerekçe: Yanlış tıklamaların ve sayfa kaymalarının (CLS) önlenmesi.
+
+### 6. Yapay Zeka & Güvenlik
+
+- [ ] Kullanıcının kendi Gemini/OpenAI API anahtarı (BYOK) ile ilan açıklamalarından yapılandırılmış hasar/tramer/boya tablosu çıkaran LLM analizi.
+- [ ] Sahibinden mesajlaşma arayüzünde harici oltalama (phishing) bağlantılarını denetleyen Güvenlik Kalkanı.
