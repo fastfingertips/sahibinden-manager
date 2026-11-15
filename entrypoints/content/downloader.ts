@@ -2,7 +2,7 @@
 
 export const setupDownloaderState = async () => {
   const watchDownloader = async (enabled: boolean | null) => {
-    if (enabled) {
+    if (enabled !== false) {
       document.body.classList.add('sm-downloader-active');
     } else {
       document.body.classList.remove('sm-downloader-active');
