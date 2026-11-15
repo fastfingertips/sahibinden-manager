@@ -8,6 +8,7 @@ import {
 } from './content/tracker';
 import { initRefurbishedMode, applyRefurbishedIgnore } from './content/refurbished';
 import { initNotesMode, applyNotesToListings } from './content/ui/notes';
+import { handlePriceHistoryAnalytics } from './content/priceHistory';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
@@ -16,9 +17,10 @@ import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
 import { refurbishedStyles } from './content/styles/refurbished';
 import { notesStyles } from './content/styles/notes';
+import { priceHistoryStyles } from './content/styles/priceHistory';
 
 export default defineContentScript({
-  matches: ['*://www.sahibinden.com/*'],
+  matches: ['*://*.sahibinden.com/*'],
   async main() {
     console.log('Sahibinden Manager: SUI Tasarım Modu Aktif');
 
@@ -32,6 +34,7 @@ export default defineContentScript({
         ${visitedStyles}
         ${refurbishedStyles}
         ${notesStyles}
+        ${priceHistoryStyles}
       `;
       document.head.appendChild(style);
     };
@@ -57,6 +60,7 @@ export default defineContentScript({
       applyVisitedToListings();
       applyRefurbishedIgnore();
       applyNotesToListings();
+      handlePriceHistoryAnalytics();
     };
 
     const observer = new MutationObserver((mutations) => {
