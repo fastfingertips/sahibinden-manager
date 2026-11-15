@@ -35,6 +35,12 @@ Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacakt�
 4. Tarayıcınızda (Chrome/Edge) `chrome://extensions` adresine gidin.
 5. "Paketlenmemiş öğe yükle" butonuna tıklayın ve `.output/chrome-mv3` klasörünü seçin.
 
+## Önerilen Kullanım
+
+Sahibinden.com sayfalarında ilan listelerine yerleştirilen sponsorlu reklam satırları (`nativeAd`), tepe afişleri ve ilan detayındaki harici reklam kutuları (Google Ad Manager ve üçüncü parti izleyiciler) sayfa düzeninde kaymalara yol açabilmekte ve gezinme akışını bölebilmektedir.
+
+Sahibinden Manager ile birlikte [uBlock Origin](https://github.com/gorhill/uBlock) gibi bir içerik engelleyici kullanılması tavsiye edilir. Bu kombinasyon sayesinde site harici reklam yüklerinden arındırılarak daha hızlı ve odaklı bir kullanım deneyimi elde edilir.
+
 ## Teknik Detaylar
 
 - **Framework**: WXT (Web Extension Toolbox)

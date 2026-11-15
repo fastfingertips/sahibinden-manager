@@ -36,3 +36,8 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [x] Kullanıcı Sahibinden.com dışında farklı bir sayfadayken eklentiye tıklandığında, arayüzde "Bu eklenti yalnızca sahibinden.com üzerinde çalışır" şeklinde bilgilendirici bir uyarı gösterilmesi.
 - [x] Özelliklerin (Izgara Görünümü ve Fotoğraf İndirici) ilk kurulumda varsayılan olarak Açık (True) gelmesinin sağlanması. (Kullanıcının eklentiyi kurar kurmaz etkiyi görebilmesi için).
+
+### 5. Arayüz Temizliği
+
+- [ ] Arama listelerindeki harici reklam satırlarının (`#searchResultsTable tr.nativeAd`, `tr.classicNativeAd`) ve ilan detayındaki reklam kutularının (`div[id^="div-gpt-ad-"]`) temizlenmesi için isteğe bağlı arayüz anahtarının sağlanması.
+  - Gerekçe: Yanlış tıklamaların ve sayfa kaymalarının (CLS) önlenmesi.
