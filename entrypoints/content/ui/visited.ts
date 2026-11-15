@@ -8,6 +8,49 @@ export const formatVisitedDate = (timestamp: number): string => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
+export const extractTimestamp = (val: unknown): number | undefined => {
+  if (typeof val === 'number') return val;
+  if (val && typeof val === 'object' && 'visitedAt' in val) {
+    const num = (val as { visitedAt: unknown }).visitedAt;
+    if (typeof num === 'number') return num;
+  }
+  return undefined;
+};
+
+export const formatTimeAgo = (timestamp: number): string => {
+  const diff = Math.max(0, Date.now() - timestamp);
+  const minutes = Math.floor(diff / (1000 * 60));
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (minutes < 1) return 'Az önce';
+  if (minutes < 60) return `${minutes} dk önce`;
+  if (hours < 24) return `${hours} saat önce`;
+  if (days === 1) return 'Dün';
+  if (days < 30) return `${days} gün önce`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} ay önce`;
+  const years = Math.floor(days / 365);
+  return `${years} yıl önce`;
+};
+
+const createOrUpdateBadge = (container: HTMLElement, timestamp?: number): void => {
+  let badge = container.querySelector<HTMLSpanElement>('.sm-visited-badge');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.className = 'sm-visited-badge';
+    container.prepend(badge);
+  }
+
+  if (timestamp) {
+    const timeAgo = formatTimeAgo(timestamp);
+    badge.textContent = `Ziyaret: ${timeAgo}`;
+    badge.title = `Son ziyaret: ${formatVisitedDate(timestamp)}`;
+  } else {
+    badge.textContent = 'Ziyaret Edildi';
+  }
+};
+
 export const highlightVisitedListings = (records: Record<string, unknown>) => {
   if (!records || Object.keys(records).length === 0) return;
 
@@ -24,11 +67,9 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
       const titleLink = row.querySelector<HTMLAnchorElement>(
         'td.searchResultsTitleValue a.classifiedTitle',
       );
-      if (titleLink && !titleLink.querySelector('.sm-visited-badge')) {
-        const badge = document.createElement('span');
-        badge.className = 'sm-visited-badge';
-        badge.textContent = 'Ziyaret Edildi';
-        titleLink.prepend(badge);
+      if (titleLink) {
+        const timestamp = extractTimestamp(records[id]);
+        createOrUpdateBadge(titleLink, timestamp);
       }
     }
   });
@@ -44,11 +85,9 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
         cell.classList.add('sm-visited-listing');
       }
       const titleLink = cell.querySelector<HTMLAnchorElement>('a.classifiedTitle');
-      if (titleLink && !titleLink.querySelector('.sm-visited-badge')) {
-        const badge = document.createElement('span');
-        badge.className = 'sm-visited-badge';
-        badge.textContent = 'Ziyaret Edildi';
-        titleLink.prepend(badge);
+      if (titleLink) {
+        const timestamp = extractTimestamp(records[id]);
+        createOrUpdateBadge(titleLink, timestamp);
       }
     }
   });
@@ -64,6 +103,10 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
       const parentLi = link.closest('li');
       if (parentLi && !parentLi.classList.contains('sm-visited-listing')) {
         parentLi.classList.add('sm-visited-listing');
+        const timestamp = extractTimestamp(records[id]);
+        if (timestamp) {
+          parentLi.title = `Son ziyaret: ${formatVisitedDate(timestamp)} (${formatTimeAgo(timestamp)})`;
+        }
       }
     }
   });
@@ -80,11 +123,12 @@ export const highlightVisitedDetail = (adId: string, timestamp?: number) => {
   if (titleContainer) {
     const banner = document.createElement('div');
     banner.className = 'sm-detail-visited-banner';
+    const timeAgo = formatTimeAgo(timestamp);
     banner.innerHTML = `
       <div>
         <span class="sm-badge">Ziyaret Edildi</span>
         <span>Bu ilanı daha önce incelediniz</span>
-        <span class="sm-date">(Son ziyaret: ${formatVisitedDate(timestamp)})</span>
+        <span class="sm-date">(Son ziyaret: ${timeAgo} · ${formatVisitedDate(timestamp)})</span>
       </div>
     `;
     titleContainer.prepend(banner);

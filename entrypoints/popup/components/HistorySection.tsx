@@ -16,6 +16,23 @@ const formatDate = (timestamp: number): string => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
+const formatTimeAgo = (timestamp: number): string => {
+  const diff = Math.max(0, Date.now() - timestamp);
+  const minutes = Math.floor(diff / (1000 * 60));
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (minutes < 1) return 'Az önce';
+  if (minutes < 60) return `${minutes} dk önce`;
+  if (hours < 24) return `${hours} saat önce`;
+  if (days === 1) return 'Dün';
+  if (days < 30) return `${days} gün önce`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} ay önce`;
+  const years = Math.floor(days / 365);
+  return `${years} yıl önce`;
+};
+
 export const HistorySection = ({ history, onClearHistory, onRemoveItem }: HistorySectionProps) => {
   const handleOpenLink = (url: string) => {
     browser.tabs.create({ url });
@@ -62,7 +79,8 @@ export const HistorySection = ({ history, onClearHistory, onRemoveItem }: Histor
                 </button>
                 <div className="flex items-center gap-3 mt-1 text-[10px] text-[#777]">
                   <span>İlan No: #{item.id}</span>
-                  <span>{formatDate(item.visitedAt)}</span>
+                  <span className="text-[#555] font-medium">{formatTimeAgo(item.visitedAt)}</span>
+                  <span>({formatDate(item.visitedAt)})</span>
                 </div>
               </div>
 
