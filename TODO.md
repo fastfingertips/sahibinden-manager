@@ -16,7 +16,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [ ] Kullanıcının spesifik bir ilanı butona basarak arayüzden gizleyebilmesi.
 - [ ] Belirli kurallara (örn. anahtar kelime, fiyat) uymayan ilanları arama sonuçlarından otomatik çıkaran filtrenin eklenmesi.
-- [ ] Hafızada kayıtlı olan "incelenmiş ilanların" arama sonuçları listesinde otomatik olarak gizlenmesi (veya silik gösterilmesi).
+- [x] Hafızada kayıtlı olan "incelenmiş ilanların" arama sonuçları listesinde otomatik olarak silik gösterilmesi/vurgulanması ve detay sayfasında belirtilmesi.
   - Gerekçe: Vakit kaybının önlenmesi.
 
 ### 2. Otomasyon

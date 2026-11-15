@@ -1,11 +1,16 @@
 import { initGridMode } from './content/grid';
 import { setupDownloaderState } from './content/downloader';
-import { extractClassifiedId, trackCurrentClassified } from './content/tracker';
+import {
+  extractClassifiedId,
+  initVisitedTracking,
+  applyVisitedToListings,
+} from './content/tracker';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
+import { visitedStyles } from './content/styles/visited';
 
 export default defineContentScript({
   matches: ['*://www.sahibinden.com/*'],
@@ -19,6 +24,7 @@ export default defineContentScript({
         ${gridStyles}
         ${lightboxStyles}
         ${mainPhotoStyles}
+        ${visitedStyles}
       `;
       document.head.appendChild(style);
     };
@@ -26,7 +32,7 @@ export default defineContentScript({
     injectStyles();
     initGridMode();
     setupDownloaderState();
-    trackCurrentClassified();
+    initVisitedTracking();
 
     const adId = extractClassifiedId() || 'ilan';
 
@@ -34,6 +40,7 @@ export default defineContentScript({
       handleMegaPhotoLightbox(adId);
       handleMainPageThumbnails(adId);
       handleMainPhoto(adId);
+      applyVisitedToListings();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
@@ -41,5 +48,6 @@ export default defineContentScript({
     // İlk çalıştırma
     handleMainPageThumbnails(adId);
     handleMainPhoto(adId);
+    applyVisitedToListings();
   },
 });

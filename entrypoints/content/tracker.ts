@@ -1,4 +1,8 @@
+import { highlightVisitedDetail, highlightVisitedListings } from './ui/visited';
+
 // WXT tarafından sağlanan global 'storage' kullanılıyor
+
+let cachedRecords: Record<string, number> = {};
 
 export const extractClassifiedId = (): string | null => {
   // 1. Gizli DOM input öğesi kontrolü (en güvenilir yöntem)
@@ -22,15 +26,41 @@ export const extractClassifiedId = (): string | null => {
   return null;
 };
 
-export const trackCurrentClassified = async () => {
-  const adId = extractClassifiedId();
-  if (!adId) return;
-
+export const initVisitedTracking = async () => {
   try {
-    const records = (await storage.getItem<Record<string, number>>('local:viewed-listings')) || {};
-    records[adId] = Date.now();
-    await storage.setItem('local:viewed-listings', records);
+    cachedRecords = (await storage.getItem<Record<string, number>>('local:viewed-listings')) || {};
+
+    const adId = extractClassifiedId();
+    if (adId) {
+      if (cachedRecords[adId]) {
+        highlightVisitedDetail(adId, cachedRecords[adId]);
+      }
+      cachedRecords[adId] = Date.now();
+      await storage.setItem('local:viewed-listings', cachedRecords);
+    }
+
+    highlightVisitedListings(cachedRecords);
+
+    storage.watch<Record<string, number>>('local:viewed-listings', (newVal) => {
+      cachedRecords = newVal || {};
+      if (!newVal || Object.keys(newVal).length === 0) {
+        document.querySelectorAll('.sm-visited-listing').forEach((el) => {
+          el.classList.remove('sm-visited-listing');
+        });
+        document.querySelectorAll('.sm-visited-badge, .sm-detail-visited-banner').forEach((el) => {
+          el.remove();
+        });
+      } else {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
   } catch (err) {
-    console.error('Sahibinden Manager: İlan geçmişi kaydedilemedi', err);
+    console.error('Sahibinden Manager: Ziyaret takibi başlatılamadı', err);
+  }
+};
+
+export const applyVisitedToListings = () => {
+  if (cachedRecords && Object.keys(cachedRecords).length > 0) {
+    highlightVisitedListings(cachedRecords);
   }
 };
