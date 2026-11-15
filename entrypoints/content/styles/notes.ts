@@ -30,6 +30,11 @@ export const notesStyles = `
     padding: 0 !important;
   }
 
+  /* Doğrudan çocuk olan sui-dialog vb. görünmez elemanların sahte gap üretmesini engelle */
+  .classifiedDetailTitle .classifiedEvents > *:not(li) {
+    display: none !important;
+  }
+
   /* Eski float ve padding-top miraslarını temizle, tüm seçenekleri kusursuz hizala */
   .classifiedDetailTitle .classifiedEvents li {
     float: none !important;
