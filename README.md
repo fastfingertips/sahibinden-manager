@@ -14,17 +14,11 @@ Sahibinden.com kullanıcı arayüzü ve veri erişimi için geliştirilmiş tara
   - İncelenen ilanları yerel hafızada saklar ve popup arayüzünde listeler.
   - Arama sonuçlarında ve ilan detayında ilanın ne kadar süre önce incelendiğini (göreceli zaman ile) gösterir.
 
-## Dağıtım Durumu
+## Kurulum ve Dağıtım
 
-Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacaktır. Bu aşamaya kadar güncel sürümlere [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfası üzerinden veya depodan derleyerek erişebilirsiniz.
+Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacaktır. Bu aşamaya kadar güncel sürümlere [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından indirilen `.zip` paketi ile veya kaynak koddan derleyerek erişebilirsiniz.
 
-## Kurulum
-
-### Son Sürümü İndir
-
-En güncel sürümü doğrudan [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından `.zip` formatında indirip tarayıcınıza yükleyebilirsiniz.
-
-### Geliştirici Modu (Manuel)
+### Manuel Kurulum (Geliştirici Modu)
 
 1. Depoyu klonlayın:
    ```bash
