@@ -25,7 +25,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [x] Kullanıcının detaylarına girdiği (incelediği) ilanların ID'lerinin yerel hafızada (Local Storage vb.) tutulması.
 - [ ] Sıfır ağ isteği (Zero-Network) ile çalışan yerel fiyat değişim hafızası (fiyat düşüş/artış ve manipülasyon takibi).
-- [ ] İlan detay sayfasında kişisel notlar alabilme (Lokal Not Defteri).
+- [x] İlan detay sayfasında kişisel notlar alabilme (Lokal Not Defteri) ve listelerde 'Not Var' rozetiyle vurgulanması.
 
 ### 3. Medya
 
