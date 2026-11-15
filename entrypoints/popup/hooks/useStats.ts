@@ -5,6 +5,9 @@ export interface HistoryItem {
   title: string;
   url: string;
   visitedAt: number;
+  lastVisitedAt: number;
+  firstVisitedAt: number;
+  visitCount: number;
 }
 
 export interface ListingNoteItem {
@@ -25,18 +28,35 @@ const parseHistory = (records: Record<string, unknown> | null): HistoryItem[] =>
         title: `İlan #${id}`,
         url: `https://www.sahibinden.com/ilan/${id}/detay`,
         visitedAt: val,
+        lastVisitedAt: val,
+        firstVisitedAt: val,
+        visitCount: 1,
       });
-    } else if (val && typeof val === 'object' && 'visitedAt' in val) {
-      const obj = val as { id?: string; title?: string; url?: string; visitedAt: number };
+    } else if (val && typeof val === 'object') {
+      const obj = val as {
+        id?: string;
+        title?: string;
+        url?: string;
+        visitedAt?: number;
+        lastVisitedAt?: number;
+        firstVisitedAt?: number;
+        visitCount?: number;
+      };
+      const last = obj.lastVisitedAt || obj.visitedAt || Date.now();
+      const first = obj.firstVisitedAt || obj.visitedAt || last;
+      const count = obj.visitCount || 1;
       items.push({
         id: obj.id || id,
         title: obj.title || `İlan #${id}`,
         url: obj.url || `https://www.sahibinden.com/ilan/${id}/detay`,
-        visitedAt: obj.visitedAt,
+        visitedAt: last,
+        lastVisitedAt: last,
+        firstVisitedAt: first,
+        visitCount: count,
       });
     }
   }
-  return items.sort((a, b) => b.visitedAt - a.visitedAt);
+  return items.sort((a, b) => b.lastVisitedAt - a.lastVisitedAt);
 };
 
 const parseNotes = (records: Record<string, ListingNoteItem> | null): ListingNoteItem[] => {

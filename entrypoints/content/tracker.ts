@@ -7,17 +7,35 @@ export interface VisitedListingRecord {
   title: string;
   url: string;
   visitedAt: number;
+  firstVisitedAt: number;
+  lastVisitedAt: number;
+  visitCount: number;
 }
 
 export type StoredViewedListings = Record<string, VisitedListingRecord | number>;
 
 let cachedRecords: StoredViewedListings = {};
 
-export const getTimestamp = (
+export const getFirstTimestamp = (
   val: VisitedListingRecord | number | undefined,
 ): number | undefined => {
   if (!val) return undefined;
-  return typeof val === 'number' ? val : val.visitedAt;
+  if (typeof val === 'number') return val;
+  return val.firstVisitedAt || val.visitedAt;
+};
+
+export const getLastTimestamp = (
+  val: VisitedListingRecord | number | undefined,
+): number | undefined => {
+  if (!val) return undefined;
+  if (typeof val === 'number') return val;
+  return val.lastVisitedAt || val.visitedAt;
+};
+
+export const getVisitCount = (val: VisitedListingRecord | number | undefined): number => {
+  if (!val) return 0;
+  if (typeof val === 'number') return 1;
+  return val.visitCount || 1;
 };
 
 export const extractClassifiedId = (): string | null => {
@@ -57,15 +75,23 @@ export const initVisitedTracking = async () => {
 
     const adId = extractClassifiedId();
     if (adId) {
-      const existingTime = getTimestamp(cachedRecords[adId]);
-      if (existingTime) {
-        highlightVisitedDetail(adId, existingTime);
+      const existing = cachedRecords[adId];
+      const now = Date.now();
+      const existingFirst = getFirstTimestamp(existing);
+      const existingLast = getLastTimestamp(existing);
+      const prevCount = getVisitCount(existing);
+
+      if (existingFirst) {
+        highlightVisitedDetail(adId, existingFirst, existingLast, prevCount);
       }
       cachedRecords[adId] = {
         id: adId,
         title: extractClassifiedTitle(),
         url: window.location.href,
-        visitedAt: Date.now(),
+        visitedAt: now,
+        lastVisitedAt: now,
+        firstVisitedAt: existingFirst || now,
+        visitCount: prevCount + 1,
       };
       await storage.setItem('local:viewed-listings', cachedRecords);
     }

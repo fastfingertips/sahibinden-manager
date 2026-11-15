@@ -8,13 +8,33 @@ export const formatVisitedDate = (timestamp: number): string => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
-export const extractTimestamp = (val: unknown): number | undefined => {
+export const extractLastTimestamp = (val: unknown): number | undefined => {
   if (typeof val === 'number') return val;
-  if (val && typeof val === 'object' && 'visitedAt' in val) {
-    const num = (val as { visitedAt: unknown }).visitedAt;
-    if (typeof num === 'number') return num;
+  if (val && typeof val === 'object') {
+    const obj = val as Record<string, unknown>;
+    if (typeof obj.lastVisitedAt === 'number') return obj.lastVisitedAt;
+    if (typeof obj.visitedAt === 'number') return obj.visitedAt;
   }
   return undefined;
+};
+
+export const extractFirstTimestamp = (val: unknown): number | undefined => {
+  if (typeof val === 'number') return val;
+  if (val && typeof val === 'object') {
+    const obj = val as Record<string, unknown>;
+    if (typeof obj.firstVisitedAt === 'number') return obj.firstVisitedAt;
+    if (typeof obj.visitedAt === 'number') return obj.visitedAt;
+  }
+  return undefined;
+};
+
+export const extractVisitCount = (val: unknown): number => {
+  if (typeof val === 'number') return 1;
+  if (val && typeof val === 'object') {
+    const obj = val as Record<string, unknown>;
+    if (typeof obj.visitCount === 'number') return obj.visitCount;
+  }
+  return 1;
 };
 
 export const formatTimeAgo = (timestamp: number): string => {
@@ -34,7 +54,12 @@ export const formatTimeAgo = (timestamp: number): string => {
   return `${years} yıl önce`;
 };
 
-const createOrUpdateBadge = (container: HTMLElement, timestamp?: number): void => {
+const createOrUpdateBadge = (
+  container: HTMLElement,
+  firstTimestamp?: number,
+  lastTimestamp?: number,
+  visitCount?: number,
+): void => {
   let badge = container.querySelector<HTMLSpanElement>('.sm-visited-badge');
   if (!badge) {
     badge = document.createElement('span');
@@ -42,10 +67,17 @@ const createOrUpdateBadge = (container: HTMLElement, timestamp?: number): void =
     container.prepend(badge);
   }
 
-  if (timestamp) {
-    const timeAgo = formatTimeAgo(timestamp);
+  const primaryTime = lastTimestamp || firstTimestamp;
+  if (primaryTime) {
+    const timeAgo = formatTimeAgo(primaryTime);
     badge.textContent = `Ziyaret: ${timeAgo}`;
-    badge.title = `Son ziyaret: ${formatVisitedDate(timestamp)}`;
+
+    if (firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp) {
+      const countText = visitCount && visitCount > 1 ? ` (${visitCount} kez)` : '';
+      badge.title = `Son ziyaret: ${formatVisitedDate(lastTimestamp)} (${formatTimeAgo(lastTimestamp)})\nİlk ziyaret: ${formatVisitedDate(firstTimestamp)} (${formatTimeAgo(firstTimestamp)})${countText}`;
+    } else {
+      badge.title = `Son ziyaret: ${formatVisitedDate(primaryTime)}`;
+    }
   } else {
     badge.textContent = 'Ziyaret Edildi';
   }
@@ -68,8 +100,10 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
         'td.searchResultsTitleValue a.classifiedTitle',
       );
       if (titleLink) {
-        const timestamp = extractTimestamp(records[id]);
-        createOrUpdateBadge(titleLink, timestamp);
+        const firstTime = extractFirstTimestamp(records[id]);
+        const lastTime = extractLastTimestamp(records[id]);
+        const count = extractVisitCount(records[id]);
+        createOrUpdateBadge(titleLink, firstTime, lastTime, count);
       }
     }
   });
@@ -86,8 +120,10 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
       }
       const titleLink = cell.querySelector<HTMLAnchorElement>('a.classifiedTitle');
       if (titleLink) {
-        const timestamp = extractTimestamp(records[id]);
-        createOrUpdateBadge(titleLink, timestamp);
+        const firstTime = extractFirstTimestamp(records[id]);
+        const lastTime = extractLastTimestamp(records[id]);
+        const count = extractVisitCount(records[id]);
+        createOrUpdateBadge(titleLink, firstTime, lastTime, count);
       }
     }
   });
@@ -103,17 +139,29 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
       const parentLi = link.closest('li');
       if (parentLi && !parentLi.classList.contains('sm-visited-listing')) {
         parentLi.classList.add('sm-visited-listing');
-        const timestamp = extractTimestamp(records[id]);
-        if (timestamp) {
-          parentLi.title = `Son ziyaret: ${formatVisitedDate(timestamp)} (${formatTimeAgo(timestamp)})`;
+        const firstTime = extractFirstTimestamp(records[id]);
+        const lastTime = extractLastTimestamp(records[id]);
+        const count = extractVisitCount(records[id]);
+        if (firstTime && lastTime && firstTime !== lastTime) {
+          const countText = count > 1 ? ` (${count} kez)` : '';
+          parentLi.title = `Son: ${formatVisitedDate(lastTime)} (${formatTimeAgo(lastTime)})\nİlk: ${formatVisitedDate(firstTime)} (${formatTimeAgo(firstTime)})${countText}`;
+        } else if (lastTime || firstTime) {
+          const t = (lastTime || firstTime)!;
+          parentLi.title = `Son ziyaret: ${formatVisitedDate(t)} (${formatTimeAgo(t)})`;
         }
       }
     }
   });
 };
 
-export const highlightVisitedDetail = (adId: string, timestamp?: number) => {
-  if (!timestamp) return;
+export const highlightVisitedDetail = (
+  adId: string,
+  firstTimestamp?: number,
+  lastTimestamp?: number,
+  visitCount?: number,
+) => {
+  const primaryTime = lastTimestamp || firstTimestamp;
+  if (!primaryTime) return;
   if (document.querySelector('.sm-detail-visited-banner')) return;
 
   const titleContainer =
@@ -123,12 +171,17 @@ export const highlightVisitedDetail = (adId: string, timestamp?: number) => {
   if (titleContainer) {
     const banner = document.createElement('div');
     banner.className = 'sm-detail-visited-banner';
-    const timeAgo = formatTimeAgo(timestamp);
+
+    const dateInfo =
+      firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp
+        ? `(Son: ${formatTimeAgo(lastTimestamp)} - ${formatVisitedDate(lastTimestamp)} · İlk: ${formatTimeAgo(firstTimestamp)} - ${formatVisitedDate(firstTimestamp)}${visitCount && visitCount > 1 ? ` · Toplam ${visitCount} kez incelendi` : ''})`
+        : `(Son ziyaret: ${formatTimeAgo(primaryTime)} · ${formatVisitedDate(primaryTime)})`;
+
     banner.innerHTML = `
       <div>
         <span class="sm-badge">Ziyaret Edildi</span>
         <span>Bu ilanı daha önce incelediniz</span>
-        <span class="sm-date">(Son ziyaret: ${timeAgo} · ${formatVisitedDate(timestamp)})</span>
+        <span class="sm-date">${dateInfo}</span>
       </div>
     `;
     titleContainer.prepend(banner);

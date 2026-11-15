@@ -77,10 +77,25 @@ export const HistorySection = ({ history, onClearHistory, onRemoveItem }: Histor
                 >
                   {item.title}
                 </button>
-                <div className="flex items-center gap-3 mt-1 text-[10px] text-[#777]">
-                  <span>İlan No: #{item.id}</span>
-                  <span className="text-[#555] font-medium">{formatTimeAgo(item.visitedAt)}</span>
-                  <span>({formatDate(item.visitedAt)})</span>
+                <div className="flex flex-col gap-0.5 mt-1 text-[10px] text-[#777]">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-[#555]">Son:</span>
+                    <span>
+                      {formatTimeAgo(item.lastVisitedAt)} ({formatDate(item.lastVisitedAt)})
+                    </span>
+                    <span className="text-[#aaa]">· #{item.id}</span>
+                  </div>
+                  {item.firstVisitedAt && item.firstVisitedAt !== item.lastVisitedAt && (
+                    <div className="flex items-center gap-2 text-[#888]">
+                      <span className="font-semibold text-[#666]">İlk:</span>
+                      <span>
+                        {formatTimeAgo(item.firstVisitedAt)} ({formatDate(item.firstVisitedAt)})
+                      </span>
+                      {item.visitCount > 1 && (
+                        <span className="text-[#386696] font-medium">({item.visitCount} kez)</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
