@@ -61,6 +61,7 @@ export const visitedStyles = `
     letter-spacing: 0.02em !important;
     line-height: 14px !important;
     margin-bottom: 2px !important;
+    margin-top: -4px !important;
     box-shadow: 0 1px 2px rgba(26, 79, 130, 0.08) !important;
   }
 
