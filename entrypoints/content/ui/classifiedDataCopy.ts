@@ -1,3 +1,6 @@
+import { extractQnAData } from '../cqa';
+import { copyToClipboard } from '@/utils/clipboard';
+
 const COPY_ICON_SVG = `
   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sm-copy-all-icon">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -200,7 +203,17 @@ export const extractClassifiedFullData = (): string => {
     lines.push('');
   }
 
-  // 11. Altbilgi
+  // 11. Soru - Cevaplar
+  const qnaText = extractQnAData();
+  if (qnaText) {
+    lines.push('### Soru - Cevaplar');
+    lines.push(qnaText);
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  }
+
+  // 12. Altbilgi
   const nowStr = new Date().toLocaleString('tr-TR');
   lines.push(`*Sahibinden Manager ile derlendi · ${nowStr}*`);
 
@@ -240,37 +253,23 @@ export const handleClassifiedDataCopyButton = () => {
     const fullData = extractClassifiedFullData();
     if (!fullData) return;
 
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(fullData);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = fullData;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-      }
+    const ok = await copyToClipboard(fullData);
+    if (!ok) return;
 
-      link.classList.add('copied');
+    link.classList.add('copied');
+    link.innerHTML = `
+      ${CHECK_ICON_SVG}
+      <span>Kopyalandı!</span>
+    `;
+
+    if (resetTimer) clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      link.classList.remove('copied');
       link.innerHTML = `
-        ${CHECK_ICON_SVG}
-        <span>Kopyalandı!</span>
+        ${COPY_ICON_SVG}
+        <span>Tüm Verileri Kopyala</span>
       `;
-
-      if (resetTimer) clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => {
-        link.classList.remove('copied');
-        link.innerHTML = `
-          ${COPY_ICON_SVG}
-          <span>Tüm Verileri Kopyala</span>
-        `;
-      }, 2000);
-    } catch (err) {
-      console.error('Sahibinden Manager: Tüm veriler kopyalanamadı', err);
-    }
+    }, 2000);
   };
 
   li.appendChild(link);

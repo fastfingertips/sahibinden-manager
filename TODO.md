@@ -37,6 +37,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 ### 4. Kullanıcı Deneyimi (UX)
 
 - [x] İlan detay sayfasındaki açıklama metnini tek tıkla panoya kopyalama butonu ('Açıklamayı Kopyala').
+- [x] İlan detay sayfasındaki Soru-Cevap bölümünü tek tıkla panoya kopyalama butonu ('Soru-Cevapları Kopyala') ve Tüm Verileri Kopyala çıktısına dahil edilmesi.
 - [x] İlan detay sayfasında Not Al butonunun soluna tüm yapılandırılmış verileri (fiyat, özellikler, satıcı, açıklama vb.) yapay zeka ve karşılaştırma için Markdown formatında kopyalama butonu ('Tüm Verileri Kopyala').
 - [x] İlan detay sayfasındaki soru-cevap konuşmalarında gizli kalan yanıtları otomatik genişletme seçeneği ('Soru-Cevapları Otomatik Genişlet').
 - [x] Arama listelerinde yukarı / aşağı ok tuşları ile ilanlar arasında gezinme ve Enter ile ilanı açabilme (isteğe bağlı yeni sekmede açma desteği).

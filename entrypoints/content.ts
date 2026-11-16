@@ -15,7 +15,7 @@ import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { handleDescriptionCopyButton } from './content/ui/descriptionCopy';
 import { handleClassifiedDataCopyButton } from './content/ui/classifiedDataCopy';
-import { initQnAMode, handleAutoExpandQnA } from './content/cqa';
+import { initQnAMode, handleAutoExpandQnA, handleQnACopyButton } from './content/cqa';
 import { initKeyboardNavigation } from './content/keyboardNav';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
@@ -79,6 +79,7 @@ export default defineContentScript({
       handleDescriptionCopyButton();
       handleClassifiedDataCopyButton();
       handleAutoExpandQnA();
+      handleQnACopyButton();
     };
 
     const isOurOwnElement = (node: Node | null): boolean => {
