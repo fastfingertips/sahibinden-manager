@@ -49,6 +49,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [x] Arama listelerindeki harici reklam satırlarının (`#searchResultsTable tr.nativeAd`, `tr.classicNativeAd`, `tr.searchResultsPromoToplist`) ve ilan detayındaki reklam kutularının (`div[id^="div-gpt-ad-"]`) temizlenmesi için isteğe bağlı arayüz anahtarının sağlanması.
   - Gerekçe: Yanlış tıklamaların ve sayfa kaymalarının (CLS) önlenmesi.
+- [x] Filtreleme ve temizlik (reklam/doping ve yenilenmiş Yepy cihazlar) aktifken temizlenen öğe istatistiğinin popup arayüzünde canlı gösterilmesi.
 
 ### 6. Yapay Zeka & Güvenlik
 

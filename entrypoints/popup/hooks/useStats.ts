@@ -92,6 +92,8 @@ export const useStats = () => {
   const [isKeyboardNavEnabled, setIsKeyboardNavEnabled] = useState(true);
   const [isKeyboardNewTabEnabled, setIsKeyboardNewTabEnabled] = useState(false);
   const [ignoredRefurbishedCount, setIgnoredRefurbishedCount] = useState(0);
+  const [filteredAdsCount, setFilteredAdsCount] = useState(0);
+  const [filteredRefurbishedCount, setFilteredRefurbishedCount] = useState(0);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [notes, setNotes] = useState<ListingNoteItem[]>([]);
 
@@ -114,6 +116,9 @@ export const useStats = () => {
       const savedNotes =
         await storage.getItem<Record<string, ListingNoteItem>>('local:listing-notes');
 
+      const adsCount = await storage.getItem<number>('local:filtered-ads-count');
+      const yepyCount = await storage.getItem<number>('local:filtered-yepy-count');
+
       setIsFullGridEnabled(fullGrid !== false);
       setIsDownloaderEnabled(downloader !== false);
       setIsVisitedHighlightEnabled(visited !== false);
@@ -125,6 +130,8 @@ export const useStats = () => {
       setIsKeyboardNavEnabled(keyboardNav !== false);
       setIsKeyboardNewTabEnabled(keyboardNewTab === true);
       setIgnoredRefurbishedCount(ignoredRefurbished ? Object.keys(ignoredRefurbished).length : 0);
+      setFilteredAdsCount(adsCount || 0);
+      setFilteredRefurbishedCount(yepyCount || 0);
       setHistory(parseHistory(viewed));
       setNotes(parseNotes(savedNotes));
     };
@@ -187,6 +194,12 @@ export const useStats = () => {
         setNotes(parseNotes(newVal));
       },
     );
+    const unwatchAdsCount = storage.watch<number>('local:filtered-ads-count', (newVal) => {
+      setFilteredAdsCount(newVal || 0);
+    });
+    const unwatchYepyCount = storage.watch<number>('local:filtered-yepy-count', (newVal) => {
+      setFilteredRefurbishedCount(newVal || 0);
+    });
 
     return () => {
       unwatchGrid();
@@ -202,6 +215,8 @@ export const useStats = () => {
       unwatchIgnoredRefurbished();
       unwatchViewed();
       unwatchNotes();
+      unwatchAdsCount();
+      unwatchYepyCount();
     };
   }, []);
 
@@ -270,6 +285,16 @@ export const useStats = () => {
     setIgnoredRefurbishedCount(0);
   };
 
+  const clearFilteredAds = async () => {
+    await storage.setItem('local:filtered-ads-count', 0);
+    setFilteredAdsCount(0);
+  };
+
+  const clearFilteredRefurbished = async () => {
+    await storage.setItem('local:filtered-yepy-count', 0);
+    setFilteredRefurbishedCount(0);
+  };
+
   const removeHistoryItem = async (id: string) => {
     const records = (await storage.getItem<Record<string, unknown>>('local:viewed-listings')) || {};
     delete records[id];
@@ -307,6 +332,8 @@ export const useStats = () => {
     isKeyboardNavEnabled,
     isKeyboardNewTabEnabled,
     ignoredRefurbishedCount,
+    filteredAdsCount,
+    filteredRefurbishedCount,
     history,
     notes,
     viewedCount: history.length,
@@ -322,6 +349,8 @@ export const useStats = () => {
     toggleKeyboardNav,
     toggleKeyboardNewTab,
     clearIgnoredRefurbished,
+    clearFilteredAds,
+    clearFilteredRefurbished,
     removeHistoryItem,
     clearHistory,
     removeNote,

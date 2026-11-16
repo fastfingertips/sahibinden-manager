@@ -84,8 +84,12 @@ interface SettingsSectionProps {
   onToggleHideRefurbished: () => void;
   ignoredRefurbishedCount?: number;
   onClearIgnoredRefurbished?: () => void;
+  filteredRefurbishedCount?: number;
+  onClearFilteredRefurbished?: () => void;
   isHideAdsEnabled: boolean;
   onToggleHideAds: () => void;
+  filteredAdsCount?: number;
+  onClearFilteredAds?: () => void;
   viewedCount?: number;
   onClearHistory?: () => void;
 }
@@ -111,8 +115,12 @@ export const SettingsSection = ({
   onToggleHideRefurbished,
   ignoredRefurbishedCount = 0,
   onClearIgnoredRefurbished,
+  filteredRefurbishedCount = 0,
+  onClearFilteredRefurbished,
   isHideAdsEnabled,
   onToggleHideAds,
+  filteredAdsCount = 0,
+  onClearFilteredAds,
   viewedCount = 0,
   onClearHistory,
 }: SettingsSectionProps) => (
@@ -223,18 +231,42 @@ export const SettingsSection = ({
           checked={isHideRefurbishedEnabled}
           onChange={onToggleHideRefurbished}
         >
-          {ignoredRefurbishedCount > 0 && onClearIgnoredRefurbished && (
+          {(isHideRefurbishedEnabled || ignoredRefurbishedCount > 0) && (
             <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">
-              <span>
-                Tekil gizlenen cihaz: <strong>{ignoredRefurbishedCount}</strong>
-              </span>
-              <button
-                type="button"
-                onClick={onClearIgnoredRefurbished}
-                className="text-[9.5px] text-[#417abb] hover:text-[#2d5889] font-medium cursor-pointer"
-              >
-                Gizlenenleri Sıfırla
-              </button>
+              <div className="flex flex-col space-y-0.5">
+                {isHideRefurbishedEnabled && (
+                  <span>
+                    Filtrelenen Yepy:{' '}
+                    <strong className="text-[#222]">{filteredRefurbishedCount}</strong>
+                  </span>
+                )}
+                {ignoredRefurbishedCount > 0 && (
+                  <span>
+                    Tekil Gizlenen:{' '}
+                    <strong className="text-[#222]">{ignoredRefurbishedCount}</strong>
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                {filteredRefurbishedCount > 0 && onClearFilteredRefurbished && (
+                  <button
+                    type="button"
+                    onClick={onClearFilteredRefurbished}
+                    className="text-[9.5px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+                  >
+                    Sıfırla
+                  </button>
+                )}
+                {ignoredRefurbishedCount > 0 && onClearIgnoredRefurbished && (
+                  <button
+                    type="button"
+                    onClick={onClearIgnoredRefurbished}
+                    className="text-[9.5px] text-[#417abb] hover:text-[#2d5889] font-medium cursor-pointer"
+                  >
+                    Gizlenenleri Aç
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </SettingItem>
@@ -245,8 +277,49 @@ export const SettingsSection = ({
           checked={isHideAdsEnabled}
           onChange={onToggleHideAds}
           borderTop
-        />
+        >
+          {isHideAdsEnabled && (
+            <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">
+              <span>
+                Filtrelenen Reklam / Tanıtım:{' '}
+                <strong className="text-[#222]">{filteredAdsCount}</strong>
+              </span>
+              {filteredAdsCount > 0 && onClearFilteredAds && (
+                <button
+                  type="button"
+                  onClick={onClearFilteredAds}
+                  className="text-[9.5px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+                >
+                  Sıfırla
+                </button>
+              )}
+            </div>
+          )}
+        </SettingItem>
       </div>
+
+      {(isHideAdsEnabled || isHideRefurbishedEnabled) && (
+        <div className="mt-2.5 pt-2 border-t border-[#f0f0f0] flex items-center justify-between text-[10.5px]">
+          <span className="text-[#666]">
+            Toplam Filtrelenen Öğe:{' '}
+            <strong className="text-[#222]">
+              {filteredAdsCount + filteredRefurbishedCount + ignoredRefurbishedCount}
+            </strong>
+          </span>
+          {(filteredAdsCount > 0 || filteredRefurbishedCount > 0) && (
+            <button
+              type="button"
+              onClick={() => {
+                onClearFilteredAds?.();
+                onClearFilteredRefurbished?.();
+              }}
+              className="text-[9.5px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+            >
+              Sayaçları Sıfırla
+            </button>
+          )}
+        </div>
+      )}
     </div>
   </section>
 );

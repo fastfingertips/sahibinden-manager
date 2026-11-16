@@ -1,6 +1,28 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
 let cachedIgnoredIds: Record<string, boolean> = {};
+let isHideRefurbishedActive = false;
+
+const REFURBISHED_SELECTORS =
+  '.refurbishment-content-box, [data-refurbishment-product], #searchResultsTable tr.searchResultsItem:has(.refurbishment), #searchResultsTable tr.searchResultsItem:has(.refurbishment-classified-url)';
+
+export const trackFilteredRefurbished = async () => {
+  if (!isHideRefurbishedActive) return;
+
+  const yepyElements = document.querySelectorAll<HTMLElement>(REFURBISHED_SELECTORS);
+  let newlyFound = 0;
+  yepyElements.forEach((el) => {
+    if (el.dataset.smYepyCounted !== 'true') {
+      el.dataset.smYepyCounted = 'true';
+      newlyFound++;
+    }
+  });
+
+  if (newlyFound > 0) {
+    const current = (await storage.getItem<number>('local:filtered-yepy-count')) || 0;
+    await storage.setItem('local:filtered-yepy-count', current + newlyFound);
+  }
+};
 
 export const extractRefurbishedId = (card: HTMLElement): string | null => {
   const templateId = card.getAttribute('data-template-id');
@@ -76,22 +98,28 @@ export const applyRefurbishedIgnore = () => {
       }
     }
   });
+
+  trackFilteredRefurbished();
 };
 
 export const initRefurbishedMode = async () => {
   try {
     // 1. Toplu gizleme ayarını oku (Varsayılan: kapalı / false)
     const isHideAllEnabled = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
-    if (isHideAllEnabled === true) {
+    isHideRefurbishedActive = isHideAllEnabled === true;
+    if (isHideRefurbishedActive) {
       document.documentElement.classList.add('sm-hide-refurbished');
+      trackFilteredRefurbished();
     } else {
       document.documentElement.classList.remove('sm-hide-refurbished');
     }
 
     // Toplu ayar değişimini izle
     storage.watch<boolean>('local:isHideRefurbishedEnabled', (newVal) => {
-      if (newVal === true) {
+      isHideRefurbishedActive = newVal === true;
+      if (isHideRefurbishedActive) {
         document.documentElement.classList.add('sm-hide-refurbished');
+        trackFilteredRefurbished();
       } else {
         document.documentElement.classList.remove('sm-hide-refurbished');
       }

@@ -9,7 +9,7 @@ import {
 import { initRefurbishedMode, applyRefurbishedIgnore } from './content/refurbished';
 import { initNotesMode, applyNotesToListings } from './content/ui/notes';
 import { handlePriceHistoryAnalytics, initPriceHistory } from './content/priceHistory';
-import { initAdsMode } from './content/ads';
+import { initAdsMode, trackFilteredAds } from './content/ads';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
@@ -80,6 +80,7 @@ export default defineContentScript({
       handleClassifiedDataCopyButton();
       handleAutoExpandQnA();
       handleQnACopyButton();
+      trackFilteredAds();
     };
 
     const isOurOwnElement = (node: Node | null): boolean => {

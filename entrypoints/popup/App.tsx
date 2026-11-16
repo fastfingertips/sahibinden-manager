@@ -23,6 +23,8 @@ function App() {
     isKeyboardNavEnabled,
     isKeyboardNewTabEnabled,
     ignoredRefurbishedCount,
+    filteredAdsCount,
+    filteredRefurbishedCount,
     history,
     notes,
     viewedCount,
@@ -38,6 +40,8 @@ function App() {
     toggleKeyboardNav,
     toggleKeyboardNewTab,
     clearIgnoredRefurbished,
+    clearFilteredAds,
+    clearFilteredRefurbished,
     removeHistoryItem,
     clearHistory,
     removeNote,
@@ -84,8 +88,12 @@ function App() {
             onToggleHideRefurbished={toggleHideRefurbished}
             ignoredRefurbishedCount={ignoredRefurbishedCount}
             onClearIgnoredRefurbished={clearIgnoredRefurbished}
+            filteredRefurbishedCount={filteredRefurbishedCount}
+            onClearFilteredRefurbished={clearFilteredRefurbished}
             isHideAdsEnabled={isHideAdsEnabled}
             onToggleHideAds={toggleHideAds}
+            filteredAdsCount={filteredAdsCount}
+            onClearFilteredAds={clearFilteredAds}
             viewedCount={viewedCount}
             onClearHistory={clearHistory}
           />
