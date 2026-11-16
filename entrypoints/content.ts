@@ -13,6 +13,7 @@ import { initAdsMode } from './content/ads';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
+import { handleDescriptionCopyButton } from './content/ui/descriptionCopy';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
@@ -20,6 +21,7 @@ import { refurbishedStyles } from './content/styles/refurbished';
 import { notesStyles } from './content/styles/notes';
 import { priceHistoryStyles } from './content/styles/priceHistory';
 import { adsStyles } from './content/styles/ads';
+import { descriptionCopyStyles } from './content/styles/descriptionCopy';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -38,6 +40,7 @@ export default defineContentScript({
         ${notesStyles}
         ${priceHistoryStyles}
         ${adsStyles}
+        ${descriptionCopyStyles}
       `;
       document.head.appendChild(style);
     };
@@ -66,6 +69,7 @@ export default defineContentScript({
       applyRefurbishedIgnore();
       applyNotesToListings();
       handlePriceHistoryAnalytics();
+      handleDescriptionCopyButton();
     };
 
     const isOurOwnElement = (node: Node | null): boolean => {
