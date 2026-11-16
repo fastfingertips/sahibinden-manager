@@ -16,6 +16,7 @@ export interface ListingNoteItem {
   title: string;
   url: string;
   updatedAt: number;
+  createdAt?: number;
 }
 
 const parseHistory = (records: Record<string, unknown> | null): HistoryItem[] => {
@@ -64,12 +65,15 @@ const parseNotes = (records: Record<string, ListingNoteItem> | null): ListingNot
   const items: ListingNoteItem[] = [];
   for (const [adId, val] of Object.entries(records)) {
     if (val && val.text?.trim()) {
+      const updatedAt = val.updatedAt || Date.now();
+      const createdAt = val.createdAt || updatedAt;
       items.push({
         adId,
         text: val.text.trim(),
         title: val.title || `İlan #${adId}`,
         url: val.url || `https://www.sahibinden.com/ilan/${adId}/detay`,
-        updatedAt: val.updatedAt || Date.now(),
+        updatedAt,
+        createdAt,
       });
     }
   }

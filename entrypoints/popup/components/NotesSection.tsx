@@ -1,20 +1,11 @@
 import type { ListingNoteItem } from '../hooks/useStats';
+import { formatDate, formatTimeAgo } from '@/utils/date';
 
 interface NotesSectionProps {
   notes: ListingNoteItem[];
   onRemoveNote: (adId: string) => void;
   onClearAllNotes: () => void;
 }
-
-const formatDate = (timestamp: number): string => {
-  const date = new Date(timestamp);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${day}.${month}.${year} ${hours}:${minutes}`;
-};
 
 export const NotesSection = ({ notes, onRemoveNote, onClearAllNotes }: NotesSectionProps) => {
   const handleOpenLink = (url: string) => {
@@ -72,9 +63,26 @@ export const NotesSection = ({ notes, onRemoveNote, onClearAllNotes }: NotesSect
                 {item.text}
               </div>
 
-              <div className="mt-1 flex items-center justify-between text-[9.5px] text-[#999]">
-                <span>İlan No: #{item.adId}</span>
-                <span>{formatDate(item.updatedAt)}</span>
+              <div className="mt-1 flex items-center justify-between text-[9.5px] text-[#888]">
+                <span className="font-mono text-[#555]">#{item.adId}</span>
+                <div
+                  className="flex items-center gap-1.5"
+                  title={
+                    item.createdAt && item.updatedAt && item.createdAt !== item.updatedAt
+                      ? `Eklenme: ${formatDate(item.createdAt)} (${formatTimeAgo(item.createdAt)})\nSon Düzenlenme: ${formatDate(item.updatedAt)} (${formatTimeAgo(item.updatedAt)})`
+                      : `Eklenme: ${formatDate(item.createdAt || item.updatedAt)} (${formatTimeAgo(item.createdAt || item.updatedAt)})`
+                  }
+                >
+                  {item.createdAt && item.updatedAt && item.createdAt !== item.updatedAt ? (
+                    <>
+                      <span>Eklenme: {formatTimeAgo(item.createdAt)}</span>
+                      <span>·</span>
+                      <span>Düzenlenme: {formatTimeAgo(item.updatedAt)}</span>
+                    </>
+                  ) : (
+                    <span>Eklenme: {formatTimeAgo(item.createdAt || item.updatedAt)}</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}

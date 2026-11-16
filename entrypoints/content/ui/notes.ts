@@ -1,7 +1,10 @@
+import { formatDate as formatNoteDate, formatTimeAgo as formatNoteTimeAgo } from '@/utils/date';
+
 export interface ListingNote {
   adId: string;
   text: string;
   updatedAt: number;
+  createdAt?: number;
   title?: string;
   url?: string;
 }
@@ -9,6 +12,21 @@ export interface ListingNote {
 let cachedNotes: Record<string, ListingNote> = {};
 let activeListingContext: { adId: string; title: string; url: string } | null = null;
 let isNotesFeatureEnabled = true;
+
+const getNoteTooltip = (note: ListingNote): string => {
+  const preview = note.text.trim();
+  const truncated = preview.length > 100 ? `${preview.slice(0, 100)}...` : preview;
+  const created = note.createdAt || note.updatedAt;
+  const updated = note.updatedAt;
+
+  if (created && updated && created !== updated) {
+    return `Özel Not: ${truncated}\nEklenme: ${formatNoteTimeAgo(created)} (${formatNoteDate(created)})\nDüzenlenme: ${formatNoteTimeAgo(updated)} (${formatNoteDate(updated)})`;
+  }
+  if (created) {
+    return `Özel Not: ${truncated}\nEklenme: ${formatNoteTimeAgo(created)} (${formatNoteDate(created)})`;
+  }
+  return `Özel Not: ${truncated}`;
+};
 
 export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
   if (!isNotesFeatureEnabled || !notes || Object.keys(notes).length === 0) return;
@@ -27,8 +45,7 @@ export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
         const badge = document.createElement('span');
         badge.className = 'sm-note-badge';
         badge.textContent = 'Not Var';
-        const preview = notes[id].text.trim();
-        badge.title = `Özel Not: ${preview.length > 100 ? `${preview.slice(0, 100)}...` : preview}`;
+        badge.title = getNoteTooltip(notes[id]);
         titleLink.prepend(badge);
       }
     }
@@ -46,8 +63,7 @@ export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
         const badge = document.createElement('span');
         badge.className = 'sm-note-badge';
         badge.textContent = 'Not Var';
-        const preview = notes[id].text.trim();
-        badge.title = `Özel Not: ${preview.length > 100 ? `${preview.slice(0, 100)}...` : preview}`;
+        badge.title = getNoteTooltip(notes[id]);
         titleLink.prepend(badge);
       }
     }
@@ -97,7 +113,22 @@ export const setupDetailNotes = (adId: string, title: string, url: string) => {
   const openDropdown = () => {
     closeDropdown();
 
-    const currentNote = cachedNotes[adId]?.text || '';
+    const noteObj = cachedNotes[adId];
+    const currentNote = noteObj?.text || '';
+    const createdTime = noteObj?.createdAt || noteObj?.updatedAt;
+    const updatedTime = noteObj?.updatedAt;
+
+    let statusText = 'Henüz not yok';
+    let statusTooltip = '';
+    if (currentNote && createdTime) {
+      if (updatedTime && createdTime !== updatedTime) {
+        statusText = `Eklenme: ${formatNoteTimeAgo(createdTime)} · Düzenlenme: ${formatNoteTimeAgo(updatedTime)}`;
+        statusTooltip = `Eklenme: ${formatNoteDate(createdTime)}\nSon Düzenlenme: ${formatNoteDate(updatedTime)}`;
+      } else {
+        statusText = `Eklenme: ${formatNoteTimeAgo(createdTime)}`;
+        statusTooltip = `Eklenme: ${formatNoteDate(createdTime)}`;
+      }
+    }
 
     dropdown = document.createElement('div');
     dropdown.className = 'sm-note-dropdown';
@@ -113,7 +144,7 @@ export const setupDetailNotes = (adId: string, title: string, url: string) => {
         >${currentNote}</textarea>
       </div>
       <div class="sm-note-dropdown-footer">
-        <span class="sm-note-dropdown-status">${currentNote ? 'Kayıtlı not var' : 'Henüz not yok'}</span>
+        <span class="sm-note-dropdown-status" ${statusTooltip ? `title="${statusTooltip}"` : ''}>${statusText}</span>
         <div class="sm-note-dropdown-actions">
           ${currentNote ? '<button type="button" class="sm-note-btn sm-note-btn-delete">Sil</button>' : ''}
           <button type="button" class="sm-note-btn sm-note-btn-save">Kaydet</button>
@@ -138,13 +169,16 @@ export const setupDetailNotes = (adId: string, title: string, url: string) => {
 
     const handleSave = async () => {
       const text = textarea.value.trim();
+      const existing = cachedNotes[adId];
+      const now = Date.now();
       if (text) {
         cachedNotes[adId] = {
           adId,
           text,
           title,
           url,
-          updatedAt: Date.now(),
+          createdAt: existing?.createdAt || existing?.updatedAt || now,
+          updatedAt: now,
         };
       } else {
         delete cachedNotes[adId];
@@ -221,7 +255,15 @@ const updateNoteLinkState = (li: Element, adId: string) => {
 
   if (hasNote && note) {
     const preview = note.text.trim();
-    link.title = `Özel Not: ${preview.length > 80 ? `${preview.slice(0, 80)}...` : preview}`;
+    const created = note.createdAt || note.updatedAt;
+    const updated = note.updatedAt;
+    const timeInfo =
+      created && updated && created !== updated
+        ? `\nEklenme: ${formatNoteDate(created)}\nDüzenlenme: ${formatNoteDate(updated)}`
+        : created
+          ? `\nEklenme: ${formatNoteDate(created)}`
+          : '';
+    link.title = `Özel Not: ${preview.length > 80 ? `${preview.slice(0, 80)}...` : preview}${timeInfo}`;
   } else {
     link.title = 'Bu ilana özel not ekle';
   }
