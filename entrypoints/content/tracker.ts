@@ -15,6 +15,7 @@ export interface VisitedListingRecord {
 export type StoredViewedListings = Record<string, VisitedListingRecord | number>;
 
 let cachedRecords: StoredViewedListings = {};
+let isHighlightEnabled = true;
 
 export const getFirstTimestamp = (
   val: VisitedListingRecord | number | undefined,
@@ -72,6 +73,22 @@ export const extractClassifiedTitle = (): string => {
 export const initVisitedTracking = async () => {
   try {
     cachedRecords = (await storage.getItem<StoredViewedListings>('local:viewed-listings')) || {};
+    const highlightPref = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
+    isHighlightEnabled = highlightPref !== false;
+
+    storage.watch<boolean>('local:isVisitedHighlightEnabled', (newVal) => {
+      isHighlightEnabled = newVal !== false;
+      if (!isHighlightEnabled) {
+        document.querySelectorAll('.sm-visited-listing').forEach((el) => {
+          el.classList.remove('sm-visited-listing');
+        });
+        document.querySelectorAll('.sm-visited-badge, .sm-detail-visited-banner').forEach((el) => {
+          el.remove();
+        });
+      } else {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
 
     const adId = extractClassifiedId();
     if (adId) {
@@ -81,7 +98,7 @@ export const initVisitedTracking = async () => {
       const existingLast = getLastTimestamp(existing);
       const prevCount = getVisitCount(existing);
 
-      if (existingFirst) {
+      if (existingFirst && isHighlightEnabled) {
         highlightVisitedDetail(adId, existingFirst, existingLast, prevCount);
       }
       cachedRecords[adId] = {
@@ -96,7 +113,9 @@ export const initVisitedTracking = async () => {
       await storage.setItem('local:viewed-listings', cachedRecords);
     }
 
-    highlightVisitedListings(cachedRecords);
+    if (isHighlightEnabled) {
+      highlightVisitedListings(cachedRecords);
+    }
 
     storage.watch<StoredViewedListings>('local:viewed-listings', (newVal) => {
       cachedRecords = newVal || {};
@@ -107,7 +126,7 @@ export const initVisitedTracking = async () => {
         document.querySelectorAll('.sm-visited-badge, .sm-detail-visited-banner').forEach((el) => {
           el.remove();
         });
-      } else {
+      } else if (isHighlightEnabled) {
         highlightVisitedListings(cachedRecords);
       }
     });
@@ -117,7 +136,7 @@ export const initVisitedTracking = async () => {
 };
 
 export const applyVisitedToListings = () => {
-  if (cachedRecords && Object.keys(cachedRecords).length > 0) {
+  if (isHighlightEnabled && cachedRecords && Object.keys(cachedRecords).length > 0) {
     highlightVisitedListings(cachedRecords);
   }
 };

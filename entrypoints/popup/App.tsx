@@ -14,14 +14,24 @@ function App() {
   const {
     isFullGridEnabled,
     isDownloaderEnabled,
+    isVisitedHighlightEnabled,
+    isNotesEnabled,
+    isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
+    isHideAdsEnabled,
+    ignoredRefurbishedCount,
     history,
     notes,
     viewedCount,
     notesCount,
     toggleFullGrid,
     toggleDownloader,
+    toggleVisitedHighlight,
+    toggleNotes,
+    togglePriceHistory,
     toggleHideRefurbished,
+    toggleHideAds,
+    clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,
     removeNote,
@@ -52,8 +62,18 @@ function App() {
             onToggleFullGrid={toggleFullGrid}
             isDownloaderEnabled={isDownloaderEnabled}
             onToggleDownloader={toggleDownloader}
+            isVisitedHighlightEnabled={isVisitedHighlightEnabled}
+            onToggleVisitedHighlight={toggleVisitedHighlight}
+            isNotesEnabled={isNotesEnabled}
+            onToggleNotes={toggleNotes}
+            isPriceHistoryEnabled={isPriceHistoryEnabled}
+            onTogglePriceHistory={togglePriceHistory}
             isHideRefurbishedEnabled={isHideRefurbishedEnabled}
             onToggleHideRefurbished={toggleHideRefurbished}
+            ignoredRefurbishedCount={ignoredRefurbishedCount}
+            onClearIgnoredRefurbished={clearIgnoredRefurbished}
+            isHideAdsEnabled={isHideAdsEnabled}
+            onToggleHideAds={toggleHideAds}
             viewedCount={viewedCount}
             onClearHistory={clearHistory}
           />

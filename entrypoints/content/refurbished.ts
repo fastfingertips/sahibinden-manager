@@ -6,10 +6,20 @@ export const extractRefurbishedId = (card: HTMLElement): string | null => {
   const templateId = card.getAttribute('data-template-id');
   if (templateId) return templateId.trim();
 
-  const link = card.querySelector<HTMLAnchorElement>('a.refurbishment-classified-url');
+  const dataId = card.getAttribute('data-id');
+  if (dataId) return dataId.trim();
+
+  const link = card.querySelector<HTMLAnchorElement>(
+    'a.refurbishment-classified-url, a[href*="/yepy/"], a[href*="/ilan/"]',
+  );
   if (link?.pathname) {
+    const match = link.pathname.match(/(\d+)(\/detay)?$/);
+    if (match && match[1]) return match[1];
+
     const parts = link.pathname.split('/').filter(Boolean);
-    return parts[parts.length - 1] || null;
+    const lastPart = parts[parts.length - 1];
+    if (lastPart && lastPart !== 'detay') return lastPart;
+    if (parts.length > 1) return parts[parts.length - 2];
   }
 
   return null;
@@ -17,24 +27,24 @@ export const extractRefurbishedId = (card: HTMLElement): string | null => {
 
 export const applyRefurbishedIgnore = () => {
   const cards = document.querySelectorAll<HTMLElement>(
-    '.refurbishment-content-box, [data-refurbishment-product]',
+    '.refurbishment-content-box, [data-refurbishment-product], #searchResultsTable tr.searchResultsItem:has(.refurbishment), #searchResultsTable tr.searchResultsItem:has(.refurbishment-classified-url)',
   );
 
   cards.forEach((card) => {
     const id = extractRefurbishedId(card);
     if (!id) return;
 
-    const parentLi = card.closest('li') || card;
+    const targetRowOrLi = card.tagName === 'TR' ? card : card.closest('li') || card;
 
     // Eğer kullanıcı bu ürünü daha önce gizlediyse
     if (cachedIgnoredIds[id]) {
-      if (!parentLi.classList.contains('sm-refurbished-ignored')) {
-        parentLi.classList.add('sm-refurbished-ignored');
+      if (!targetRowOrLi.classList.contains('sm-refurbished-ignored')) {
+        targetRowOrLi.classList.add('sm-refurbished-ignored');
       }
       return;
     }
 
-    // Kart üzerine tekil gizle butonu ekle
+    // Kart veya tablo satırı üzerine tekil gizle butonu ekle
     if (!card.querySelector('.sm-refurbished-ignore-btn')) {
       const btn = document.createElement('div');
       btn.className = 'sm-refurbished-ignore-btn';
@@ -46,7 +56,7 @@ export const applyRefurbishedIgnore = () => {
         e.stopPropagation();
 
         cachedIgnoredIds[id] = true;
-        parentLi.classList.add('sm-refurbished-ignored');
+        targetRowOrLi.classList.add('sm-refurbished-ignored');
         try {
           await storage.setItem('local:ignored-refurbished-ids', cachedIgnoredIds);
         } catch (err) {
@@ -54,22 +64,33 @@ export const applyRefurbishedIgnore = () => {
         }
       };
 
-      card.appendChild(btn);
+      if (card.tagName === 'TR') {
+        const titleCell = card.querySelector('.searchResultsTitleValue') || card.children[1];
+        if (titleCell) {
+          titleCell.appendChild(btn);
+        } else {
+          card.appendChild(btn);
+        }
+      } else {
+        card.appendChild(btn);
+      }
     }
   });
 };
 
 export const initRefurbishedMode = async () => {
   try {
-    // 1. Toplu gizleme ayarını oku
+    // 1. Toplu gizleme ayarını oku (Varsayılan: kapalı / false)
     const isHideAllEnabled = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
-    if (isHideAllEnabled) {
+    if (isHideAllEnabled === true) {
       document.documentElement.classList.add('sm-hide-refurbished');
+    } else {
+      document.documentElement.classList.remove('sm-hide-refurbished');
     }
 
     // Toplu ayar değişimini izle
     storage.watch<boolean>('local:isHideRefurbishedEnabled', (newVal) => {
-      if (newVal) {
+      if (newVal === true) {
         document.documentElement.classList.add('sm-hide-refurbished');
       } else {
         document.documentElement.classList.remove('sm-hide-refurbished');

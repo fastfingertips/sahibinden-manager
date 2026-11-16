@@ -4,7 +4,11 @@ export const refurbishedStyles = `
   html.sm-hide-refurbished [data-refurbishment-product],
   html.sm-hide-refurbished li:has(.refurbishment-content-box),
   html.sm-hide-refurbished li:has([data-refurbishment-product]),
-  html.sm-hide-refurbished tr:has(.refurbishment-content-box) {
+  html.sm-hide-refurbished tr:has(.refurbishment-content-box),
+  html.sm-hide-refurbished tr:has(.refurbishment),
+  html.sm-hide-refurbished tr:has(.refurbishment-classified-url),
+  html.sm-hide-refurbished tr:has(.yepy-badge-info),
+  html.sm-hide-refurbished tr:has(.refurbishment-img) {
     display: none !important;
   }
 

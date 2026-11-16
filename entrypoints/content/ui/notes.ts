@@ -8,9 +8,10 @@ export interface ListingNote {
 
 let cachedNotes: Record<string, ListingNote> = {};
 let activeListingContext: { adId: string; title: string; url: string } | null = null;
+let isNotesFeatureEnabled = true;
 
 export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
-  if (!notes || Object.keys(notes).length === 0) return;
+  if (!isNotesFeatureEnabled || !notes || Object.keys(notes).length === 0) return;
 
   // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
   const listRows = document.querySelectorAll<HTMLTableRowElement>(
@@ -54,6 +55,7 @@ export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
 };
 
 export const setupDetailNotes = (adId: string, title: string, url: string) => {
+  if (!isNotesFeatureEnabled) return;
   const eventsList = document.querySelector<HTMLUListElement>(
     'div.classifiedDetailTitle ul.classifiedEvents, ul.classifiedEvents',
   );
@@ -236,6 +238,27 @@ export const initNotesMode = async (
       .querySelectorAll('.sm-notes-fab, .sm-notes-modal-overlay')
       .forEach((el) => el.remove());
 
+    const notesPref = await storage.getItem<boolean>('local:isNotesEnabled');
+    isNotesFeatureEnabled = notesPref !== false;
+
+    storage.watch<boolean>('local:isNotesEnabled', (newVal) => {
+      isNotesFeatureEnabled = newVal !== false;
+      if (!isNotesFeatureEnabled) {
+        document
+          .querySelectorAll('.sm-classified-note-action, .sm-note-badge, .sm-note-dropdown')
+          .forEach((el) => el.remove());
+      } else {
+        if (activeListingContext) {
+          setupDetailNotes(
+            activeListingContext.adId,
+            activeListingContext.title,
+            activeListingContext.url,
+          );
+        }
+        highlightListingNotes(cachedNotes);
+      }
+    });
+
     cachedNotes = (await storage.getItem<Record<string, ListingNote>>('local:listing-notes')) || {};
 
     if (currentAdId) {
@@ -249,10 +272,10 @@ export const initNotesMode = async (
       cachedNotes = newVal || {};
       if (!newVal || Object.keys(newVal).length === 0) {
         document.querySelectorAll('.sm-note-badge').forEach((el) => el.remove());
-      } else {
+      } else if (isNotesFeatureEnabled) {
         highlightListingNotes(cachedNotes);
       }
-      if (activeListingContext) {
+      if (activeListingContext && isNotesFeatureEnabled) {
         const action = document.querySelector('.sm-classified-note-action');
         if (action) {
           const lk = action.querySelector<HTMLAnchorElement>('.sm-classified-note-link');
@@ -267,6 +290,7 @@ export const initNotesMode = async (
 };
 
 export const applyNotesToListings = () => {
+  if (!isNotesFeatureEnabled) return;
   if (cachedNotes && Object.keys(cachedNotes).length > 0) {
     highlightListingNotes(cachedNotes);
   }

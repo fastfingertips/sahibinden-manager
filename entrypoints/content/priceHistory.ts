@@ -70,7 +70,10 @@ const formatNumber = (num: number): string => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
+let isPriceHistoryFeatureEnabled = true;
+
 export const handlePriceHistoryAnalytics = () => {
+  if (!isPriceHistoryFeatureEnabled) return;
   if (!window.location.pathname.includes('/favori-ilan-fiyat-tarihcesi')) return;
 
   const table = document.querySelector<HTMLTableElement>('table.history-table');
@@ -257,15 +260,33 @@ export const handlePriceHistoryAnalytics = () => {
   }
 };
 
-export const initPriceHistory = () => {
+export const initPriceHistory = async () => {
   if (!window.location.pathname.includes('/favori-ilan-fiyat-tarihcesi')) return;
+
+  const pref = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
+  isPriceHistoryFeatureEnabled = pref !== false;
+
+  storage.watch<boolean>('local:isPriceHistoryEnabled', (newVal) => {
+    isPriceHistoryFeatureEnabled = newVal !== false;
+    if (!isPriceHistoryFeatureEnabled) {
+      document
+        .querySelectorAll('.sm-price-analytics-card, .sm-price-change-badge')
+        .forEach((el) => el.remove());
+    } else {
+      handlePriceHistoryAnalytics();
+    }
+  });
+
+  if (!isPriceHistoryFeatureEnabled) return;
 
   handlePriceHistoryAnalytics();
 
   let attempts = 0;
   const interval = setInterval(() => {
     attempts++;
-    handlePriceHistoryAnalytics();
+    if (isPriceHistoryFeatureEnabled) {
+      handlePriceHistoryAnalytics();
+    }
     if (document.querySelector('.sm-price-analytics-card') || attempts > 25) {
       clearInterval(interval);
     }

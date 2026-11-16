@@ -15,7 +15,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 ### 1. Yoksayma (Ignore)
 
 - [ ] Kullanıcının spesifik bir ilanı butona basarak arayüzden gizleyebilmesi.
-- [x] Sahibinden Yepy yenilenmiş cihazlarında (`.refurbishment-content-box`) tekil 'Gizle' butonu ve popup üzerinden tüm yenilenmiş ürünleri toplu gizleme seçeneğinin sağlanması.
+- [x] Sahibinden Yepy yenilenmiş cihazlarında (`.refurbishment-content-box`, `tr:has(.refurbishment)`) tekil 'Gizle' butonu ve popup üzerinden tüm yenilenmiş ürünleri toplu gizleme seçeneğinin sağlanması.
   - Gerekçe: Sahibinden'in kurumsal pazaryeri statüsünde sunduğu yenilenmiş telefonlarda yerel `mark-as-ignored` butonu bulunmamaktadır.
 - [ ] Belirli kurallara (örn. anahtar kelime, fiyat) uymayan ilanları arama sonuçlarından otomatik çıkaran filtrenin eklenmesi.
 - [x] Hafızada kayıtlı olan "incelenmiş ilanların" arama sonuçları listesinde otomatik olarak silik gösterilmesi/vurgulanması ve detay sayfasında belirtilmesi.
@@ -42,7 +42,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 ### 5. Arayüz Temizliği
 
-- [ ] Arama listelerindeki harici reklam satırlarının (`#searchResultsTable tr.nativeAd`, `tr.classicNativeAd`) ve ilan detayındaki reklam kutularının (`div[id^="div-gpt-ad-"]`) temizlenmesi için isteğe bağlı arayüz anahtarının sağlanması.
+- [x] Arama listelerindeki harici reklam satırlarının (`#searchResultsTable tr.nativeAd`, `tr.classicNativeAd`) ve ilan detayındaki reklam kutularının (`div[id^="div-gpt-ad-"]`) temizlenmesi için isteğe bağlı arayüz anahtarının sağlanması.
   - Gerekçe: Yanlış tıklamaların ve sayfa kaymalarının (CLS) önlenmesi.
 
 ### 6. Yapay Zeka & Güvenlik

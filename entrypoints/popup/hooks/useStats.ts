@@ -79,7 +79,12 @@ const parseNotes = (records: Record<string, ListingNoteItem> | null): ListingNot
 export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
+  const [isVisitedHighlightEnabled, setIsVisitedHighlightEnabled] = useState(true);
+  const [isNotesEnabled, setIsNotesEnabled] = useState(true);
+  const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
+  const [isHideAdsEnabled, setIsHideAdsEnabled] = useState(false);
+  const [ignoredRefurbishedCount, setIgnoredRefurbishedCount] = useState(0);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [notes, setNotes] = useState<ListingNoteItem[]>([]);
 
@@ -87,14 +92,26 @@ export const useStats = () => {
     const fetchSettings = async () => {
       const fullGrid = await storage.getItem<boolean>('local:isFullGridEnabled');
       const downloader = await storage.getItem<boolean>('local:sm-downloader-enabled');
+      const visited = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
+      const notesOpt = await storage.getItem<boolean>('local:isNotesEnabled');
+      const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
+      const hideAds = await storage.getItem<boolean>('local:isHideAdsEnabled');
+      const ignoredRefurbished = await storage.getItem<Record<string, boolean>>(
+        'local:ignored-refurbished-ids',
+      );
       const viewed = await storage.getItem<Record<string, unknown>>('local:viewed-listings');
       const savedNotes =
         await storage.getItem<Record<string, ListingNoteItem>>('local:listing-notes');
 
       setIsFullGridEnabled(fullGrid !== false);
       setIsDownloaderEnabled(downloader !== false);
+      setIsVisitedHighlightEnabled(visited !== false);
+      setIsNotesEnabled(notesOpt !== false);
+      setIsPriceHistoryEnabled(priceHistory !== false);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
+      setIsHideAdsEnabled(hideAds === true);
+      setIgnoredRefurbishedCount(ignoredRefurbished ? Object.keys(ignoredRefurbished).length : 0);
       setHistory(parseHistory(viewed));
       setNotes(parseNotes(savedNotes));
     };
@@ -106,10 +123,28 @@ export const useStats = () => {
     const unwatchDownloader = storage.watch<boolean>('local:sm-downloader-enabled', (newVal) => {
       setIsDownloaderEnabled(newVal !== false);
     });
+    const unwatchVisited = storage.watch<boolean>('local:isVisitedHighlightEnabled', (newVal) => {
+      setIsVisitedHighlightEnabled(newVal !== false);
+    });
+    const unwatchNotesOpt = storage.watch<boolean>('local:isNotesEnabled', (newVal) => {
+      setIsNotesEnabled(newVal !== false);
+    });
+    const unwatchPriceHistory = storage.watch<boolean>('local:isPriceHistoryEnabled', (newVal) => {
+      setIsPriceHistoryEnabled(newVal !== false);
+    });
     const unwatchRefurbished = storage.watch<boolean>(
       'local:isHideRefurbishedEnabled',
       (newVal) => {
         setIsHideRefurbishedEnabled(newVal === true);
+      },
+    );
+    const unwatchAds = storage.watch<boolean>('local:isHideAdsEnabled', (newVal) => {
+      setIsHideAdsEnabled(newVal === true);
+    });
+    const unwatchIgnoredRefurbished = storage.watch<Record<string, boolean>>(
+      'local:ignored-refurbished-ids',
+      (newVal) => {
+        setIgnoredRefurbishedCount(newVal ? Object.keys(newVal).length : 0);
       },
     );
     const unwatchViewed = storage.watch<Record<string, unknown>>(
@@ -128,7 +163,12 @@ export const useStats = () => {
     return () => {
       unwatchGrid();
       unwatchDownloader();
+      unwatchVisited();
+      unwatchNotesOpt();
+      unwatchPriceHistory();
       unwatchRefurbished();
+      unwatchAds();
+      unwatchIgnoredRefurbished();
       unwatchViewed();
       unwatchNotes();
     };
@@ -146,10 +186,39 @@ export const useStats = () => {
     await storage.setItem('local:sm-downloader-enabled', newVal);
   };
 
+  const toggleVisitedHighlight = async () => {
+    const newVal = !isVisitedHighlightEnabled;
+    setIsVisitedHighlightEnabled(newVal);
+    await storage.setItem('local:isVisitedHighlightEnabled', newVal);
+  };
+
+  const toggleNotes = async () => {
+    const newVal = !isNotesEnabled;
+    setIsNotesEnabled(newVal);
+    await storage.setItem('local:isNotesEnabled', newVal);
+  };
+
+  const togglePriceHistory = async () => {
+    const newVal = !isPriceHistoryEnabled;
+    setIsPriceHistoryEnabled(newVal);
+    await storage.setItem('local:isPriceHistoryEnabled', newVal);
+  };
+
   const toggleHideRefurbished = async () => {
     const newVal = !isHideRefurbishedEnabled;
     setIsHideRefurbishedEnabled(newVal);
     await storage.setItem('local:isHideRefurbishedEnabled', newVal);
+  };
+
+  const toggleHideAds = async () => {
+    const newVal = !isHideAdsEnabled;
+    setIsHideAdsEnabled(newVal);
+    await storage.setItem('local:isHideAdsEnabled', newVal);
+  };
+
+  const clearIgnoredRefurbished = async () => {
+    await storage.removeItem('local:ignored-refurbished-ids');
+    setIgnoredRefurbishedCount(0);
   };
 
   const removeHistoryItem = async (id: string) => {
@@ -180,14 +249,24 @@ export const useStats = () => {
   return {
     isFullGridEnabled,
     isDownloaderEnabled,
+    isVisitedHighlightEnabled,
+    isNotesEnabled,
+    isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
+    isHideAdsEnabled,
+    ignoredRefurbishedCount,
     history,
     notes,
     viewedCount: history.length,
     notesCount: notes.length,
     toggleFullGrid,
     toggleDownloader,
+    toggleVisitedHighlight,
+    toggleNotes,
+    togglePriceHistory,
     toggleHideRefurbished,
+    toggleHideAds,
+    clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,
     removeNote,
