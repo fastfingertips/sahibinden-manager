@@ -84,6 +84,8 @@ export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
   const [isVisitedHighlightEnabled, setIsVisitedHighlightEnabled] = useState(true);
+  const [isVisitedLastBadgeEnabled, setIsVisitedLastBadgeEnabled] = useState(true);
+  const [isVisitedFirstBadgeEnabled, setIsVisitedFirstBadgeEnabled] = useState(false);
   const [isNotesEnabled, setIsNotesEnabled] = useState(true);
   const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
@@ -102,6 +104,8 @@ export const useStats = () => {
       const fullGrid = await storage.getItem<boolean>('local:isFullGridEnabled');
       const downloader = await storage.getItem<boolean>('local:sm-downloader-enabled');
       const visited = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
+      const visitedLast = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
+      const visitedFirst = await storage.getItem<boolean>('local:isVisitedFirstBadgeEnabled');
       const notesOpt = await storage.getItem<boolean>('local:isNotesEnabled');
       const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
@@ -122,6 +126,8 @@ export const useStats = () => {
       setIsFullGridEnabled(fullGrid !== false);
       setIsDownloaderEnabled(downloader !== false);
       setIsVisitedHighlightEnabled(visited !== false);
+      setIsVisitedLastBadgeEnabled(visitedLast !== false);
+      setIsVisitedFirstBadgeEnabled(visitedFirst === true);
       setIsNotesEnabled(notesOpt !== false);
       setIsPriceHistoryEnabled(priceHistory !== false);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
@@ -146,6 +152,18 @@ export const useStats = () => {
     const unwatchVisited = storage.watch<boolean>('local:isVisitedHighlightEnabled', (newVal) => {
       setIsVisitedHighlightEnabled(newVal !== false);
     });
+    const unwatchVisitedLast = storage.watch<boolean>(
+      'local:isVisitedLastBadgeEnabled',
+      (newVal) => {
+        setIsVisitedLastBadgeEnabled(newVal !== false);
+      },
+    );
+    const unwatchVisitedFirst = storage.watch<boolean>(
+      'local:isVisitedFirstBadgeEnabled',
+      (newVal) => {
+        setIsVisitedFirstBadgeEnabled(newVal === true);
+      },
+    );
     const unwatchNotesOpt = storage.watch<boolean>('local:isNotesEnabled', (newVal) => {
       setIsNotesEnabled(newVal !== false);
     });
@@ -205,6 +223,8 @@ export const useStats = () => {
       unwatchGrid();
       unwatchDownloader();
       unwatchVisited();
+      unwatchVisitedLast();
+      unwatchVisitedFirst();
       unwatchNotesOpt();
       unwatchPriceHistory();
       unwatchRefurbished();
@@ -236,6 +256,18 @@ export const useStats = () => {
     const newVal = !isVisitedHighlightEnabled;
     setIsVisitedHighlightEnabled(newVal);
     await storage.setItem('local:isVisitedHighlightEnabled', newVal);
+  };
+
+  const toggleVisitedLastBadge = async () => {
+    const newVal = !isVisitedLastBadgeEnabled;
+    setIsVisitedLastBadgeEnabled(newVal);
+    await storage.setItem('local:isVisitedLastBadgeEnabled', newVal);
+  };
+
+  const toggleVisitedFirstBadge = async () => {
+    const newVal = !isVisitedFirstBadgeEnabled;
+    setIsVisitedFirstBadgeEnabled(newVal);
+    await storage.setItem('local:isVisitedFirstBadgeEnabled', newVal);
   };
 
   const toggleNotes = async () => {
@@ -324,6 +356,8 @@ export const useStats = () => {
     isFullGridEnabled,
     isDownloaderEnabled,
     isVisitedHighlightEnabled,
+    isVisitedLastBadgeEnabled,
+    isVisitedFirstBadgeEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -341,6 +375,8 @@ export const useStats = () => {
     toggleFullGrid,
     toggleDownloader,
     toggleVisitedHighlight,
+    toggleVisitedLastBadge,
+    toggleVisitedFirstBadge,
     toggleNotes,
     togglePriceHistory,
     toggleHideRefurbished,

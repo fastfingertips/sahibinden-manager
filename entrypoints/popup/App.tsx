@@ -15,6 +15,8 @@ function App() {
     isFullGridEnabled,
     isDownloaderEnabled,
     isVisitedHighlightEnabled,
+    isVisitedLastBadgeEnabled,
+    isVisitedFirstBadgeEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -32,6 +34,8 @@ function App() {
     toggleFullGrid,
     toggleDownloader,
     toggleVisitedHighlight,
+    toggleVisitedLastBadge,
+    toggleVisitedFirstBadge,
     toggleNotes,
     togglePriceHistory,
     toggleHideRefurbished,
@@ -74,6 +78,10 @@ function App() {
             onToggleDownloader={toggleDownloader}
             isVisitedHighlightEnabled={isVisitedHighlightEnabled}
             onToggleVisitedHighlight={toggleVisitedHighlight}
+            isVisitedLastBadgeEnabled={isVisitedLastBadgeEnabled}
+            onToggleVisitedLastBadge={toggleVisitedLastBadge}
+            isVisitedFirstBadgeEnabled={isVisitedFirstBadgeEnabled}
+            onToggleVisitedFirstBadge={toggleVisitedFirstBadge}
             isNotesEnabled={isNotesEnabled}
             onToggleNotes={toggleNotes}
             isPriceHistoryEnabled={isPriceHistoryEnabled}

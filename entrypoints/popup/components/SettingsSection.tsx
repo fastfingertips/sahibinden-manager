@@ -70,6 +70,10 @@ interface SettingsSectionProps {
   onToggleDownloader: () => void;
   isVisitedHighlightEnabled: boolean;
   onToggleVisitedHighlight: () => void;
+  isVisitedLastBadgeEnabled?: boolean;
+  onToggleVisitedLastBadge?: () => void;
+  isVisitedFirstBadgeEnabled?: boolean;
+  onToggleVisitedFirstBadge?: () => void;
   isNotesEnabled: boolean;
   onToggleNotes: () => void;
   isPriceHistoryEnabled: boolean;
@@ -101,6 +105,10 @@ export const SettingsSection = ({
   onToggleDownloader,
   isVisitedHighlightEnabled,
   onToggleVisitedHighlight,
+  isVisitedLastBadgeEnabled = true,
+  onToggleVisitedLastBadge,
+  isVisitedFirstBadgeEnabled = false,
+  onToggleVisitedFirstBadge,
   isNotesEnabled,
   onToggleNotes,
   isPriceHistoryEnabled,
@@ -160,6 +168,22 @@ export const SettingsSection = ({
           checked={isVisitedHighlightEnabled}
           onChange={onToggleVisitedHighlight}
         >
+          {isVisitedHighlightEnabled && onToggleVisitedLastBadge && (
+            <SettingSubItem
+              label="Son Kontrol Rozeti"
+              description="İlanın en son ne zaman incelendiğini gösteren rozeti görüntüler (örn: 5 dk önce bakıldı)."
+              checked={isVisitedLastBadgeEnabled}
+              onChange={onToggleVisitedLastBadge}
+            />
+          )}
+          {isVisitedHighlightEnabled && onToggleVisitedFirstBadge && (
+            <SettingSubItem
+              label="İlk Kontrol Rozeti"
+              description="İlanın ilk kez ne zaman incelendiğini gösteren rozeti görüntüler (örn: İlk: 3 gün önce)."
+              checked={isVisitedFirstBadgeEnabled}
+              onChange={onToggleVisitedFirstBadge}
+            />
+          )}
           {viewedCount > 0 && onClearHistory && (
             <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">
               <span>

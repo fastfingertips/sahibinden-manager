@@ -44,7 +44,30 @@ export const visitedStyles = `
     border-bottom: 2px solid #3875ba !important;
   }
 
-  /* --- Sahibinden Uyumlu Ziyaret Rozeti (Badge) --- */
+  /* --- Rozet Konteyneri (Yan yana dizilim) --- */
+  .sm-visited-badges {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Liste Görünümünde (#searchResultsTable):
+     Başlığın dikey hizasını ve satır akışını KESİNLİKLE bozmamak için
+     rozetler mutlak konumlandırma (absolute) ile başlığın üstündeki boşluğa yerleştirilir. */
+  #searchResultsTable td.searchResultsTitleValue {
+    position: relative !important;
+  }
+
+  #searchResultsTable td.searchResultsTitleValue .sm-visited-badges {
+    position: absolute !important;
+    top: 10px !important;
+    left: 4px !important;
+    margin: 0 !important;
+    z-index: 2 !important;
+  }
+
+  /* --- Sahibinden Uyumlu Ziyaret Rozetleri (Badge) --- */
   .sm-visited-badge {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     display: inline-flex !important;
@@ -52,31 +75,28 @@ export const visitedStyles = `
     gap: 3px !important;
     font-size: 10px !important;
     font-weight: 700 !important;
-    color: #1a4f82 !important;
-    background-color: #dbeafe !important;
-    border: 1px solid #bfdbfe !important;
     border-radius: 2px !important;
     padding: 1px 6px !important;
     letter-spacing: 0.02em !important;
     line-height: 14px !important;
     box-shadow: 0 1px 2px rgba(26, 79, 130, 0.08) !important;
     cursor: pointer !important;
+    user-select: none !important;
   }
 
-  /* Liste Görünümünde (#searchResultsTable):
-     Başlığın dikey hizasını ve satır akışını KESİNLİKLE bozmamak için
-     rozet mutlak konumlandırma (absolute) ile başlığın üstündeki boşluğa yerleştirilir. */
-  #searchResultsTable td.searchResultsTitleValue {
-    position: relative !important;
+  /* Son Kontrol Rozeti (Mavi) */
+  .sm-visited-badge.sm-badge-last,
+  .sm-visited-badge:not(.sm-badge-first) {
+    color: #1a4f82 !important;
+    background-color: #dbeafe !important;
+    border: 1px solid #bfdbfe !important;
   }
 
-  #searchResultsTable td.searchResultsTitleValue .sm-visited-badge {
-    position: absolute !important;
-    top: 10px !important;
-    left: 4px !important;
-    margin: 0 !important;
-    white-space: nowrap !important;
-    z-index: 2 !important;
+  /* İlk Kontrol Rozeti (İndigo) */
+  .sm-visited-badge.sm-badge-first {
+    color: #4338ca !important;
+    background-color: #e0e7ff !important;
+    border: 1px solid #c7d2fe !important;
   }
 
   /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli --- */

@@ -1,4 +1,8 @@
-import { highlightVisitedDetail, highlightVisitedListings } from './ui/visited';
+import {
+  highlightVisitedDetail,
+  highlightVisitedListings,
+  setVisitedBadgeOptions,
+} from './ui/visited';
 
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
@@ -16,6 +20,8 @@ export type StoredViewedListings = Record<string, VisitedListingRecord | number>
 
 let cachedRecords: StoredViewedListings = {};
 let isHighlightEnabled = true;
+let isLastBadgeEnabled = true;
+let isFirstBadgeEnabled = false;
 
 export const getFirstTimestamp = (
   val: VisitedListingRecord | number | undefined,
@@ -76,15 +82,48 @@ export const initVisitedTracking = async () => {
     const highlightPref = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
     isHighlightEnabled = highlightPref !== false;
 
+    const lastBadgePref = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
+    const firstBadgePref = await storage.getItem<boolean>('local:isVisitedFirstBadgeEnabled');
+    isLastBadgeEnabled = lastBadgePref !== false;
+    isFirstBadgeEnabled = firstBadgePref === true;
+    setVisitedBadgeOptions({
+      showLastBadge: isLastBadgeEnabled,
+      showFirstBadge: isFirstBadgeEnabled,
+    });
+
+    storage.watch<boolean>('local:isVisitedLastBadgeEnabled', (newVal) => {
+      isLastBadgeEnabled = newVal !== false;
+      setVisitedBadgeOptions({
+        showLastBadge: isLastBadgeEnabled,
+        showFirstBadge: isFirstBadgeEnabled,
+      });
+      if (isHighlightEnabled) {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
+
+    storage.watch<boolean>('local:isVisitedFirstBadgeEnabled', (newVal) => {
+      isFirstBadgeEnabled = newVal === true;
+      setVisitedBadgeOptions({
+        showLastBadge: isLastBadgeEnabled,
+        showFirstBadge: isFirstBadgeEnabled,
+      });
+      if (isHighlightEnabled) {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
+
     storage.watch<boolean>('local:isVisitedHighlightEnabled', (newVal) => {
       isHighlightEnabled = newVal !== false;
       if (!isHighlightEnabled) {
         document.querySelectorAll('.sm-visited-listing').forEach((el) => {
           el.classList.remove('sm-visited-listing');
         });
-        document.querySelectorAll('.sm-visited-badge, .sm-detail-visited-banner').forEach((el) => {
-          el.remove();
-        });
+        document
+          .querySelectorAll('.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner')
+          .forEach((el) => {
+            el.remove();
+          });
       } else {
         highlightVisitedListings(cachedRecords);
       }
@@ -123,9 +162,11 @@ export const initVisitedTracking = async () => {
         document.querySelectorAll('.sm-visited-listing').forEach((el) => {
           el.classList.remove('sm-visited-listing');
         });
-        document.querySelectorAll('.sm-visited-badge, .sm-detail-visited-banner').forEach((el) => {
-          el.remove();
-        });
+        document
+          .querySelectorAll('.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner')
+          .forEach((el) => {
+            el.remove();
+          });
       } else if (isHighlightEnabled) {
         highlightVisitedListings(cachedRecords);
       }

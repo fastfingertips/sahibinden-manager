@@ -31,59 +31,116 @@ export const extractVisitCount = (val: unknown): number => {
   return 1;
 };
 
+export interface VisitedBadgeOptions {
+  showLastBadge?: boolean;
+  showFirstBadge?: boolean;
+}
+
+let currentBadgeOptions: VisitedBadgeOptions = {
+  showLastBadge: true,
+  showFirstBadge: false,
+};
+
+export const setVisitedBadgeOptions = (options: VisitedBadgeOptions): void => {
+  currentBadgeOptions = { ...currentBadgeOptions, ...options };
+};
+
 const createOrUpdateBadge = (
   container: HTMLElement,
   firstTimestamp?: number,
   lastTimestamp?: number,
   visitCount?: number,
+  options: VisitedBadgeOptions = currentBadgeOptions,
 ): void => {
   const parent = container.parentElement;
   if (!parent) return;
 
-  let badge = parent.querySelector<HTMLSpanElement>(':scope > .sm-visited-badge');
-  if (!badge) {
-    badge = document.createElement('span');
-    badge.className = 'sm-visited-badge';
-    badge.addEventListener('click', (e) => {
+  const showLast = options.showLastBadge !== false;
+  const showFirst = options.showFirstBadge === true;
+
+  let badgesWrapper = parent.querySelector<HTMLDivElement>(':scope > .sm-visited-badges');
+  if (!showLast && !showFirst) {
+    if (badgesWrapper) badgesWrapper.remove();
+    parent.querySelector(':scope > .sm-visited-badge')?.remove();
+    return;
+  }
+
+  if (!badgesWrapper) {
+    parent.querySelector(':scope > .sm-visited-badge')?.remove();
+    badgesWrapper = document.createElement('div');
+    badgesWrapper.className = 'sm-visited-badges';
+    badgesWrapper.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       container.click();
     });
-    parent.insertBefore(badge, container);
+    parent.insertBefore(badgesWrapper, container);
   }
 
   const displayTime = lastTimestamp || firstTimestamp;
-  if (displayTime) {
-    const timeAgo = formatTimeAgo(displayTime);
+  const isMultiple = Boolean(firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp);
+
+  const shouldRenderLast = showLast && Boolean(displayTime);
+  const shouldRenderFirst = showFirst && Boolean(firstTimestamp) && (!showLast || isMultiple);
+
+  let lastBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-last');
+  if (shouldRenderLast) {
+    if (!lastBadge) {
+      lastBadge = document.createElement('span');
+      lastBadge.className = 'sm-visited-badge sm-badge-last';
+      badgesWrapper.appendChild(lastBadge);
+    }
+    const timeAgo = formatTimeAgo(displayTime!);
     const labelText = `${timeAgo} bakıldı`;
-    if (badge.dataset.label !== labelText) {
-      badge.dataset.label = labelText;
-      badge.innerHTML = `
+    if (lastBadge.dataset.label !== labelText) {
+      lastBadge.dataset.label = labelText;
+      lastBadge.innerHTML = `
         <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
           <path d="M8 3c-4 0-7 5-7 5s3 5 7 5 7-5 7-5-3-5-7-5zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
         </svg>
         <span>${labelText}</span>
       `;
     }
+    const countText = visitCount && visitCount > 1 ? ` (${visitCount} kez)` : '';
+    lastBadge.title = isMultiple
+      ? `Son kontrol: ${formatVisitedDate(lastTimestamp!)} (${formatTimeAgo(lastTimestamp!)})\nİlk: ${formatVisitedDate(firstTimestamp!)} (${formatTimeAgo(firstTimestamp!)})${countText}`
+      : `${formatTimeAgo(displayTime!)} bakıldı · ${formatVisitedDate(displayTime!)}`;
+  } else if (lastBadge) {
+    lastBadge.remove();
+  }
 
-    if (firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp) {
-      const countText = visitCount && visitCount > 1 ? ` (${visitCount} kez)` : '';
-      badge.title = `${formatTimeAgo(lastTimestamp)} bakıldı · ${formatVisitedDate(lastTimestamp)}\nİlk: ${formatVisitedDate(firstTimestamp)} (${formatTimeAgo(firstTimestamp)})${countText}`;
-    } else {
-      badge.title = `${formatTimeAgo(displayTime)} bakıldı · ${formatVisitedDate(displayTime)}`;
+  let firstBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-first');
+  if (shouldRenderFirst) {
+    if (!firstBadge) {
+      firstBadge = document.createElement('span');
+      firstBadge.className = 'sm-visited-badge sm-badge-first';
+      badgesWrapper.appendChild(firstBadge);
     }
-  } else if (badge.dataset.label !== 'Ziyaret Edildi') {
-    badge.dataset.label = 'Ziyaret Edildi';
-    badge.innerHTML = `
-      <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
-        <path d="M8 3c-4 0-7 5-7 5s3 5 7 5 7-5 7-5-3-5-7-5zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-      </svg>
-      <span>Ziyaret Edildi</span>
-    `;
+    const firstTimeAgo = formatTimeAgo(firstTimestamp!);
+    const labelText = `İlk: ${firstTimeAgo}`;
+    if (firstBadge.dataset.label !== labelText) {
+      firstBadge.dataset.label = labelText;
+      firstBadge.innerHTML = `
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
+          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+        </svg>
+        <span>${labelText}</span>
+      `;
+    }
+    firstBadge.title = `İlk ziyaret: ${formatVisitedDate(firstTimestamp!)} (${formatTimeAgo(firstTimestamp!)})`;
+  } else if (firstBadge) {
+    firstBadge.remove();
   }
 };
 
-export const highlightVisitedListings = (records: Record<string, unknown>) => {
+export const highlightVisitedListings = (
+  records: Record<string, unknown>,
+  options?: VisitedBadgeOptions,
+) => {
+  if (options) {
+    setVisitedBadgeOptions(options);
+  }
   if (!records || Object.keys(records).length === 0) return;
 
   // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
