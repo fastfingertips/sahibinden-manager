@@ -37,11 +37,14 @@ const createOrUpdateBadge = (
   lastTimestamp?: number,
   visitCount?: number,
 ): void => {
-  let badge = container.querySelector<HTMLSpanElement>('.sm-visited-badge');
+  const parent = container.parentElement;
+  if (!parent) return;
+
+  let badge = parent.querySelector<HTMLSpanElement>('.sm-visited-badge');
   if (!badge) {
     badge = document.createElement('span');
     badge.className = 'sm-visited-badge';
-    container.prepend(badge);
+    parent.insertBefore(badge, container);
   }
 
   const displayTime = lastTimestamp || firstTimestamp;
