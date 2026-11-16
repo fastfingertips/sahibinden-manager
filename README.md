@@ -1,22 +1,12 @@
 # Sahibinden Manager
 
-Sahibinden.com kullanıcı arayüzü ve veri erişimi için geliştirilmiş tarayıcı eklentisidir.
+Sahibinden.com için geliştirilmiş tarayıcı eklentisidir.
 
 ---
 
-## Özellikler
-
-- **Izgara Görünümü**: İlan sayfalarındaki fotoğrafları tek bir sayfa üzerinde ızgara düzeninde listeler.
-- **Fotoğraf İndirici**:
-  - İlan fotoğraflarının indirilmesini sağlar.
-  - Mega Slideshow (Slideshow) üzerinden veri erişimi ve indirme desteği sunar.
-- **Ziyaret Geçmişi ve Takip**:
-  - İncelenen ilanları yerel hafızada saklar ve popup arayüzünde listeler.
-  - Arama sonuçlarında ve ilan detayında ilanın ne kadar süre önce incelendiğini (göreceli zaman ile) gösterir.
-
 ## Kurulum ve Dağıtım
 
-Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacaktır. Bu aşamaya kadar güncel sürümlere [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından indirilen `.zip` paketi ile veya kaynak koddan derleyerek erişebilirsiniz.
+Proje güncel sürümlerine [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından indirilen `.zip` paketi ile veya kaynak koddan derleyerek erişebilirsiniz.
 
 ### Manuel Kurulum (Geliştirici Modu)
 
@@ -37,9 +27,7 @@ Proje kararlı duruma ulaştığında Chrome Web Store üzerinde yayınlanacakt�
 
 ## Önerilen Kullanım
 
-Sahibinden.com sayfalarında ilan listelerine yerleştirilen sponsorlu reklam satırları (`nativeAd`), tepe afişleri ve ilan detayındaki harici reklam kutuları (Google Ad Manager ve üçüncü parti izleyiciler) sayfa düzeninde kaymalara yol açabilmekte ve gezinme akışını bölebilmektedir.
-
-Sahibinden Manager ile birlikte [uBlock Origin](https://github.com/gorhill/uBlock) gibi bir içerik engelleyici kullanılması tavsiye edilir. Bu kombinasyon sayesinde site harici reklam yüklerinden arındırılarak daha hızlı ve odaklı bir kullanım deneyimi elde edilir.
+Sahibinden.com sayfalarında ilan listelerine yerleştirilen reklam satırları (`nativeAd`), afişler ve ilan detayındaki reklam kutuları sayfa düzeninde kaymalara yol açabilmektedir. Eklenti ile birlikte [uBlock Origin](https://github.com/gorhill/uBlock) gibi bir içerik engelleyici de kullanılabilir.
 
 ## Teknik Detaylar
 
@@ -50,7 +38,7 @@ Sahibinden Manager ile birlikte [uBlock Origin](https://github.com/gorhill/uBloc
 
 ## Katkıda Bulunma
 
-Hata bildirimleri ve geliştirmeler için Issues sayfasını kullanabilir veya Pull Request göndererek katkı sağlayabilirsiniz.
+Hata bildirimleri ve geliştirmeler için Issues sayfasını kullanabilir veya Pull Request gönderebilirsiniz.
 
 ## Yasal Uyarı
 

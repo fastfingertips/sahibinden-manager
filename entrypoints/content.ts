@@ -30,7 +30,7 @@ import { keyboardNavStyles } from './content/styles/keyboardNav';
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
   async main() {
-    console.log('Sahibinden Manager: SUI Tasarım Modu Aktif');
+    console.log('Sahibinden Manager: Aktif');
 
     const injectStyles = () => {
       const style = document.createElement('style');

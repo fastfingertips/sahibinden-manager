@@ -1,6 +1,6 @@
 {
   "name": "sahibinden-manager",
-  "description": "Sahibinden.com için modern arayüz ve kullanıcı deneyimi araçları.",
+  "description": "Sahibinden.com için arayüz ve veri yönetim araçları.",
   "private": true,
   "version": "1.0.0",
   "type": "module",

@@ -35,7 +35,7 @@ export const notesStyles = `
     display: none !important;
   }
 
-  /* Eski float ve padding-top miraslarını temizle, tüm seçenekleri kusursuz hizala */
+  /* Eski float ve padding-top miraslarını temizle, seçenekleri hizala */
   .classifiedDetailTitle .classifiedEvents li {
     float: none !important;
     display: inline-flex !important;
