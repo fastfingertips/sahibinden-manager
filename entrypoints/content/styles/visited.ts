@@ -57,11 +57,23 @@ export const visitedStyles = `
     border: 1px solid #bfdbfe !important;
     border-radius: 2px !important;
     padding: 1px 6px !important;
-    margin-right: 6px !important;
     vertical-align: middle !important;
     letter-spacing: 0.02em !important;
     line-height: 14px !important;
     box-shadow: 0 1px 2px rgba(26, 79, 130, 0.08) !important;
+  }
+
+  /* Badge'i başlığın üstüne taşı */
+  #searchResultsTable td.searchResultsTitleValue a.classifiedTitle {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+
+  #searchResultsTable td.searchResultsTitleValue a.classifiedTitle .sm-visited-badge {
+    order: -1 !important;
+    margin-bottom: 1px !important;
   }
 
   /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli --- */
