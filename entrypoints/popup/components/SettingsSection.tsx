@@ -1,3 +1,68 @@
+interface SettingItemProps {
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  borderTop?: boolean;
+  children?: React.ReactNode;
+}
+
+const SettingItem = ({
+  label,
+  description,
+  checked,
+  onChange,
+  disabled = false,
+  borderTop = false,
+  children,
+}: SettingItemProps) => (
+  <div
+    className={`flex flex-col space-y-0.5 ${borderTop ? 'pt-2 border-t border-[#f0f0f0]' : ''} ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+  >
+    <label className="flex items-center justify-between group cursor-pointer">
+      <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
+        {label}
+      </span>
+      <div className="sh-switch">
+        <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled} />
+        <div className="slider"></div>
+      </div>
+    </label>
+    <p className="text-[10px] text-[#666] leading-snug">{description}</p>
+    {children}
+  </div>
+);
+
+interface SettingSubItemProps {
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+}
+
+const SettingSubItem = ({
+  label,
+  description,
+  checked,
+  onChange,
+  disabled = false,
+}: SettingSubItemProps) => (
+  <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex flex-col space-y-0.5 py-1 bg-[#f9fafb] rounded-r-xs pr-2">
+    <label className="flex items-center justify-between group cursor-pointer">
+      <span className="text-[11px] font-medium text-[#333] group-hover:text-[#417abb] transition-colors">
+        {label}
+      </span>
+      <div className="sh-switch scale-90 origin-right">
+        <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled} />
+        <div className="slider"></div>
+      </div>
+    </label>
+    <p className="text-[9.5px] text-[#777] leading-tight">{description}</p>
+  </div>
+);
+
 interface SettingsSectionProps {
   isFullGridEnabled: boolean;
   onToggleFullGrid: () => void;
@@ -58,36 +123,20 @@ export const SettingsSection = ({
         Görünüm & Medya
       </h2>
       <div className="space-y-2.5">
-        <div className="flex flex-col space-y-0.5">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Izgara Görünümü (Tüm Resimler)
-            </span>
-            <div className="sh-switch">
-              <input type="checkbox" checked={isFullGridEnabled} onChange={onToggleFullGrid} />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            İlan sayfasındaki küçük resimleri sayfalama olmadan tek bir ızgara düzeninde listeler.
-          </p>
-        </div>
+        <SettingItem
+          label="Izgara Görünümü (Tüm Resimler)"
+          description="İlan sayfasındaki küçük resimleri sayfalama olmadan tek bir ızgara düzeninde listeler."
+          checked={isFullGridEnabled}
+          onChange={onToggleFullGrid}
+        />
 
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Fotoğraf İndirici
-            </span>
-            <div className="sh-switch">
-              <input type="checkbox" checked={isDownloaderEnabled} onChange={onToggleDownloader} />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            İlan ana görseli, küçük resimler ve Mega Slideshow üzerindeki indirme butonlarını aktif
-            eder.
-          </p>
-        </div>
+        <SettingItem
+          label="Fotoğraf İndirici"
+          description="İlan ana görseli, küçük resimler ve Mega Slideshow üzerindeki indirme butonlarını aktif eder."
+          checked={isDownloaderEnabled}
+          onChange={onToggleDownloader}
+          borderTop
+        />
       </div>
     </div>
 
@@ -97,123 +146,68 @@ export const SettingsSection = ({
         Arama & İlan Takibi
       </h2>
       <div className="space-y-2.5">
-        <div className="flex flex-col space-y-0.5">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Ziyaret Edilen İlanları Vurgula
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isVisitedHighlightEnabled}
-                onChange={onToggleVisitedHighlight}
-              />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Daha önce incelediğiniz ilanları liste satırında mavi vurgu çizgisi ve rozetle öne
-            çıkarır.
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              İlan Not Defteri
-            </span>
-            <div className="sh-switch">
-              <input type="checkbox" checked={isNotesEnabled} onChange={onToggleNotes} />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            İlan detayında kişisel notlar alabilmenizi ve listelerde &apos;Not Var&apos; rozetiyle
-            görebilmenizi sağlar.
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Fiyat Geçmişi Analizi
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isPriceHistoryEnabled}
-                onChange={onTogglePriceHistory}
-              />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Favori ilan fiyat tarihçesi sayfasında oransal değişim yüzdeleri ve istatistik özeti
-            sunar.
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Soru-Cevapları Otomatik Genişlet
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isAutoExpandQnAEnabled}
-                onChange={onToggleAutoExpandQnA}
-              />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            İlan detayındaki soru-cevap bölümünde gizli kalan tüm yanıtları otomatik olarak görünür
-            yapar.
-          </p>
-        </div>
-
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Klavye ile İlan Gezinimi
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isKeyboardNavEnabled}
-                onChange={onToggleKeyboardNav}
-              />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Arama sonuçlarında yukarı / aşağı ok tuşlarıyla ilanlar arasında gezinebilmeyi ve Enter
-            ile ilana gidebilmeyi sağlar.
-          </p>
-        </div>
-
-        <div
-          className={`flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0] ${!isKeyboardNavEnabled ? 'opacity-50 pointer-events-none' : ''}`}
+        <SettingItem
+          label="Ziyaret Edilen İlanları Vurgula"
+          description="Daha önce incelediğiniz ilanları liste satırında mavi vurgu çizgisi ve rozetle öne çıkarır."
+          checked={isVisitedHighlightEnabled}
+          onChange={onToggleVisitedHighlight}
         >
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Enter ile Yeni Sekmede Aç
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isKeyboardNewTabEnabled}
-                onChange={onToggleKeyboardNewTab}
-                disabled={!isKeyboardNavEnabled}
-              />
-              <div className="slider"></div>
+          {viewedCount > 0 && onClearHistory && (
+            <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">
+              <span>
+                İncelenen İlan Kaydı: <strong className="text-[#222]">{viewedCount}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={onClearHistory}
+                className="text-[9.5px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+              >
+                Geçmişi Temizle
+              </button>
             </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Klavyeden Enter tuşuna basıldığında seçili ilanı mevcut sayfa yerine yeni sekmede açar.
-          </p>
-        </div>
+          )}
+        </SettingItem>
+
+        <SettingItem
+          label="İlan Not Defteri"
+          description="İlan detayında kişisel notlar alabilmenizi ve listelerde 'Not Var' rozetiyle görebilmenizi sağlar."
+          checked={isNotesEnabled}
+          onChange={onToggleNotes}
+          borderTop
+        />
+
+        <SettingItem
+          label="Fiyat Geçmişi Analizi"
+          description="Favori ilan fiyat tarihçesi sayfasında oransal değişim yüzdeleri ve istatistik özeti sunar."
+          checked={isPriceHistoryEnabled}
+          onChange={onTogglePriceHistory}
+          borderTop
+        />
+
+        <SettingItem
+          label="Soru-Cevapları Otomatik Genişlet"
+          description="İlan detayındaki soru-cevap bölümünde gizli kalan tüm yanıtları otomatik olarak görünür yapar."
+          checked={isAutoExpandQnAEnabled}
+          onChange={onToggleAutoExpandQnA}
+          borderTop
+        />
+
+        <SettingItem
+          label="Klavye ile İlan Gezinimi"
+          description="Arama sonuçlarında yukarı / aşağı ok tuşlarıyla ilanlar arasında gezinebilmeyi ve Enter ile ilana gidebilmeyi sağlar."
+          checked={isKeyboardNavEnabled}
+          onChange={onToggleKeyboardNav}
+          borderTop
+        >
+          {isKeyboardNavEnabled && (
+            <SettingSubItem
+              label="Enter ile Yeni Sekmede Aç"
+              description="Enter tuşuna basıldığında seçili ilanı mevcut sayfa yerine yeni sekmede açar."
+              checked={isKeyboardNewTabEnabled}
+              onChange={onToggleKeyboardNewTab}
+            />
+          )}
+        </SettingItem>
       </div>
     </div>
 
@@ -223,70 +217,35 @@ export const SettingsSection = ({
         Filtreleme & Temizlik
       </h2>
       <div className="space-y-2.5">
-        <div className="flex flex-col space-y-0.5">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Yenilenmiş Cihazları Gizle (Yepy)
-            </span>
-            <div className="sh-switch">
-              <input
-                type="checkbox"
-                checked={isHideRefurbishedEnabled}
-                onChange={onToggleHideRefurbished}
-              />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Arama listelerinde ve tablolarda yer alan sponsorlu yenilenmiş telefon (Yepy) satır ve
-            bloklarını gizler.
-          </p>
+        <SettingItem
+          label="Yenilenmiş Cihazları Gizle (Yepy)"
+          description="Arama listelerinde ve tablolarda yer alan sponsorlu yenilenmiş telefon (Yepy) satır ve bloklarını gizler."
+          checked={isHideRefurbishedEnabled}
+          onChange={onToggleHideRefurbished}
+        >
           {ignoredRefurbishedCount > 0 && onClearIgnoredRefurbished && (
-            <div className="pt-1.5 flex items-center justify-between text-[10px] text-[#888]">
+            <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">
               <span>
                 Tekil gizlenen cihaz: <strong>{ignoredRefurbishedCount}</strong>
               </span>
               <button
                 type="button"
                 onClick={onClearIgnoredRefurbished}
-                className="text-[#417abb] hover:text-[#2d5889] font-medium cursor-pointer"
+                className="text-[9.5px] text-[#417abb] hover:text-[#2d5889] font-medium cursor-pointer"
               >
                 Gizlenenleri Sıfırla
               </button>
             </div>
           )}
-        </div>
+        </SettingItem>
 
-        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
-          <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Reklam & Doping Tanıtımlarını Temizle
-            </span>
-            <div className="sh-switch">
-              <input type="checkbox" checked={isHideAdsEnabled} onChange={onToggleHideAds} />
-              <div className="slider"></div>
-            </div>
-          </label>
-          <p className="text-[10px] text-[#666] leading-snug">
-            Arama tablosundaki sponsorlu reklam satırlarını, doping tanıtım kutularını ve afiş
-            alanlarını kaldırır.
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-3 pt-2 border-t border-[#eee] flex items-center justify-between text-[10.5px]">
-        <span className="text-[#666]">
-          İncelenen İlan Kaydı: <strong className="text-[#222]">{viewedCount}</strong>
-        </span>
-        {viewedCount > 0 && onClearHistory && (
-          <button
-            type="button"
-            onClick={onClearHistory}
-            className="text-[10px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
-          >
-            Geçmişi Temizle
-          </button>
-        )}
+        <SettingItem
+          label="Reklam & Doping Tanıtımlarını Temizle"
+          description="Arama tablosundaki sponsorlu reklam satırlarını, doping tanıtım kutularını ve afiş alanlarını kaldırır."
+          checked={isHideAdsEnabled}
+          onChange={onToggleHideAds}
+          borderTop
+        />
       </div>
     </div>
   </section>
