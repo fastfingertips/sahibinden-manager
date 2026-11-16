@@ -186,7 +186,7 @@ export const SettingsSection = ({
         <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
           <label className="flex items-center justify-between group cursor-pointer">
             <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
-              Harici Reklamları Temizle
+              Reklam & Doping Tanıtımlarını Temizle
             </span>
             <div className="sh-switch">
               <input type="checkbox" checked={isHideAdsEnabled} onChange={onToggleHideAds} />
@@ -194,8 +194,8 @@ export const SettingsSection = ({
             </div>
           </label>
           <p className="text-[10px] text-[#666] leading-snug">
-            Arama sonuçları tablosundaki harici sponsorlu reklam satırlarını ve banner alanlarını
-            kaldırır.
+            Arama tablosundaki sponsorlu reklam satırlarını, doping tanıtım kutularını ve afiş
+            alanlarını kaldırır.
           </p>
         </div>
       </div>
