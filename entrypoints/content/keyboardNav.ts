@@ -51,7 +51,7 @@ const setFocusItem = (items: HTMLElement[], index: number) => {
 
   const item = items[index];
   item.classList.add('sm-keyboard-focused');
-  item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  item.scrollIntoView({ block: 'center', behavior: 'smooth' });
   currentIndex = index;
 };
 
