@@ -94,16 +94,28 @@ export const HistorySection = ({ history, onClearHistory, onRemoveItem }: Histor
                   )}
                 </div>
                 <div
-                  className="flex items-center gap-1.5"
-                  title={`İlk: ${formatDate(item.firstVisitedAt)}`}
+                  className="flex items-center gap-1.5 text-[9.5px]"
+                  title={
+                    item.firstVisitedAt &&
+                    item.lastVisitedAt &&
+                    item.firstVisitedAt !== item.lastVisitedAt
+                      ? `İlk: ${formatDate(item.firstVisitedAt)} (${formatTimeAgo(item.firstVisitedAt)})\nSon: ${formatDate(item.lastVisitedAt)} (${formatTimeAgo(item.lastVisitedAt)})`
+                      : `İlk ziyaret: ${formatDate(item.firstVisitedAt || item.lastVisitedAt)} (${formatTimeAgo(item.firstVisitedAt || item.lastVisitedAt)})`
+                  }
                 >
-                  <span>Son: {formatTimeAgo(item.lastVisitedAt)}</span>
-                </div>
-                <div
-                  className="flex items-center gap-1.5"
-                  title={`İlk: ${formatDate(item.firstVisitedAt)}`}
-                >
-                  <span>Son: {formatTimeAgo(item.lastVisitedAt)}</span>
+                  {item.firstVisitedAt &&
+                  item.lastVisitedAt &&
+                  item.firstVisitedAt !== item.lastVisitedAt ? (
+                    <>
+                      <span>İlk: {formatTimeAgo(item.firstVisitedAt)}</span>
+                      <span>·</span>
+                      <span>Son: {formatTimeAgo(item.lastVisitedAt)}</span>
+                    </>
+                  ) : (
+                    <span>
+                      İlk ziyaret: {formatTimeAgo(item.firstVisitedAt || item.lastVisitedAt)}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

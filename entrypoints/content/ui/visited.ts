@@ -67,10 +67,10 @@ const createOrUpdateBadge = (
     container.prepend(badge);
   }
 
-  const primaryTime = lastTimestamp || firstTimestamp;
-  if (primaryTime) {
-    const timeAgo = formatTimeAgo(primaryTime);
-    const labelText = `Ziyaret: ${timeAgo}`;
+  const firstTime = firstTimestamp || lastTimestamp;
+  if (firstTime) {
+    const timeAgo = formatTimeAgo(firstTime);
+    const labelText = `İlk: ${timeAgo}`;
     if (badge.dataset.label !== labelText) {
       badge.dataset.label = labelText;
       badge.innerHTML = `
@@ -83,9 +83,9 @@ const createOrUpdateBadge = (
 
     if (firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp) {
       const countText = visitCount && visitCount > 1 ? ` (${visitCount} kez)` : '';
-      badge.title = `Son ziyaret: ${formatVisitedDate(lastTimestamp)} (${formatTimeAgo(lastTimestamp)})\nİlk ziyaret: ${formatVisitedDate(firstTimestamp)} (${formatTimeAgo(firstTimestamp)})${countText}`;
+      badge.title = `İlk ziyaret: ${formatVisitedDate(firstTimestamp)} (${formatTimeAgo(firstTimestamp)})\nSon ziyaret: ${formatVisitedDate(lastTimestamp)} (${formatTimeAgo(lastTimestamp)})${countText}`;
     } else {
-      badge.title = `Son ziyaret: ${formatVisitedDate(primaryTime)}`;
+      badge.title = `İlk ziyaret: ${formatVisitedDate(firstTime)} (${formatTimeAgo(firstTime)})`;
     }
   } else if (badge.dataset.label !== 'Ziyaret Edildi') {
     badge.dataset.label = 'Ziyaret Edildi';
@@ -159,10 +159,10 @@ export const highlightVisitedListings = (records: Record<string, unknown>) => {
         const count = extractVisitCount(records[id]);
         if (firstTime && lastTime && firstTime !== lastTime) {
           const countText = count > 1 ? ` (${count} kez)` : '';
-          parentLi.title = `Son: ${formatVisitedDate(lastTime)} (${formatTimeAgo(lastTime)})\nİlk: ${formatVisitedDate(firstTime)} (${formatTimeAgo(firstTime)})${countText}`;
-        } else if (lastTime || firstTime) {
-          const t = (lastTime || firstTime)!;
-          parentLi.title = `Son ziyaret: ${formatVisitedDate(t)} (${formatTimeAgo(t)})`;
+          parentLi.title = `İlk: ${formatVisitedDate(firstTime)} (${formatTimeAgo(firstTime)})\nSon: ${formatVisitedDate(lastTime)} (${formatTimeAgo(lastTime)})${countText}`;
+        } else if (firstTime || lastTime) {
+          const t = (firstTime || lastTime)!;
+          parentLi.title = `İlk ziyaret: ${formatVisitedDate(t)} (${formatTimeAgo(t)})`;
         }
       }
     }
@@ -175,7 +175,7 @@ export const highlightVisitedDetail = (
   lastTimestamp?: number,
   visitCount?: number,
 ) => {
-  const primaryTime = lastTimestamp || firstTimestamp;
+  const primaryTime = firstTimestamp || lastTimestamp;
   if (!primaryTime) return;
   if (document.querySelector('.sm-detail-visited-banner')) return;
 
@@ -189,8 +189,8 @@ export const highlightVisitedDetail = (
 
     const dateInfo =
       firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp
-        ? `(Son: ${formatTimeAgo(lastTimestamp)} - ${formatVisitedDate(lastTimestamp)} · İlk: ${formatTimeAgo(firstTimestamp)} - ${formatVisitedDate(firstTimestamp)}${visitCount && visitCount > 1 ? ` · Toplam ${visitCount} kez incelendi` : ''})`
-        : `(Son ziyaret: ${formatTimeAgo(primaryTime)} · ${formatVisitedDate(primaryTime)})`;
+        ? `(İlk ziyaret: ${formatTimeAgo(firstTimestamp)} - ${formatVisitedDate(firstTimestamp)} · Son: ${formatTimeAgo(lastTimestamp)} - ${formatVisitedDate(lastTimestamp)}${visitCount && visitCount > 1 ? ` · Toplam ${visitCount} kez incelendi` : ''})`
+        : `(İlk ziyaret: ${formatTimeAgo(primaryTime)} · ${formatVisitedDate(primaryTime)})`;
 
     banner.innerHTML = `
       <div>
