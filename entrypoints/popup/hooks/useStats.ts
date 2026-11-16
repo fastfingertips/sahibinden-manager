@@ -84,6 +84,7 @@ export const useStats = () => {
   const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
   const [isHideAdsEnabled, setIsHideAdsEnabled] = useState(false);
+  const [isAutoExpandQnAEnabled, setIsAutoExpandQnAEnabled] = useState(true);
   const [ignoredRefurbishedCount, setIgnoredRefurbishedCount] = useState(0);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [notes, setNotes] = useState<ListingNoteItem[]>([]);
@@ -97,6 +98,7 @@ export const useStats = () => {
       const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
       const hideAds = await storage.getItem<boolean>('local:isHideAdsEnabled');
+      const autoExpandQnA = await storage.getItem<boolean>('local:isAutoExpandQnAEnabled');
       const ignoredRefurbished = await storage.getItem<Record<string, boolean>>(
         'local:ignored-refurbished-ids',
       );
@@ -111,6 +113,7 @@ export const useStats = () => {
       setIsPriceHistoryEnabled(priceHistory !== false);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
       setIsHideAdsEnabled(hideAds === true);
+      setIsAutoExpandQnAEnabled(autoExpandQnA !== false);
       setIgnoredRefurbishedCount(ignoredRefurbished ? Object.keys(ignoredRefurbished).length : 0);
       setHistory(parseHistory(viewed));
       setNotes(parseNotes(savedNotes));
@@ -141,6 +144,12 @@ export const useStats = () => {
     const unwatchAds = storage.watch<boolean>('local:isHideAdsEnabled', (newVal) => {
       setIsHideAdsEnabled(newVal === true);
     });
+    const unwatchAutoExpandQnA = storage.watch<boolean>(
+      'local:isAutoExpandQnAEnabled',
+      (newVal) => {
+        setIsAutoExpandQnAEnabled(newVal !== false);
+      },
+    );
     const unwatchIgnoredRefurbished = storage.watch<Record<string, boolean>>(
       'local:ignored-refurbished-ids',
       (newVal) => {
@@ -168,6 +177,7 @@ export const useStats = () => {
       unwatchPriceHistory();
       unwatchRefurbished();
       unwatchAds();
+      unwatchAutoExpandQnA();
       unwatchIgnoredRefurbished();
       unwatchViewed();
       unwatchNotes();
@@ -216,6 +226,12 @@ export const useStats = () => {
     await storage.setItem('local:isHideAdsEnabled', newVal);
   };
 
+  const toggleAutoExpandQnA = async () => {
+    const newVal = !isAutoExpandQnAEnabled;
+    setIsAutoExpandQnAEnabled(newVal);
+    await storage.setItem('local:isAutoExpandQnAEnabled', newVal);
+  };
+
   const clearIgnoredRefurbished = async () => {
     await storage.removeItem('local:ignored-refurbished-ids');
     setIgnoredRefurbishedCount(0);
@@ -254,6 +270,7 @@ export const useStats = () => {
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
+    isAutoExpandQnAEnabled,
     ignoredRefurbishedCount,
     history,
     notes,
@@ -266,6 +283,7 @@ export const useStats = () => {
     togglePriceHistory,
     toggleHideRefurbished,
     toggleHideAds,
+    toggleAutoExpandQnA,
     clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,

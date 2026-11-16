@@ -19,6 +19,7 @@ function App() {
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
+    isAutoExpandQnAEnabled,
     ignoredRefurbishedCount,
     history,
     notes,
@@ -31,6 +32,7 @@ function App() {
     togglePriceHistory,
     toggleHideRefurbished,
     toggleHideAds,
+    toggleAutoExpandQnA,
     clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,
@@ -68,6 +70,8 @@ function App() {
             onToggleNotes={toggleNotes}
             isPriceHistoryEnabled={isPriceHistoryEnabled}
             onTogglePriceHistory={togglePriceHistory}
+            isAutoExpandQnAEnabled={isAutoExpandQnAEnabled}
+            onToggleAutoExpandQnA={toggleAutoExpandQnA}
             isHideRefurbishedEnabled={isHideRefurbishedEnabled}
             onToggleHideRefurbished={toggleHideRefurbished}
             ignoredRefurbishedCount={ignoredRefurbishedCount}

@@ -9,6 +9,8 @@ interface SettingsSectionProps {
   onToggleNotes: () => void;
   isPriceHistoryEnabled: boolean;
   onTogglePriceHistory: () => void;
+  isAutoExpandQnAEnabled: boolean;
+  onToggleAutoExpandQnA: () => void;
   isHideRefurbishedEnabled: boolean;
   onToggleHideRefurbished: () => void;
   ignoredRefurbishedCount?: number;
@@ -30,6 +32,8 @@ export const SettingsSection = ({
   onToggleNotes,
   isPriceHistoryEnabled,
   onTogglePriceHistory,
+  isAutoExpandQnAEnabled,
+  onToggleAutoExpandQnA,
   isHideRefurbishedEnabled,
   onToggleHideRefurbished,
   ignoredRefurbishedCount = 0,
@@ -138,6 +142,26 @@ export const SettingsSection = ({
           <p className="text-[10px] text-[#666] leading-snug">
             Favori ilan fiyat tarihçesi sayfasında oransal değişim yüzdeleri ve istatistik özeti
             sunar.
+          </p>
+        </div>
+
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
+          <label className="flex items-center justify-between group cursor-pointer">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
+              Soru-Cevapları Otomatik Genişlet
+            </span>
+            <div className="sh-switch">
+              <input
+                type="checkbox"
+                checked={isAutoExpandQnAEnabled}
+                onChange={onToggleAutoExpandQnA}
+              />
+              <div className="slider"></div>
+            </div>
+          </label>
+          <p className="text-[10px] text-[#666] leading-snug">
+            İlan detayındaki soru-cevap bölümünde gizli kalan tüm yanıtları otomatik olarak görünür
+            yapar.
           </p>
         </div>
       </div>

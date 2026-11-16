@@ -14,6 +14,7 @@ import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { handleDescriptionCopyButton } from './content/ui/descriptionCopy';
+import { initQnAMode, handleAutoExpandQnA } from './content/cqa';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
@@ -52,6 +53,7 @@ export default defineContentScript({
     initRefurbishedMode();
     initPriceHistory();
     initAdsMode();
+    initQnAMode();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
@@ -70,6 +72,7 @@ export default defineContentScript({
       applyNotesToListings();
       handlePriceHistoryAnalytics();
       handleDescriptionCopyButton();
+      handleAutoExpandQnA();
     };
 
     const isOurOwnElement = (node: Node | null): boolean => {
