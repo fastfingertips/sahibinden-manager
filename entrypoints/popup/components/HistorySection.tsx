@@ -39,16 +39,16 @@ export const HistorySection = ({ history, onClearHistory, onRemoveItem }: Histor
   };
 
   return (
-    <section className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
-      <div className="flex items-center justify-between border-b border-[#eee] pb-3 mb-3">
-        <h2 className="text-xs font-bold text-[#666] uppercase tracking-wide">
+    <section className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs">
+      <div className="flex items-center justify-between border-b border-[#eee] pb-2 mb-2">
+        <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-wider">
           Ziyaret Geçmişi ({history.length})
         </h2>
         {history.length > 0 && (
           <button
             type="button"
             onClick={onClearHistory}
-            className="text-[11px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+            className="text-[10px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
           >
             Tümünü Temizle
           </button>
@@ -56,57 +56,56 @@ export const HistorySection = ({ history, onClearHistory, onRemoveItem }: Histor
       </div>
 
       {history.length === 0 ? (
-        <div className="py-8 text-center text-xs text-[#888] leading-relaxed">
+        <div className="py-6 text-center text-[11px] text-[#888] leading-relaxed">
           Henüz incelenmiş bir ilan kaydı bulunmuyor.
           <br />
-          Detayına girdiğiniz ilanlar otomatik olarak burada listelenir.
+          Ziyaret ettiğiniz ilanlar otomatik olarak burada listelenecektir.
         </div>
       ) : (
-        <div className="max-h-[280px] overflow-y-auto space-y-2 pr-1 divide-y divide-[#f4f4f4]">
+        <div className="max-h-[260px] overflow-y-auto space-y-2 pr-1 divide-y divide-[#f4f4f4]">
           {history.map((item) => (
-            <div
-              key={item.id}
-              className="pt-2 first:pt-0 flex items-start justify-between gap-3 group"
-            >
-              <div className="flex-1 min-w-0">
+            <div key={item.id} className="pt-2 first:pt-0 group flex flex-col gap-0.5">
+              <div className="flex items-start justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => handleOpenLink(item.url)}
-                  className="text-left text-xs font-bold text-[#333] hover:text-[#417abb] transition-colors line-clamp-1 cursor-pointer block w-full"
+                  className="text-left text-[11.5px] font-semibold text-[#222] hover:text-[#417abb] transition-colors line-clamp-1 cursor-pointer flex-1"
                   title={item.title}
                 >
                   {item.title}
                 </button>
-                <div className="flex flex-col gap-0.5 mt-1 text-[10px] text-[#777]">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-[#555]">Son:</span>
-                    <span>
-                      {formatTimeAgo(item.lastVisitedAt)} ({formatDate(item.lastVisitedAt)})
-                    </span>
-                    <span className="text-[#aaa]">· #{item.id}</span>
-                  </div>
-                  {item.firstVisitedAt && item.firstVisitedAt !== item.lastVisitedAt && (
-                    <div className="flex items-center gap-2 text-[#888]">
-                      <span className="font-semibold text-[#666]">İlk:</span>
-                      <span>
-                        {formatTimeAgo(item.firstVisitedAt)} ({formatDate(item.firstVisitedAt)})
-                      </span>
-                      {item.visitCount > 1 && (
-                        <span className="text-[#386696] font-medium">({item.visitCount} kez)</span>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => onRemoveItem(item.id)}
+                  className="text-[10px] text-[#bbb] hover:text-[#c00] transition-colors cursor-pointer opacity-80 group-hover:opacity-100 flex-shrink-0"
+                  title="Kaydı Kaldır"
+                >
+                  Kaldır
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => onRemoveItem(item.id)}
-                className="text-[11px] text-[#bbb] hover:text-[#c00] transition-colors px-1 cursor-pointer opacity-0 group-hover:opacity-100"
-                title="Listeden Kaldır"
-              >
-                Kaldır
-              </button>
+              <div className="flex items-center justify-between text-[9.5px] text-[#888]">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[#555]">#{item.id}</span>
+                  {item.visitCount > 1 && (
+                    <span className="px-1 py-0.2 bg-[#f0f4f8] text-[#417abb] rounded-xs font-semibold">
+                      {item.visitCount} kez
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="flex items-center gap-1.5"
+                  title={`İlk: ${formatDate(item.firstVisitedAt)}`}
+                >
+                  <span>Son: {formatTimeAgo(item.lastVisitedAt)}</span>
+                </div>
+                <div
+                  className="flex items-center gap-1.5"
+                  title={`İlk: ${formatDate(item.firstVisitedAt)}`}
+                >
+                  <span>Son: {formatTimeAgo(item.lastVisitedAt)}</span>
+                </div>
+              </div>
             </div>
           ))}
         </div>

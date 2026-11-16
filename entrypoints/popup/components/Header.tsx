@@ -8,23 +8,23 @@ interface HeaderProps {
 }
 
 export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: HeaderProps) => (
-  <header className="mb-4">
-    <div className="bg-[#ffda00] p-4 rounded-t -m-4 mb-0 flex items-center shadow-sm border-b border-black/5">
+  <header className="mb-2.5">
+    <div className="bg-[#ffda00] px-3.5 py-2 rounded-t -m-3 mb-0 flex items-center justify-between shadow-xs border-b border-black/10">
       <div className="flex flex-col">
-        <h1 className="text-[#333] font-bold text-xl tracking-tighter uppercase leading-none">
+        <h1 className="text-[#222] font-bold text-sm tracking-tight uppercase leading-none">
           Sahibinden Manager
         </h1>
-        <span className="text-[10px] text-[#333]/60 font-bold uppercase tracking-widest mt-1">
+        <span className="text-[9px] text-[#222]/65 font-bold uppercase tracking-wider mt-0.5">
           Kontrol Paneli
         </span>
       </div>
     </div>
 
-    <nav className="flex border-b border-[#dbdbdb] -mx-4 bg-white shadow-sm">
+    <nav className="flex border-b border-[#dbdbdb] -mx-3 bg-white shadow-xs">
       <button
         onClick={() => onTabChange('settings')}
-        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all relative ${
-          activeTab === 'settings' ? 'text-[#417abb]' : 'text-[#999] hover:text-[#666]'
+        className={`flex-1 py-2 text-[11px] font-semibold tracking-normal transition-all relative ${
+          activeTab === 'settings' ? 'text-[#417abb]' : 'text-[#888] hover:text-[#555]'
         }`}
       >
         Ayarlar
@@ -35,13 +35,13 @@ export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: Hea
 
       <button
         onClick={() => onTabChange('notes')}
-        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all relative flex items-center justify-center gap-1.5 ${
-          activeTab === 'notes' ? 'text-[#417abb]' : 'text-[#999] hover:text-[#666]'
+        className={`flex-1 py-2 text-[11px] font-semibold tracking-normal transition-all relative flex items-center justify-center gap-1.5 ${
+          activeTab === 'notes' ? 'text-[#417abb]' : 'text-[#888] hover:text-[#555]'
         }`}
       >
         <span>Notlar</span>
         {typeof notesCount === 'number' && notesCount > 0 && (
-          <span className="text-[10px] px-1.5 py-0.2 bg-[#fff8e1] text-[#855700] rounded border border-[#ffe082] font-bold">
+          <span className="text-[9px] px-1.5 py-0.2 bg-[#fff8e1] text-[#855700] rounded-xs border border-[#ffe082] font-bold">
             {notesCount}
           </span>
         )}
@@ -52,13 +52,13 @@ export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: Hea
 
       <button
         onClick={() => onTabChange('history')}
-        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all relative flex items-center justify-center gap-1.5 ${
-          activeTab === 'history' ? 'text-[#417abb]' : 'text-[#999] hover:text-[#666]'
+        className={`flex-1 py-2 text-[11px] font-semibold tracking-normal transition-all relative flex items-center justify-center gap-1.5 ${
+          activeTab === 'history' ? 'text-[#417abb]' : 'text-[#888] hover:text-[#555]'
         }`}
       >
         <span>Geçmiş</span>
         {typeof historyCount === 'number' && historyCount > 0 && (
-          <span className="text-[10px] px-1.5 py-0.2 bg-[#f0f4f8] text-[#417abb] rounded border border-[#cddde9] font-bold">
+          <span className="text-[9px] px-1.5 py-0.2 bg-[#f0f4f8] text-[#417abb] rounded-xs border border-[#cddde9] font-bold">
             {historyCount}
           </span>
         )}
@@ -69,8 +69,8 @@ export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: Hea
 
       <button
         onClick={() => onTabChange('about')}
-        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all relative ${
-          activeTab === 'about' ? 'text-[#417abb]' : 'text-[#999] hover:text-[#666]'
+        className={`flex-1 py-2 text-[11px] font-semibold tracking-normal transition-all relative ${
+          activeTab === 'about' ? 'text-[#417abb]' : 'text-[#888] hover:text-[#555]'
         }`}
       >
         Hakkında

@@ -8,23 +8,34 @@
   --sh-blue-hover: #366196;
   --sh-border: #dbdbdb;
   --sh-bg: #f8f8f8;
-  --sh-text: #333333;
+  --sh-text: #222222;
   --sh-text-muted: #666666;
 }
 
 body {
   background-color: var(--sh-bg);
   color: var(--sh-text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
   margin: 0;
 }
 
-/* Custom switch based on Sahibinden style */
+/* Compact, crisp switch */
 .sh-switch {
   position: relative;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .sh-switch input {
@@ -40,12 +51,12 @@ body {
 }
 
 .sh-switch .slider {
-  width: 2.75rem;
-  height: 1.5rem;
-  background-color: #d1d5db;
+  width: 28px;
+  height: 16px;
+  background-color: #cbd5e1;
   border-radius: 9999px;
   position: relative;
-  transition: all 0.2s;
+  transition: all 0.15s ease-in-out;
 }
 
 .sh-switch .slider::after {
@@ -53,12 +64,12 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  background-color: white;
-  border: 1px solid #d1d5db;
+  background-color: #ffffff;
   border-radius: 9999px;
-  height: 1.25rem;
-  width: 1.25rem;
-  transition: all 0.2s;
+  height: 12px;
+  width: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.15s ease-in-out;
 }
 
 .sh-switch input:checked + .slider {
@@ -66,6 +77,5 @@ body {
 }
 
 .sh-switch input:checked + .slider::after {
-  transform: translateX(1.25rem);
-  border-color: white;
+  transform: translateX(12px);
 }

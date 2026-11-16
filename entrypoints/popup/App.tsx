@@ -40,7 +40,7 @@ function App() {
   const { isSahibinden } = useCurrentTab();
 
   return (
-    <div className="min-w-[500px] p-4 bg-[#f8f8f8] text-[#333] font-sans">
+    <div className="min-w-[420px] max-w-[440px] p-3 bg-[#f8f8f8] text-[#222] font-sans">
       <Header
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -49,13 +49,13 @@ function App() {
       />
 
       {isSahibinden === false && (
-        <div className="mt-3 px-3 py-2 bg-[#f4f7fa] border border-[#ccd8e5] rounded text-[11px] text-[#335577] leading-relaxed">
+        <div className="mt-2.5 px-2.5 py-1.5 bg-[#f4f7fa] border border-[#ccd8e5] rounded-sm text-[10.5px] text-[#335577] leading-tight">
           <span className="font-bold">Kapsam Dışı:</span> Bu eklenti yalnızca sahibinden.com alan
           adı üzerinde etkindir.
         </div>
       )}
 
-      <main className="mt-4">
+      <main className="mt-2.5">
         {activeTab === 'settings' && (
           <SettingsSection
             isFullGridEnabled={isFullGridEnabled}

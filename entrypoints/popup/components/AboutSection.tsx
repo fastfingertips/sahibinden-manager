@@ -1,31 +1,31 @@
 export const AboutSection = () => (
-  <section className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
-    <div className="grid grid-cols-2 gap-8 mb-6">
+  <section className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs text-[11px]">
+    <div className="grid grid-cols-2 gap-4 mb-3">
       {/* Sol Sütun: Geliştirici ve Bağlantılar */}
-      <div className="space-y-4">
+      <div className="space-y-2.5">
         <div>
-          <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-widest mb-2">
+          <h2 className="text-[9.5px] font-bold text-[#666] uppercase tracking-wider mb-1">
             Geliştirici
           </h2>
           <a
             href="https://github.com/fastfingertips"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-[#333] font-bold hover:text-[#417abb] transition-colors"
+            className="text-[11.5px] text-[#222] font-semibold hover:text-[#417abb] transition-colors"
           >
             fastfingertips
           </a>
         </div>
 
         <div>
-          <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-widest mb-2">
+          <h2 className="text-[9.5px] font-bold text-[#666] uppercase tracking-wider mb-1">
             Kaynak Kod
           </h2>
           <a
             href="https://github.com/fastfingertips/sahibinden-manager"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-xs text-[#417abb] hover:underline font-bold"
+            className="flex items-center text-[10.5px] text-[#417abb] hover:underline font-semibold"
           >
             github.com/sahibinden-manager
           </a>
@@ -33,12 +33,12 @@ export const AboutSection = () => (
       </div>
 
       {/* Sağ Sütun: Proje Amacı */}
-      <div className="space-y-4 border-l border-[#f0f0f0] pl-6">
+      <div className="space-y-2.5 border-l border-[#f0f0f0] pl-3">
         <div>
-          <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-widest mb-2">
+          <h2 className="text-[9.5px] font-bold text-[#666] uppercase tracking-wider mb-1">
             Proje Amacı
           </h2>
-          <p className="text-[11px] text-[#555] leading-relaxed">
+          <p className="text-[10.5px] text-[#555] leading-snug">
             Eklenti, Sahibinden.com üzerindeki ilan verilerinin ve görsellerinin erişilebilirliğini
             artırmak amacıyla geliştirilmiştir.
           </p>
@@ -46,14 +46,11 @@ export const AboutSection = () => (
       </div>
     </div>
 
-    {/* Yasal Uyarı - En Altta Tam Genişlik */}
-    <div className="pt-4 border-t border-[#eee]">
-      <h2 className="text-[10px] font-bold text-[#cc0000] uppercase tracking-widest mb-1.5">
-        Yasal Uyarı
-      </h2>
-      <p className="text-[10px] text-[#999] leading-relaxed italic">
-        Bu eklenti bağımsız bir projedir ve sahibinden.com (Sahibinden Bilgi Teknolojileri Paz. ve
-        Tic. A.Ş.) ile resmi bir bağı bulunmamaktadır.
+    {/* Yasal Uyarı */}
+    <div className="pt-2 border-t border-[#eee]">
+      <p className="text-[9.5px] text-[#888] leading-tight">
+        <strong>Yasal Uyarı:</strong> Bu proje bağımsız ve açık kaynaklı bir yazılımdır.
+        Sahibinden.com ile resmi veya kurumsal bir bağlantısı bulunmamaktadır.
       </p>
     </div>
   </section>

@@ -39,16 +39,16 @@ export const SettingsSection = ({
   viewedCount = 0,
   onClearHistory,
 }: SettingsSectionProps) => (
-  <section className="space-y-4">
+  <section className="space-y-2.5">
     {/* Grup 1: Görünüm ve Medya */}
-    <div className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
-      <h2 className="text-xs font-bold text-[#666] uppercase tracking-wide mb-3 flex items-center justify-between">
-        <span>Görünüm & Medya</span>
+    <div className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs">
+      <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2">
+        Görünüm & Medya
       </h2>
-      <div className="space-y-4">
-        <div className="flex flex-col space-y-1">
+      <div className="space-y-2.5">
+        <div className="flex flex-col space-y-0.5">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Izgara Görünümü (Tüm Resimler)
             </span>
             <div className="sh-switch">
@@ -56,14 +56,14 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             İlan sayfasındaki küçük resimleri sayfalama olmadan tek bir ızgara düzeninde listeler.
           </p>
         </div>
 
-        <div className="flex flex-col space-y-1 pt-3 border-t border-[#f0f0f0]">
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Fotoğraf İndirici
             </span>
             <div className="sh-switch">
@@ -71,7 +71,7 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             İlan ana görseli, küçük resimler ve Mega Slideshow üzerindeki indirme butonlarını aktif
             eder.
           </p>
@@ -80,14 +80,14 @@ export const SettingsSection = ({
     </div>
 
     {/* Grup 2: Arama ve İlan Takibi */}
-    <div className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
-      <h2 className="text-xs font-bold text-[#666] uppercase tracking-wide mb-3">
+    <div className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs">
+      <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2">
         Arama & İlan Takibi
       </h2>
-      <div className="space-y-4">
-        <div className="flex flex-col space-y-1">
+      <div className="space-y-2.5">
+        <div className="flex flex-col space-y-0.5">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Ziyaret Edilen İlanları Vurgula
             </span>
             <div className="sh-switch">
@@ -99,15 +99,15 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             Daha önce incelediğiniz ilanları liste satırında mavi vurgu çizgisi ve rozetle öne
             çıkarır.
           </p>
         </div>
 
-        <div className="flex flex-col space-y-1 pt-3 border-t border-[#f0f0f0]">
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               İlan Not Defteri
             </span>
             <div className="sh-switch">
@@ -115,15 +115,15 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             İlan detayında kişisel notlar alabilmenizi ve listelerde &apos;Not Var&apos; rozetiyle
             görebilmenizi sağlar.
           </p>
         </div>
 
-        <div className="flex flex-col space-y-1 pt-3 border-t border-[#f0f0f0]">
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Fiyat Geçmişi Analizi
             </span>
             <div className="sh-switch">
@@ -135,7 +135,7 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             Favori ilan fiyat tarihçesi sayfasında oransal değişim yüzdeleri ve istatistik özeti
             sunar.
           </p>
@@ -144,14 +144,14 @@ export const SettingsSection = ({
     </div>
 
     {/* Grup 3: Filtreleme ve Temizlik */}
-    <div className="p-4 rounded bg-white border border-[#dbdbdb] shadow-sm">
-      <h2 className="text-xs font-bold text-[#666] uppercase tracking-wide mb-3">
+    <div className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs">
+      <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2">
         Filtreleme & Temizlik
       </h2>
-      <div className="space-y-4">
-        <div className="flex flex-col space-y-1">
+      <div className="space-y-2.5">
+        <div className="flex flex-col space-y-0.5">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Yenilenmiş Cihazları Gizle (Yepy)
             </span>
             <div className="sh-switch">
@@ -163,12 +163,12 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             Arama listelerinde ve tablolarda yer alan sponsorlu yenilenmiş telefon (Yepy) satır ve
             bloklarını gizler.
           </p>
           {ignoredRefurbishedCount > 0 && onClearIgnoredRefurbished && (
-            <div className="pt-2 flex items-center justify-between text-[11px] text-[#888]">
+            <div className="pt-1.5 flex items-center justify-between text-[10px] text-[#888]">
               <span>
                 Tekil gizlenen cihaz: <strong>{ignoredRefurbishedCount}</strong>
               </span>
@@ -183,9 +183,9 @@ export const SettingsSection = ({
           )}
         </div>
 
-        <div className="flex flex-col space-y-1 pt-3 border-t border-[#f0f0f0]">
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
           <label className="flex items-center justify-between group cursor-pointer">
-            <span className="text-sm text-[#333] font-bold group-hover:text-[#417abb] transition-colors">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
               Harici Reklamları Temizle
             </span>
             <div className="sh-switch">
@@ -193,22 +193,22 @@ export const SettingsSection = ({
               <div className="slider"></div>
             </div>
           </label>
-          <p className="text-[11px] text-[#777] leading-relaxed">
+          <p className="text-[10px] text-[#666] leading-snug">
             Arama sonuçları tablosundaki harici sponsorlu reklam satırlarını ve banner alanlarını
             kaldırır.
           </p>
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-[#eee] flex items-center justify-between text-xs">
+      <div className="mt-3 pt-2 border-t border-[#eee] flex items-center justify-between text-[10.5px]">
         <span className="text-[#666]">
-          İncelenen İlan Kaydı: <strong className="text-[#333]">{viewedCount}</strong>
+          İncelenen İlan Kaydı: <strong className="text-[#222]">{viewedCount}</strong>
         </span>
         {viewedCount > 0 && onClearHistory && (
           <button
             type="button"
             onClick={onClearHistory}
-            className="text-[11px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
+            className="text-[10px] text-[#888] hover:text-[#c00] transition-colors cursor-pointer"
           >
             Geçmişi Temizle
           </button>
