@@ -14,6 +14,7 @@ import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
 import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { handleDescriptionCopyButton } from './content/ui/descriptionCopy';
+import { handleClassifiedDataCopyButton } from './content/ui/classifiedDataCopy';
 import { initQnAMode, handleAutoExpandQnA } from './content/cqa';
 import { initKeyboardNavigation } from './content/keyboardNav';
 import { commonStyles } from './content/styles/common';
@@ -76,6 +77,7 @@ export default defineContentScript({
       applyNotesToListings();
       handlePriceHistoryAnalytics();
       handleDescriptionCopyButton();
+      handleClassifiedDataCopyButton();
       handleAutoExpandQnA();
     };
 

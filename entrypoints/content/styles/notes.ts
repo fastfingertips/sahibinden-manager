@@ -20,7 +20,7 @@ export const notesStyles = `
   /* Sahibinden'in sabit 300px float sınırını kaldırıp sağa dayalı esnek flex düzenine geçir */
   .classifiedDetailTitle .classifiedEvents {
     width: auto !important;
-    max-width: 520px !important;
+    max-width: 650px !important;
     float: right !important;
     display: flex !important;
     align-items: center !important;
@@ -59,6 +59,7 @@ export const notesStyles = `
   }
 
   /* --- İlan Detay Yerel Aksiyon Butonu (Favoriler ve Yazdır Yanı) --- */
+  ul.classifiedEvents li.sm-classified-copy-all-action,
   ul.classifiedEvents li.sm-classified-note-action {
     width: auto !important;
     float: none !important;
@@ -68,6 +69,7 @@ export const notesStyles = `
     position: relative !important;
   }
 
+  .sm-classified-copy-all-link,
   .sm-classified-note-link {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
     font-size: 11px !important;
@@ -86,8 +88,20 @@ export const notesStyles = `
     outline: none !important;
   }
 
+  .sm-classified-copy-all-link:hover,
   .sm-classified-note-link:hover {
     text-decoration: underline !important;
+  }
+
+  .sm-classified-copy-all-link.copied {
+    color: #107c10 !important;
+    font-weight: 700 !important;
+  }
+
+  .sm-copy-all-icon {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
   }
 
   .sm-classified-note-link.has-note {
