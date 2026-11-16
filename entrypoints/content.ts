@@ -15,6 +15,7 @@ import { handleMainPhoto, mainPhotoStyles } from './content/ui/mainPhoto';
 import { handleMainPageThumbnails } from './content/ui/listingThumbs';
 import { handleDescriptionCopyButton } from './content/ui/descriptionCopy';
 import { initQnAMode, handleAutoExpandQnA } from './content/cqa';
+import { initKeyboardNavigation } from './content/keyboardNav';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
@@ -23,6 +24,7 @@ import { notesStyles } from './content/styles/notes';
 import { priceHistoryStyles } from './content/styles/priceHistory';
 import { adsStyles } from './content/styles/ads';
 import { descriptionCopyStyles } from './content/styles/descriptionCopy';
+import { keyboardNavStyles } from './content/styles/keyboardNav';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -42,6 +44,7 @@ export default defineContentScript({
         ${priceHistoryStyles}
         ${adsStyles}
         ${descriptionCopyStyles}
+        ${keyboardNavStyles}
       `;
       document.head.appendChild(style);
     };
@@ -54,6 +57,7 @@ export default defineContentScript({
     initPriceHistory();
     initAdsMode();
     initQnAMode();
+    initKeyboardNavigation();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();

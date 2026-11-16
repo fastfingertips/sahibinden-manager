@@ -85,6 +85,8 @@ export const useStats = () => {
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
   const [isHideAdsEnabled, setIsHideAdsEnabled] = useState(false);
   const [isAutoExpandQnAEnabled, setIsAutoExpandQnAEnabled] = useState(true);
+  const [isKeyboardNavEnabled, setIsKeyboardNavEnabled] = useState(true);
+  const [isKeyboardNewTabEnabled, setIsKeyboardNewTabEnabled] = useState(false);
   const [ignoredRefurbishedCount, setIgnoredRefurbishedCount] = useState(0);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [notes, setNotes] = useState<ListingNoteItem[]>([]);
@@ -99,6 +101,8 @@ export const useStats = () => {
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
       const hideAds = await storage.getItem<boolean>('local:isHideAdsEnabled');
       const autoExpandQnA = await storage.getItem<boolean>('local:isAutoExpandQnAEnabled');
+      const keyboardNav = await storage.getItem<boolean>('local:isKeyboardNavEnabled');
+      const keyboardNewTab = await storage.getItem<boolean>('local:isKeyboardNewTabEnabled');
       const ignoredRefurbished = await storage.getItem<Record<string, boolean>>(
         'local:ignored-refurbished-ids',
       );
@@ -114,6 +118,8 @@ export const useStats = () => {
       setIsHideRefurbishedEnabled(hideRefurbished === true);
       setIsHideAdsEnabled(hideAds === true);
       setIsAutoExpandQnAEnabled(autoExpandQnA !== false);
+      setIsKeyboardNavEnabled(keyboardNav !== false);
+      setIsKeyboardNewTabEnabled(keyboardNewTab === true);
       setIgnoredRefurbishedCount(ignoredRefurbished ? Object.keys(ignoredRefurbished).length : 0);
       setHistory(parseHistory(viewed));
       setNotes(parseNotes(savedNotes));
@@ -150,6 +156,15 @@ export const useStats = () => {
         setIsAutoExpandQnAEnabled(newVal !== false);
       },
     );
+    const unwatchKeyboardNav = storage.watch<boolean>('local:isKeyboardNavEnabled', (newVal) => {
+      setIsKeyboardNavEnabled(newVal !== false);
+    });
+    const unwatchKeyboardNewTab = storage.watch<boolean>(
+      'local:isKeyboardNewTabEnabled',
+      (newVal) => {
+        setIsKeyboardNewTabEnabled(newVal === true);
+      },
+    );
     const unwatchIgnoredRefurbished = storage.watch<Record<string, boolean>>(
       'local:ignored-refurbished-ids',
       (newVal) => {
@@ -178,6 +193,8 @@ export const useStats = () => {
       unwatchRefurbished();
       unwatchAds();
       unwatchAutoExpandQnA();
+      unwatchKeyboardNav();
+      unwatchKeyboardNewTab();
       unwatchIgnoredRefurbished();
       unwatchViewed();
       unwatchNotes();
@@ -232,6 +249,18 @@ export const useStats = () => {
     await storage.setItem('local:isAutoExpandQnAEnabled', newVal);
   };
 
+  const toggleKeyboardNav = async () => {
+    const newVal = !isKeyboardNavEnabled;
+    setIsKeyboardNavEnabled(newVal);
+    await storage.setItem('local:isKeyboardNavEnabled', newVal);
+  };
+
+  const toggleKeyboardNewTab = async () => {
+    const newVal = !isKeyboardNewTabEnabled;
+    setIsKeyboardNewTabEnabled(newVal);
+    await storage.setItem('local:isKeyboardNewTabEnabled', newVal);
+  };
+
   const clearIgnoredRefurbished = async () => {
     await storage.removeItem('local:ignored-refurbished-ids');
     setIgnoredRefurbishedCount(0);
@@ -271,6 +300,8 @@ export const useStats = () => {
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
     isAutoExpandQnAEnabled,
+    isKeyboardNavEnabled,
+    isKeyboardNewTabEnabled,
     ignoredRefurbishedCount,
     history,
     notes,
@@ -284,6 +315,8 @@ export const useStats = () => {
     toggleHideRefurbished,
     toggleHideAds,
     toggleAutoExpandQnA,
+    toggleKeyboardNav,
+    toggleKeyboardNewTab,
     clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,

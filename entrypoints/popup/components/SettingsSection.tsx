@@ -11,6 +11,10 @@ interface SettingsSectionProps {
   onTogglePriceHistory: () => void;
   isAutoExpandQnAEnabled: boolean;
   onToggleAutoExpandQnA: () => void;
+  isKeyboardNavEnabled: boolean;
+  onToggleKeyboardNav: () => void;
+  isKeyboardNewTabEnabled: boolean;
+  onToggleKeyboardNewTab: () => void;
   isHideRefurbishedEnabled: boolean;
   onToggleHideRefurbished: () => void;
   ignoredRefurbishedCount?: number;
@@ -34,6 +38,10 @@ export const SettingsSection = ({
   onTogglePriceHistory,
   isAutoExpandQnAEnabled,
   onToggleAutoExpandQnA,
+  isKeyboardNavEnabled,
+  onToggleKeyboardNav,
+  isKeyboardNewTabEnabled,
+  onToggleKeyboardNewTab,
   isHideRefurbishedEnabled,
   onToggleHideRefurbished,
   ignoredRefurbishedCount = 0,
@@ -162,6 +170,48 @@ export const SettingsSection = ({
           <p className="text-[10px] text-[#666] leading-snug">
             İlan detayındaki soru-cevap bölümünde gizli kalan tüm yanıtları otomatik olarak görünür
             yapar.
+          </p>
+        </div>
+
+        <div className="flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0]">
+          <label className="flex items-center justify-between group cursor-pointer">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
+              Klavye ile İlan Gezinimi
+            </span>
+            <div className="sh-switch">
+              <input
+                type="checkbox"
+                checked={isKeyboardNavEnabled}
+                onChange={onToggleKeyboardNav}
+              />
+              <div className="slider"></div>
+            </div>
+          </label>
+          <p className="text-[10px] text-[#666] leading-snug">
+            Arama sonuçlarında yukarı / aşağı ok tuşlarıyla ilanlar arasında gezinebilmeyi ve Enter
+            ile ilana gidebilmeyi sağlar.
+          </p>
+        </div>
+
+        <div
+          className={`flex flex-col space-y-0.5 pt-2 border-t border-[#f0f0f0] ${!isKeyboardNavEnabled ? 'opacity-50 pointer-events-none' : ''}`}
+        >
+          <label className="flex items-center justify-between group cursor-pointer">
+            <span className="text-[11.5px] font-medium text-[#222] group-hover:text-[#417abb] transition-colors">
+              Enter ile Yeni Sekmede Aç
+            </span>
+            <div className="sh-switch">
+              <input
+                type="checkbox"
+                checked={isKeyboardNewTabEnabled}
+                onChange={onToggleKeyboardNewTab}
+                disabled={!isKeyboardNavEnabled}
+              />
+              <div className="slider"></div>
+            </div>
+          </label>
+          <p className="text-[10px] text-[#666] leading-snug">
+            Klavyeden Enter tuşuna basıldığında seçili ilanı mevcut sayfa yerine yeni sekmede açar.
           </p>
         </div>
       </div>

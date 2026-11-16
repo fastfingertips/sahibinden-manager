@@ -20,6 +20,8 @@ function App() {
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
     isAutoExpandQnAEnabled,
+    isKeyboardNavEnabled,
+    isKeyboardNewTabEnabled,
     ignoredRefurbishedCount,
     history,
     notes,
@@ -33,6 +35,8 @@ function App() {
     toggleHideRefurbished,
     toggleHideAds,
     toggleAutoExpandQnA,
+    toggleKeyboardNav,
+    toggleKeyboardNewTab,
     clearIgnoredRefurbished,
     removeHistoryItem,
     clearHistory,
@@ -72,6 +76,10 @@ function App() {
             onTogglePriceHistory={togglePriceHistory}
             isAutoExpandQnAEnabled={isAutoExpandQnAEnabled}
             onToggleAutoExpandQnA={toggleAutoExpandQnA}
+            isKeyboardNavEnabled={isKeyboardNavEnabled}
+            onToggleKeyboardNav={toggleKeyboardNav}
+            isKeyboardNewTabEnabled={isKeyboardNewTabEnabled}
+            onToggleKeyboardNewTab={toggleKeyboardNewTab}
             isHideRefurbishedEnabled={isHideRefurbishedEnabled}
             onToggleHideRefurbished={toggleHideRefurbished}
             ignoredRefurbishedCount={ignoredRefurbishedCount}

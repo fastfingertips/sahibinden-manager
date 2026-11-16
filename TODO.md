@@ -38,6 +38,7 @@ https://www.sahibinden.com/ilan/emlak-konut-satilik-daire-deniz-manzarali-kelepi
 
 - [x] İlan detay sayfasındaki açıklama metnini tek tıkla panoya kopyalama butonu ('Açıklamayı Kopyala').
 - [x] İlan detay sayfasındaki soru-cevap konuşmalarında gizli kalan yanıtları otomatik genişletme seçeneği ('Soru-Cevapları Otomatik Genişlet').
+- [x] Arama listelerinde yukarı / aşağı ok tuşları ile ilanlar arasında gezinme ve Enter ile ilanı açabilme (isteğe bağlı yeni sekmede açma desteği).
 - [x] Kullanıcı Sahibinden.com dışında farklı bir sayfadayken eklentiye tıklandığında, arayüzde "Bu eklenti yalnızca sahibinden.com üzerinde çalışır" şeklinde bilgilendirici bir uyarı gösterilmesi.
 - [x] Özelliklerin (Izgara Görünümü ve Fotoğraf İndirici) ilk kurulumda varsayılan olarak Açık (True) gelmesinin sağlanması. (Kullanıcının eklentiyi kurar kurmaz etkiyi görebilmesi için).
 - [ ] Gecikmesiz ve beyaz parlama (flashbang) yaratmayan Karanlık Mod (Dark Theme).
