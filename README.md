@@ -27,7 +27,8 @@ Proje güncel sürümlerine [Releases](https://github.com/fastfingertips/sahibin
 
 ## Önerilen Kullanım
 
-Sahibinden.com sayfalarında ilan listelerine yerleştirilen reklam satırları (`nativeAd`), afişler ve ilan detayındaki reklam kutuları sayfa düzeninde kaymalara yol açabilmektedir. Eklenti ile birlikte [uBlock Origin](https://github.com/gorhill/uBlock) gibi bir içerik engelleyici de kullanılabilir.
+- **İçerik Engelleme**: Sayfalardaki reklam satırları (`nativeAd`), afişler ve reklam kutuları için [uBlock Origin](https://github.com/gorhill/uBlock) gibi bir içerik engelleyici kullanılabilir.
+- **Karanlık Mod**: Gece kullanımı veya koyu tema tercihi için [Dark Reader](https://github.com/darkreader/darkreader) eklentisi tercih edilebilir.
 
 ## Teknik Detaylar
 
