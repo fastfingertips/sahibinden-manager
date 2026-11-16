@@ -40,10 +40,15 @@ const createOrUpdateBadge = (
   const parent = container.parentElement;
   if (!parent) return;
 
-  let badge = parent.querySelector<HTMLSpanElement>('.sm-visited-badge');
+  let badge = parent.querySelector<HTMLSpanElement>(':scope > .sm-visited-badge');
   if (!badge) {
     badge = document.createElement('span');
     badge.className = 'sm-visited-badge';
+    badge.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      container.click();
+    });
     parent.insertBefore(badge, container);
   }
 

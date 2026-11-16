@@ -47,8 +47,7 @@ export const visitedStyles = `
   /* --- Sahibinden Uyumlu Ziyaret Rozeti (Badge) --- */
   .sm-visited-badge {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
-    display: block !important;
-    width: fit-content !important;
+    display: inline-flex !important;
     align-items: center !important;
     gap: 3px !important;
     font-size: 10px !important;
@@ -60,9 +59,24 @@ export const visitedStyles = `
     padding: 1px 6px !important;
     letter-spacing: 0.02em !important;
     line-height: 14px !important;
-    margin-bottom: 2px !important;
-    margin-top: -4px !important;
     box-shadow: 0 1px 2px rgba(26, 79, 130, 0.08) !important;
+    cursor: pointer !important;
+  }
+
+  /* Liste Görünümünde (#searchResultsTable):
+     Başlığın dikey hizasını ve satır akışını KESİNLİKLE bozmamak için
+     rozet mutlak konumlandırma (absolute) ile başlığın üstündeki boşluğa yerleştirilir. */
+  #searchResultsTable td.searchResultsTitleValue {
+    position: relative !important;
+  }
+
+  #searchResultsTable td.searchResultsTitleValue .sm-visited-badge {
+    position: absolute !important;
+    top: 10px !important;
+    left: 4px !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    z-index: 2 !important;
   }
 
   /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli --- */
