@@ -29,14 +29,23 @@ export const logListingComment = async (
   try {
     const comments =
       (await storage.getItem<Record<string, ListingCommentItem>>('local:listing-comments')) || {};
+    const existing = comments[adId];
+    if (
+      existing &&
+      existing.text === text.trim() &&
+      existing.author === (author || existing.author) &&
+      existing.id === commentId
+    ) {
+      return;
+    }
     comments[adId] = {
       id: commentId,
       adId,
       text: text.trim(),
-      createdAt: comments[adId]?.createdAt || createdAt,
-      author: author || comments[adId]?.author,
-      title: title || comments[adId]?.title,
-      url: url || comments[adId]?.url,
+      createdAt: existing?.createdAt || createdAt,
+      author: author || existing?.author,
+      title: title || existing?.title,
+      url: url || existing?.url,
     };
     await storage.setItem('local:listing-comments', comments);
   } catch (err) {
@@ -60,15 +69,21 @@ export const removeListingComment = async (adId: string): Promise<void> => {
 
 /**
  * Sayfadaki mevcut soru ve cevaplar arasında oturum açmış kullanıcının sorduğu soruları tespit edip loglar.
+ * Sahibinden, oturum açmış kullanıcının sorduğu sorularda container-thread-actions öğesine
+ * data-operation-abilities="... QUESTION_DELETABLE ..." ekler ve .container-comment-operations
+ * menüsünü görünür yapar. Başkalarının sorularında bu alan boştur (data-operation-abilities="")
+ * ve işlem menüsü display:none durumundadır.
  */
 export const detectUserQuestions = (adId: string, title?: string, url?: string): void => {
   if (!adId) return;
-  const questionerButtons = document.querySelectorAll(
-    '.container-comment-operations button.for-questioner, .container-comment-operations .popup-operation.for-questioner',
+  const userActionContainers = document.querySelectorAll(
+    '.thread-item .container-thread-actions[data-operation-abilities*="QUESTION_DELETABLE"]',
   );
 
-  questionerButtons.forEach((btn) => {
-    const thread = btn.closest('.thread-item');
+  let foundUserQuestion = false;
+
+  userActionContainers.forEach((actionContainer) => {
+    const thread = actionContainer.closest('.thread-item');
     if (!thread) return;
 
     const qId = thread.getAttribute('data-question-id') || `q_${Date.now()}`;
@@ -87,8 +102,21 @@ export const detectUserQuestions = (adId: string, title?: string, url?: string):
       if (!isNaN(parsed)) createdAt = parsed;
     }
 
+    foundUserQuestion = true;
     logListingComment(adId, qId, text, createdAt, author, title, url);
   });
+
+  // Eğer sayfada soru listesi yüklüyse (.cqa-list) fakat kullanıcının kendi sorusu yoksa
+  // ve önceden başkasının sorusu hatalı kaydedilmişse, ilandaki kayıt temizlenir.
+  const cqaList = document.querySelector('.cqa-list, .container-cqa');
+  if (!foundUserQuestion && cqaList && cqaList.querySelectorAll('.thread-item').length > 0) {
+    const input = cqaList.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+      'input[placeholder*="soru sor"], textarea[placeholder*="soru sor"], input[name="questionText"]',
+    );
+    if (!input?.value.trim()) {
+      removeListingComment(adId);
+    }
+  }
 };
 
 /**
@@ -195,6 +223,13 @@ export const initQnAMode = async (
     }
   } catch (err) {
     console.error('Sahibinden Manager: Soru-Cevap modu başlatılamadı', err);
+  }
+};
+
+export const handleDetectUserComments = () => {
+  if (activeAdContext) {
+    detectUserQuestions(activeAdContext.adId, activeAdContext.title, activeAdContext.url);
+    setupCommentFormListener(activeAdContext.adId, activeAdContext.title, activeAdContext.url);
   }
 };
 
