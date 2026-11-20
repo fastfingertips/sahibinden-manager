@@ -57,12 +57,12 @@ export default defineContentScript({
     initRefurbishedMode();
     initPriceHistory();
     initAdsMode();
-    initQnAMode();
     initKeyboardNavigation();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
     initNotesMode(adId, title, window.location.href);
+    initQnAMode(adId, title, window.location.href);
 
     const activeAdId = adId || 'ilan';
 

@@ -74,6 +74,8 @@ interface SettingsSectionProps {
   onToggleVisitedLastBadge?: () => void;
   isVisitedFirstBadgeEnabled?: boolean;
   onToggleVisitedFirstBadge?: () => void;
+  isVisitedCommentBadgeEnabled?: boolean;
+  onToggleVisitedCommentBadge?: () => void;
   isNotesEnabled: boolean;
   onToggleNotes: () => void;
   isPriceHistoryEnabled: boolean;
@@ -109,6 +111,8 @@ export const SettingsSection = ({
   onToggleVisitedLastBadge,
   isVisitedFirstBadgeEnabled = false,
   onToggleVisitedFirstBadge,
+  isVisitedCommentBadgeEnabled = true,
+  onToggleVisitedCommentBadge,
   isNotesEnabled,
   onToggleNotes,
   isPriceHistoryEnabled,
@@ -182,6 +186,14 @@ export const SettingsSection = ({
               description="İlanın ilk kez ne zaman incelendiğini gösteren rozeti görüntüler (örn: İlk: 3 gün önce)."
               checked={isVisitedFirstBadgeEnabled}
               onChange={onToggleVisitedFirstBadge}
+            />
+          )}
+          {isVisitedHighlightEnabled && onToggleVisitedCommentBadge && (
+            <SettingSubItem
+              label="Soru / Yorum Rozeti"
+              description="İlanda daha önce soru veya yorum paylaşıldıysa yeşil rozetle öne çıkarır (örn: Soru Soruldu)."
+              checked={isVisitedCommentBadgeEnabled}
+              onChange={onToggleVisitedCommentBadge}
             />
           )}
           {viewedCount > 0 && onClearHistory && (

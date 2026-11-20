@@ -17,6 +17,7 @@ function App() {
     isVisitedHighlightEnabled,
     isVisitedLastBadgeEnabled,
     isVisitedFirstBadgeEnabled,
+    isVisitedCommentBadgeEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -82,6 +83,8 @@ function App() {
             onToggleVisitedLastBadge={toggleVisitedLastBadge}
             isVisitedFirstBadgeEnabled={isVisitedFirstBadgeEnabled}
             onToggleVisitedFirstBadge={toggleVisitedFirstBadge}
+            isVisitedCommentBadgeEnabled={isVisitedCommentBadgeEnabled}
+            onToggleVisitedCommentBadge={toggleVisitedCommentBadge}
             isNotesEnabled={isNotesEnabled}
             onToggleNotes={toggleNotes}
             isPriceHistoryEnabled={isPriceHistoryEnabled}

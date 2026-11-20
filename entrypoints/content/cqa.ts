@@ -3,9 +3,179 @@ import { copyToClipboard } from '@/utils/clipboard';
 
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
-let isAutoExpandQnAEnabled = true;
+export interface ListingCommentItem {
+  id: string;
+  adId: string;
+  text: string;
+  createdAt: number;
+  author?: string;
+  title?: string;
+  url?: string;
+}
 
-export const initQnAMode = async () => {
+let isAutoExpandQnAEnabled = true;
+let activeAdContext: { adId: string; title: string; url: string } | null = null;
+
+export const logListingComment = async (
+  adId: string,
+  commentId: string,
+  text: string,
+  createdAt: number = Date.now(),
+  author?: string,
+  title?: string,
+  url?: string,
+): Promise<void> => {
+  if (!adId || !text.trim()) return;
+  try {
+    const comments =
+      (await storage.getItem<Record<string, ListingCommentItem>>('local:listing-comments')) || {};
+    comments[adId] = {
+      id: commentId,
+      adId,
+      text: text.trim(),
+      createdAt: comments[adId]?.createdAt || createdAt,
+      author: author || comments[adId]?.author,
+      title: title || comments[adId]?.title,
+      url: url || comments[adId]?.url,
+    };
+    await storage.setItem('local:listing-comments', comments);
+  } catch (err) {
+    console.error('Sahibinden Manager: Yorum kaydedilemedi', err);
+  }
+};
+
+export const removeListingComment = async (adId: string): Promise<void> => {
+  if (!adId) return;
+  try {
+    const comments =
+      (await storage.getItem<Record<string, ListingCommentItem>>('local:listing-comments')) || {};
+    if (comments[adId]) {
+      delete comments[adId];
+      await storage.setItem('local:listing-comments', comments);
+    }
+  } catch (err) {
+    console.error('Sahibinden Manager: Yorum silinemedi', err);
+  }
+};
+
+/**
+ * Sayfadaki mevcut soru ve cevaplar arasında oturum açmış kullanıcının sorduğu soruları tespit edip loglar.
+ */
+export const detectUserQuestions = (adId: string, title?: string, url?: string): void => {
+  if (!adId) return;
+  const questionerButtons = document.querySelectorAll(
+    '.container-comment-operations button.for-questioner, .container-comment-operations .popup-operation.for-questioner',
+  );
+
+  questionerButtons.forEach((btn) => {
+    const thread = btn.closest('.thread-item');
+    if (!thread) return;
+
+    const qId = thread.getAttribute('data-question-id') || `q_${Date.now()}`;
+    const questionEl = thread.querySelector(
+      '.container-comment-item.type-question, .comment-item.asker',
+    );
+    const text = questionEl?.querySelector('.comment-text')?.textContent?.trim() || '';
+    if (!text) return;
+
+    const author = questionEl?.querySelector('.name-surname')?.textContent?.trim();
+    const dateEl = questionEl?.querySelector('.comment-date');
+    const dateTitle = dateEl?.getAttribute('title')?.trim();
+    let createdAt = Date.now();
+    if (dateTitle) {
+      const parsed = Date.parse(dateTitle);
+      if (!isNaN(parsed)) createdAt = parsed;
+    }
+
+    logListingComment(adId, qId, text, createdAt, author, title, url);
+  });
+};
+
+/**
+ * Kullanıcının Soru-Cevap kutusundan yeni soru göndermesini dinler ve otomatik kaydeder.
+ */
+export const setupCommentFormListener = (adId: string, title?: string, url?: string): void => {
+  if (!adId) return;
+
+  const section =
+    document.getElementById('soru') ||
+    document.querySelector('.classified-question-answer') ||
+    document.querySelector('#soru-cevap') ||
+    document.querySelector('.container-cqa');
+  if (!section) return;
+
+  if (section.getAttribute('data-sm-listener-attached') === 'true') return;
+  section.setAttribute('data-sm-listener-attached', 'true');
+
+  // Gönder butonu ve input alanlarını dinle
+  const handleSubmission = () => {
+    const input = section.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+      'input[placeholder*="soru sor"], textarea[placeholder*="soru sor"], input[name="questionText"], .cqa-input, input[type="text"]',
+    );
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    const qId = `q_${Date.now()}`;
+    logListingComment(adId, qId, text, Date.now(), undefined, title, url);
+  };
+
+  section.addEventListener(
+    'click',
+    (e) => {
+      const target = e.target as HTMLElement;
+      // Gönder butonuna tıklandığında
+      const sendBtn = target.closest(
+        'button.btn-primary, button[type="submit"], button.cqa-send-btn, .container-cqa button',
+      );
+      if (
+        sendBtn &&
+        !sendBtn.classList.contains('show-all-answers') &&
+        !sendBtn.classList.contains('show-publication-criteria') &&
+        !sendBtn.classList.contains('sm-copy-cqa-btn')
+      ) {
+        handleSubmission();
+      }
+
+      // Kullanıcı sorusunu sildiğinde
+      const deleteBtn = target.closest(
+        'button[value="DELETE_QUESTION"], .popup-operation[value="DELETE_QUESTION"]',
+      );
+      if (deleteBtn) {
+        removeListingComment(adId);
+      }
+    },
+    true,
+  );
+
+  section.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key === 'Enter') {
+        const target = e.target as HTMLElement;
+        if (target.matches('input, textarea')) {
+          handleSubmission();
+        }
+      }
+    },
+    true,
+  );
+};
+
+export const initQnAMode = async (
+  currentAdId?: string | null,
+  currentTitle?: string,
+  currentUrl?: string,
+) => {
+  if (currentAdId) {
+    activeAdContext = {
+      adId: currentAdId,
+      title: currentTitle || 'İlan',
+      url: currentUrl || window.location.href,
+    };
+  }
+
   try {
     const saved = await storage.getItem<boolean>('local:isAutoExpandQnAEnabled');
     if (saved !== null && saved !== undefined) {
@@ -18,6 +188,11 @@ export const initQnAMode = async () => {
         handleAutoExpandQnA();
       }
     });
+
+    if (activeAdContext) {
+      detectUserQuestions(activeAdContext.adId, activeAdContext.title, activeAdContext.url);
+      setupCommentFormListener(activeAdContext.adId, activeAdContext.title, activeAdContext.url);
+    }
   } catch (err) {
     console.error('Sahibinden Manager: Soru-Cevap modu başlatılamadı', err);
   }

@@ -86,6 +86,7 @@ export const useStats = () => {
   const [isVisitedHighlightEnabled, setIsVisitedHighlightEnabled] = useState(true);
   const [isVisitedLastBadgeEnabled, setIsVisitedLastBadgeEnabled] = useState(true);
   const [isVisitedFirstBadgeEnabled, setIsVisitedFirstBadgeEnabled] = useState(false);
+  const [isVisitedCommentBadgeEnabled, setIsVisitedCommentBadgeEnabled] = useState(true);
   const [isNotesEnabled, setIsNotesEnabled] = useState(true);
   const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
@@ -106,6 +107,7 @@ export const useStats = () => {
       const visited = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
       const visitedLast = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
       const visitedFirst = await storage.getItem<boolean>('local:isVisitedFirstBadgeEnabled');
+      const visitedComment = await storage.getItem<boolean>('local:isVisitedCommentBadgeEnabled');
       const notesOpt = await storage.getItem<boolean>('local:isNotesEnabled');
       const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
@@ -128,6 +130,7 @@ export const useStats = () => {
       setIsVisitedHighlightEnabled(visited !== false);
       setIsVisitedLastBadgeEnabled(visitedLast !== false);
       setIsVisitedFirstBadgeEnabled(visitedFirst === true);
+      setIsVisitedCommentBadgeEnabled(visitedComment !== false);
       setIsNotesEnabled(notesOpt !== false);
       setIsPriceHistoryEnabled(priceHistory !== false);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
@@ -162,6 +165,12 @@ export const useStats = () => {
       'local:isVisitedFirstBadgeEnabled',
       (newVal) => {
         setIsVisitedFirstBadgeEnabled(newVal === true);
+      },
+    );
+    const unwatchVisitedComment = storage.watch<boolean>(
+      'local:isVisitedCommentBadgeEnabled',
+      (newVal) => {
+        setIsVisitedCommentBadgeEnabled(newVal !== false);
       },
     );
     const unwatchNotesOpt = storage.watch<boolean>('local:isNotesEnabled', (newVal) => {
@@ -225,6 +234,7 @@ export const useStats = () => {
       unwatchVisited();
       unwatchVisitedLast();
       unwatchVisitedFirst();
+      unwatchVisitedComment();
       unwatchNotesOpt();
       unwatchPriceHistory();
       unwatchRefurbished();
@@ -268,6 +278,12 @@ export const useStats = () => {
     const newVal = !isVisitedFirstBadgeEnabled;
     setIsVisitedFirstBadgeEnabled(newVal);
     await storage.setItem('local:isVisitedFirstBadgeEnabled', newVal);
+  };
+
+  const toggleVisitedCommentBadge = async () => {
+    const newVal = !isVisitedCommentBadgeEnabled;
+    setIsVisitedCommentBadgeEnabled(newVal);
+    await storage.setItem('local:isVisitedCommentBadgeEnabled', newVal);
   };
 
   const toggleNotes = async () => {
@@ -358,6 +374,7 @@ export const useStats = () => {
     isVisitedHighlightEnabled,
     isVisitedLastBadgeEnabled,
     isVisitedFirstBadgeEnabled,
+    isVisitedCommentBadgeEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -377,6 +394,7 @@ export const useStats = () => {
     toggleVisitedHighlight,
     toggleVisitedLastBadge,
     toggleVisitedFirstBadge,
+    toggleVisitedCommentBadge,
     toggleNotes,
     togglePriceHistory,
     toggleHideRefurbished,

@@ -2,7 +2,10 @@ import {
   highlightVisitedDetail,
   highlightVisitedListings,
   setVisitedBadgeOptions,
+  setVisitedBadgeContext,
 } from './ui/visited';
+import type { ListingCommentItem } from './cqa';
+import type { ListingNote } from './ui/notes';
 
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
@@ -19,9 +22,12 @@ export interface VisitedListingRecord {
 export type StoredViewedListings = Record<string, VisitedListingRecord | number>;
 
 let cachedRecords: StoredViewedListings = {};
+let cachedComments: Record<string, ListingCommentItem> = {};
+let cachedNotes: Record<string, ListingNote> = {};
 let isHighlightEnabled = true;
 let isLastBadgeEnabled = true;
 let isFirstBadgeEnabled = false;
+let isCommentBadgeEnabled = true;
 
 export const getFirstTimestamp = (
   val: VisitedListingRecord | number | undefined,
@@ -79,16 +85,28 @@ export const extractClassifiedTitle = (): string => {
 export const initVisitedTracking = async () => {
   try {
     cachedRecords = (await storage.getItem<StoredViewedListings>('local:viewed-listings')) || {};
+    cachedComments =
+      (await storage.getItem<Record<string, ListingCommentItem>>('local:listing-comments')) || {};
+    cachedNotes = (await storage.getItem<Record<string, ListingNote>>('local:listing-notes')) || {};
+
     const highlightPref = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
     isHighlightEnabled = highlightPref !== false;
 
     const lastBadgePref = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
     const firstBadgePref = await storage.getItem<boolean>('local:isVisitedFirstBadgeEnabled');
+    const commentBadgePref = await storage.getItem<boolean>('local:isVisitedCommentBadgeEnabled');
     isLastBadgeEnabled = lastBadgePref !== false;
     isFirstBadgeEnabled = firstBadgePref === true;
+    isCommentBadgeEnabled = commentBadgePref !== false;
+
     setVisitedBadgeOptions({
       showLastBadge: isLastBadgeEnabled,
       showFirstBadge: isFirstBadgeEnabled,
+      showCommentBadge: isCommentBadgeEnabled,
+    });
+    setVisitedBadgeContext({
+      comments: cachedComments,
+      notes: cachedNotes,
     });
 
     storage.watch<boolean>('local:isVisitedLastBadgeEnabled', (newVal) => {
@@ -96,6 +114,7 @@ export const initVisitedTracking = async () => {
       setVisitedBadgeOptions({
         showLastBadge: isLastBadgeEnabled,
         showFirstBadge: isFirstBadgeEnabled,
+        showCommentBadge: isCommentBadgeEnabled,
       });
       if (isHighlightEnabled) {
         highlightVisitedListings(cachedRecords);
@@ -107,6 +126,41 @@ export const initVisitedTracking = async () => {
       setVisitedBadgeOptions({
         showLastBadge: isLastBadgeEnabled,
         showFirstBadge: isFirstBadgeEnabled,
+        showCommentBadge: isCommentBadgeEnabled,
+      });
+      if (isHighlightEnabled) {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
+
+    storage.watch<boolean>('local:isVisitedCommentBadgeEnabled', (newVal) => {
+      isCommentBadgeEnabled = newVal !== false;
+      setVisitedBadgeOptions({
+        showLastBadge: isLastBadgeEnabled,
+        showFirstBadge: isFirstBadgeEnabled,
+        showCommentBadge: isCommentBadgeEnabled,
+      });
+      if (isHighlightEnabled) {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
+
+    storage.watch<Record<string, ListingCommentItem>>('local:listing-comments', (newVal) => {
+      cachedComments = newVal || {};
+      setVisitedBadgeContext({
+        comments: cachedComments,
+        notes: cachedNotes,
+      });
+      if (isHighlightEnabled) {
+        highlightVisitedListings(cachedRecords);
+      }
+    });
+
+    storage.watch<Record<string, ListingNote>>('local:listing-notes', (newVal) => {
+      cachedNotes = newVal || {};
+      setVisitedBadgeContext({
+        comments: cachedComments,
+        notes: cachedNotes,
       });
       if (isHighlightEnabled) {
         highlightVisitedListings(cachedRecords);
@@ -137,8 +191,8 @@ export const initVisitedTracking = async () => {
       const existingLast = getLastTimestamp(existing);
       const prevCount = getVisitCount(existing);
 
-      if (existingFirst && isHighlightEnabled) {
-        highlightVisitedDetail(adId, existingFirst, existingLast, prevCount);
+      if ((existingFirst || cachedComments[adId]) && isHighlightEnabled) {
+        highlightVisitedDetail(adId, existingFirst, existingLast, prevCount, cachedComments[adId]);
       }
       cachedRecords[adId] = {
         id: adId,
@@ -177,7 +231,12 @@ export const initVisitedTracking = async () => {
 };
 
 export const applyVisitedToListings = () => {
-  if (isHighlightEnabled && cachedRecords && Object.keys(cachedRecords).length > 0) {
+  if (
+    isHighlightEnabled &&
+    ((cachedRecords && Object.keys(cachedRecords).length > 0) ||
+      (cachedComments && Object.keys(cachedComments).length > 0) ||
+      (cachedNotes && Object.keys(cachedNotes).length > 0))
+  ) {
     highlightVisitedListings(cachedRecords);
   }
 };

@@ -34,15 +34,31 @@ export const extractVisitCount = (val: unknown): number => {
 export interface VisitedBadgeOptions {
   showLastBadge?: boolean;
   showFirstBadge?: boolean;
+  showCommentBadge?: boolean;
+}
+
+export interface ListingBadgeContext {
+  comments?: Record<string, { id?: string; text: string; createdAt: number }>;
+  notes?: Record<string, { text: string; updatedAt: number; createdAt?: number }>;
 }
 
 let currentBadgeOptions: VisitedBadgeOptions = {
   showLastBadge: true,
   showFirstBadge: false,
+  showCommentBadge: true,
 };
+
+let currentBadgeContext: ListingBadgeContext = {};
 
 export const setVisitedBadgeOptions = (options: VisitedBadgeOptions): void => {
   currentBadgeOptions = { ...currentBadgeOptions, ...options };
+};
+
+export const setVisitedBadgeContext = (context: ListingBadgeContext): void => {
+  currentBadgeContext = {
+    comments: context.comments || currentBadgeContext.comments || {},
+    notes: context.notes || currentBadgeContext.notes || {},
+  };
 };
 
 const createOrUpdateBadge = (
@@ -50,6 +66,8 @@ const createOrUpdateBadge = (
   firstTimestamp?: number,
   lastTimestamp?: number,
   visitCount?: number,
+  commentItem?: { text: string; createdAt: number },
+  noteItem?: { text: string; updatedAt: number; createdAt?: number },
   options: VisitedBadgeOptions = currentBadgeOptions,
 ): void => {
   const parent = container.parentElement;
@@ -57,9 +75,18 @@ const createOrUpdateBadge = (
 
   const showLast = options.showLastBadge !== false;
   const showFirst = options.showFirstBadge === true;
+  const showComment = options.showCommentBadge !== false;
+
+  const displayTime = lastTimestamp || firstTimestamp;
+  const isMultiple = Boolean(firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp);
+
+  const shouldRenderLast = showLast && Boolean(displayTime);
+  const shouldRenderFirst = showFirst && Boolean(firstTimestamp) && (!showLast || isMultiple);
+  const shouldRenderComment = showComment && Boolean(commentItem?.text?.trim());
+  const shouldRenderNote = Boolean(noteItem?.text?.trim());
 
   let badgesWrapper = parent.querySelector<HTMLDivElement>(':scope > .sm-visited-badges');
-  if (!showLast && !showFirst) {
+  if (!shouldRenderLast && !shouldRenderFirst && !shouldRenderComment && !shouldRenderNote) {
     if (badgesWrapper) badgesWrapper.remove();
     parent.querySelector(':scope > .sm-visited-badge')?.remove();
     return;
@@ -77,12 +104,7 @@ const createOrUpdateBadge = (
     parent.insertBefore(badgesWrapper, container);
   }
 
-  const displayTime = lastTimestamp || firstTimestamp;
-  const isMultiple = Boolean(firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp);
-
-  const shouldRenderLast = showLast && Boolean(displayTime);
-  const shouldRenderFirst = showFirst && Boolean(firstTimestamp) && (!showLast || isMultiple);
-
+  // 1. Son Kontrol Rozeti
   let lastBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-last');
   if (shouldRenderLast) {
     if (!lastBadge) {
@@ -109,6 +131,7 @@ const createOrUpdateBadge = (
     lastBadge.remove();
   }
 
+  // 2. İlk Kontrol Rozeti
   let firstBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-first');
   if (shouldRenderFirst) {
     if (!firstBadge) {
@@ -132,16 +155,72 @@ const createOrUpdateBadge = (
   } else if (firstBadge) {
     firstBadge.remove();
   }
+
+  // 3. Soru Soruldu / Yorum Rozeti
+  let commentBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-comment');
+  if (shouldRenderComment && commentItem) {
+    if (!commentBadge) {
+      commentBadge = document.createElement('span');
+      commentBadge.className = 'sm-visited-badge sm-badge-comment';
+      badgesWrapper.appendChild(commentBadge);
+    }
+    const labelText = 'Soru Soruldu';
+    if (commentBadge.dataset.label !== labelText) {
+      commentBadge.dataset.label = labelText;
+      commentBadge.innerHTML = `
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
+          <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353V2a1 1 0 0 0-1-1H2z"/>
+        </svg>
+        <span>${labelText}</span>
+      `;
+    }
+    const preview =
+      commentItem.text.length > 80 ? `${commentItem.text.slice(0, 80)}...` : commentItem.text;
+    commentBadge.title = `Soru Soruldu: "${preview}" (${formatVisitedDate(commentItem.createdAt)})`;
+  } else if (commentBadge) {
+    commentBadge.remove();
+  }
+
+  // 4. Not Var Rozeti
+  let noteBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-note');
+  if (shouldRenderNote && noteItem) {
+    if (!noteBadge) {
+      noteBadge = document.createElement('span');
+      noteBadge.className = 'sm-visited-badge sm-badge-note';
+      badgesWrapper.appendChild(noteBadge);
+    }
+    const labelText = 'Not Var';
+    if (noteBadge.dataset.label !== labelText) {
+      noteBadge.dataset.label = labelText;
+      noteBadge.innerHTML = `
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85;">
+          <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+        </svg>
+        <span>${labelText}</span>
+      `;
+    }
+    const preview = noteItem.text.length > 80 ? `${noteItem.text.slice(0, 80)}...` : noteItem.text;
+    noteBadge.title = `Özel Not: "${preview}"\nGüncelleme: ${formatVisitedDate(noteItem.updatedAt)}`;
+  } else if (noteBadge) {
+    noteBadge.remove();
+  }
 };
 
 export const highlightVisitedListings = (
   records: Record<string, unknown>,
   options?: VisitedBadgeOptions,
+  context?: ListingBadgeContext,
 ) => {
   if (options) {
     setVisitedBadgeOptions(options);
   }
-  if (!records || Object.keys(records).length === 0) return;
+  if (context) {
+    setVisitedBadgeContext(context);
+  }
+  if (!records && !currentBadgeContext.comments && !currentBadgeContext.notes) return;
+
+  const comments = currentBadgeContext.comments || {};
+  const notes = currentBadgeContext.notes || {};
 
   // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
   const listRows = document.querySelectorAll<HTMLTableRowElement>(
@@ -149,18 +228,32 @@ export const highlightVisitedListings = (
   );
   listRows.forEach((row) => {
     const id = row.getAttribute('data-id');
-    if (id && records[id]) {
-      if (!row.classList.contains('sm-visited-listing')) {
+    if (!id) return;
+
+    const isVisited = records && records[id];
+    const commentItem = comments[id];
+    const noteItem = notes[id];
+
+    if (isVisited || commentItem || noteItem) {
+      if (isVisited && !row.classList.contains('sm-visited-listing')) {
         row.classList.add('sm-visited-listing');
       }
       const titleLink = row.querySelector<HTMLAnchorElement>(
         'td.searchResultsTitleValue a.classifiedTitle',
       );
       if (titleLink) {
-        const firstTime = extractFirstTimestamp(records[id]);
-        const lastTime = extractLastTimestamp(records[id]);
-        const count = extractVisitCount(records[id]);
-        createOrUpdateBadge(titleLink, firstTime, lastTime, count);
+        const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
+        const lastTime = isVisited ? extractLastTimestamp(records[id]) : undefined;
+        const count = isVisited ? extractVisitCount(records[id]) : 0;
+        createOrUpdateBadge(
+          titleLink,
+          firstTime,
+          lastTime,
+          count,
+          commentItem,
+          noteItem,
+          currentBadgeOptions,
+        );
       }
     }
   });
@@ -171,16 +264,30 @@ export const highlightVisitedListings = (
   );
   galleryCells.forEach((cell) => {
     const id = cell.getAttribute('data-id');
-    if (id && records[id]) {
-      if (!cell.classList.contains('sm-visited-listing')) {
+    if (!id) return;
+
+    const isVisited = records && records[id];
+    const commentItem = comments[id];
+    const noteItem = notes[id];
+
+    if (isVisited || commentItem || noteItem) {
+      if (isVisited && !cell.classList.contains('sm-visited-listing')) {
         cell.classList.add('sm-visited-listing');
       }
       const titleLink = cell.querySelector<HTMLAnchorElement>('a.classifiedTitle');
       if (titleLink) {
-        const firstTime = extractFirstTimestamp(records[id]);
-        const lastTime = extractLastTimestamp(records[id]);
-        const count = extractVisitCount(records[id]);
-        createOrUpdateBadge(titleLink, firstTime, lastTime, count);
+        const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
+        const lastTime = isVisited ? extractLastTimestamp(records[id]) : undefined;
+        const count = isVisited ? extractVisitCount(records[id]) : 0;
+        createOrUpdateBadge(
+          titleLink,
+          firstTime,
+          lastTime,
+          count,
+          commentItem,
+          noteItem,
+          currentBadgeOptions,
+        );
       }
     }
   });
@@ -216,9 +323,10 @@ export const highlightVisitedDetail = (
   firstTimestamp?: number,
   lastTimestamp?: number,
   visitCount?: number,
+  commentItem?: ListingCommentItem,
 ) => {
   const primaryTime = lastTimestamp || firstTimestamp;
-  if (!primaryTime) return;
+  if (!primaryTime && !commentItem) return;
   if (document.querySelector('.sm-detail-visited-banner')) return;
 
   const titleContainer =
@@ -232,13 +340,20 @@ export const highlightVisitedDetail = (
     const dateInfo =
       firstTimestamp && lastTimestamp && firstTimestamp !== lastTimestamp
         ? `(${formatTimeAgo(lastTimestamp)} bakıldı · İlk: ${formatTimeAgo(firstTimestamp)} - ${formatVisitedDate(firstTimestamp)}${visitCount && visitCount > 1 ? ` · ${visitCount} kez` : ''})`
-        : `(${formatTimeAgo(primaryTime)} bakıldı · ${formatVisitedDate(primaryTime)})`;
+        : primaryTime
+          ? `(${formatTimeAgo(primaryTime)} bakıldı · ${formatVisitedDate(primaryTime)})`
+          : '';
+
+    const commentInfo = commentItem
+      ? `<span class="sm-badge" style="background-color: #059669 !important; margin-left: 6px;">Soru Soruldu</span>`
+      : '';
 
     banner.innerHTML = `
       <div>
         <span class="sm-badge">Ziyaret Edildi</span>
+        ${commentInfo}
         <span>Bu ilanı daha önce incelediniz</span>
-        <span class="sm-date">${dateInfo}</span>
+        ${dateInfo ? `<span class="sm-date">${dateInfo}</span>` : ''}
       </div>
     `;
     titleContainer.prepend(banner);

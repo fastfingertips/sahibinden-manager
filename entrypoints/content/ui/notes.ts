@@ -1,4 +1,4 @@
-import { formatDate as formatNoteDate, formatTimeAgo as formatNoteTimeAgo } from '@/utils/date';
+import { formatDate as formatNoteDate } from '@/utils/date';
 
 export interface ListingNote {
   adId: string;
@@ -13,61 +13,10 @@ let cachedNotes: Record<string, ListingNote> = {};
 let activeListingContext: { adId: string; title: string; url: string } | null = null;
 let isNotesFeatureEnabled = true;
 
-const getNoteTooltip = (note: ListingNote): string => {
-  const preview = note.text.trim();
-  const truncated = preview.length > 100 ? `${preview.slice(0, 100)}...` : preview;
-  const created = note.createdAt || note.updatedAt;
-  const updated = note.updatedAt;
-
-  if (created && updated && created !== updated) {
-    return `Özel Not: ${truncated}\nEklenme: ${formatNoteTimeAgo(created)} (${formatNoteDate(created)})\nDüzenlenme: ${formatNoteTimeAgo(updated)} (${formatNoteDate(updated)})`;
-  }
-  if (created) {
-    return `Özel Not: ${truncated}\nEklenme: ${formatNoteTimeAgo(created)} (${formatNoteDate(created)})`;
-  }
-  return `Özel Not: ${truncated}`;
-};
-
-export const highlightListingNotes = (notes: Record<string, ListingNote>) => {
-  if (!isNotesFeatureEnabled || !notes || Object.keys(notes).length === 0) return;
-
-  // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
-  const listRows = document.querySelectorAll<HTMLTableRowElement>(
-    '#searchResultsTable tr.searchResultsItem[data-id]',
-  );
-  listRows.forEach((row) => {
-    const id = row.getAttribute('data-id');
-    if (id && notes[id]?.text?.trim()) {
-      const titleLink = row.querySelector<HTMLAnchorElement>(
-        'td.searchResultsTitleValue a.classifiedTitle',
-      );
-      if (titleLink && !titleLink.querySelector('.sm-note-badge')) {
-        const badge = document.createElement('span');
-        badge.className = 'sm-note-badge';
-        badge.textContent = 'Not Var';
-        badge.title = getNoteTooltip(notes[id]);
-        titleLink.prepend(badge);
-      }
-    }
-  });
-
-  // 2. Galeri Görünümü (#searchResultsGallery td.searchResultsGalleryItem[data-id])
-  const galleryCells = document.querySelectorAll<HTMLTableCellElement>(
-    '#searchResultsGallery td.searchResultsGalleryItem[data-id]',
-  );
-  galleryCells.forEach((cell) => {
-    const id = cell.getAttribute('data-id');
-    if (id && notes[id]?.text?.trim()) {
-      const titleLink = cell.querySelector<HTMLAnchorElement>('a.classifiedTitle');
-      if (titleLink && !titleLink.querySelector('.sm-note-badge')) {
-        const badge = document.createElement('span');
-        badge.className = 'sm-note-badge';
-        badge.textContent = 'Not Var';
-        badge.title = getNoteTooltip(notes[id]);
-        titleLink.prepend(badge);
-      }
-    }
-  });
+export const highlightListingNotes = () => {
+  // Başlık hizasını ve satır akışını korumak için rozetler .sm-visited-badges
+  // sistemi tarafından üstte render edilir. Eski satır içi rozetler temizlenir.
+  document.querySelectorAll('.sm-note-badge').forEach((el) => el.remove());
 };
 
 export const setupDetailNotes = (adId: string, title: string, url: string) => {
@@ -333,9 +282,7 @@ export const initNotesMode = async (
 
 export const applyNotesToListings = () => {
   if (!isNotesFeatureEnabled) return;
-  if (cachedNotes && Object.keys(cachedNotes).length > 0) {
-    highlightListingNotes(cachedNotes);
-  }
+  highlightListingNotes();
   if (activeListingContext) {
     setupDetailNotes(
       activeListingContext.adId,

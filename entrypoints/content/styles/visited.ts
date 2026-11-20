@@ -99,6 +99,20 @@ export const visitedStyles = `
     border: 1px solid #c7d2fe !important;
   }
 
+  /* Soru Soruldu / Yorum Rozeti (Yeşil / Zümrüt) */
+  .sm-visited-badge.sm-badge-comment {
+    color: #065f46 !important;
+    background-color: #dcfce7 !important;
+    border: 1px solid #bbf7d0 !important;
+  }
+
+  /* Not Var Rozeti (Kehribar / Sarı) */
+  .sm-visited-badge.sm-badge-note {
+    color: #92400e !important;
+    background-color: #fef3c7 !important;
+    border: 1px solid #fde68a !important;
+  }
+
   /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli --- */
   .sm-detail-visited-banner {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;
