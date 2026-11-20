@@ -24,3 +24,38 @@ export const formatTimeAgo = (timestamp: number): string => {
   const years = Math.floor(days / 365);
   return `${years} yıl önce`;
 };
+
+const TURKISH_MONTHS: Record<string, number> = {
+  ocak: 0,
+  şubat: 1,
+  mart: 2,
+  nisan: 3,
+  mayıs: 4,
+  haziran: 5,
+  temmuz: 6,
+  ağustos: 7,
+  eylül: 8,
+  ekim: 9,
+  kasım: 10,
+  aralık: 11,
+};
+
+export const parseTurkishDate = (str: string): number | null => {
+  if (!str) return null;
+  const match = str
+    .toLowerCase()
+    .match(/(\d{1,2})\s+([a-zçğıöşü]+)\s+(\d{4})(?:[,\s]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if (match) {
+    const day = parseInt(match[1], 10);
+    const month = TURKISH_MONTHS[match[2]];
+    const year = parseInt(match[3], 10);
+    if (month !== undefined) {
+      const hours = match[4] ? parseInt(match[4], 10) : 0;
+      const minutes = match[5] ? parseInt(match[5], 10) : 0;
+      const seconds = match[6] ? parseInt(match[6], 10) : 0;
+      return new Date(year, month, day, hours, minutes, seconds).getTime();
+    }
+  }
+  const standard = Date.parse(str);
+  return isNaN(standard) ? null : standard;
+};

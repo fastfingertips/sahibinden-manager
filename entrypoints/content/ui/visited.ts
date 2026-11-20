@@ -327,7 +327,27 @@ export const highlightVisitedDetail = (
 ) => {
   const primaryTime = lastTimestamp || firstTimestamp;
   if (!primaryTime && !commentItem) return;
-  if (document.querySelector('.sm-detail-visited-banner')) return;
+
+  const existingBanner = document.querySelector<HTMLDivElement>('.sm-detail-visited-banner');
+  if (existingBanner) {
+    if (commentItem && !existingBanner.querySelector('.sm-badge-comment')) {
+      const firstBadge = existingBanner.querySelector('.sm-badge');
+      if (firstBadge) {
+        const commentBadge = document.createElement('span');
+        commentBadge.className = 'sm-badge sm-badge-comment';
+        commentBadge.setAttribute(
+          'style',
+          'background-color: #059669 !important; margin-left: 6px;',
+        );
+        commentBadge.textContent = 'Soru Soruldu';
+        if (commentItem.text) {
+          commentBadge.title = `Sorduğunuz Soru: "${commentItem.text}"`;
+        }
+        firstBadge.after(commentBadge);
+      }
+    }
+    return;
+  }
 
   const titleContainer =
     document.querySelector('.classifiedDetailTitle') ||
@@ -344,8 +364,11 @@ export const highlightVisitedDetail = (
           ? `(${formatTimeAgo(primaryTime)} bakıldı · ${formatVisitedDate(primaryTime)})`
           : '';
 
+    const commentTooltip = commentItem?.text
+      ? ` title="Sorduğunuz Soru: &quot;${commentItem.text.replace(/"/g, '&quot;')}&quot;"`
+      : '';
     const commentInfo = commentItem
-      ? `<span class="sm-badge" style="background-color: #059669 !important; margin-left: 6px;">Soru Soruldu</span>`
+      ? `<span class="sm-badge sm-badge-comment"${commentTooltip} style="background-color: #059669 !important; margin-left: 6px;">Soru Soruldu</span>`
       : '';
 
     banner.innerHTML = `

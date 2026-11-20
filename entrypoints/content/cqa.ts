@@ -1,5 +1,6 @@
 import { COPY_ICON_SVG, CHECK_ICON_SVG } from './ui/descriptionCopy';
 import { copyToClipboard } from '@/utils/clipboard';
+import { parseTurkishDate } from '@/utils/date';
 
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 
@@ -77,7 +78,7 @@ export const removeListingComment = async (adId: string): Promise<void> => {
 export const detectUserQuestions = (adId: string, title?: string, url?: string): void => {
   if (!adId) return;
   const userActionContainers = document.querySelectorAll(
-    '.thread-item .container-thread-actions[data-operation-abilities*="QUESTION_DELETABLE"]',
+    '.thread-item .container-thread-actions[data-operation-abilities*="SHOW_USER_ACTION"], .thread-item .container-thread-actions[data-operation-abilities*="QUESTION_DELETABLE"]',
   );
 
   let foundUserQuestion = false;
@@ -95,11 +96,11 @@ export const detectUserQuestions = (adId: string, title?: string, url?: string):
 
     const author = questionEl?.querySelector('.name-surname')?.textContent?.trim();
     const dateEl = questionEl?.querySelector('.comment-date');
-    const dateTitle = dateEl?.getAttribute('title')?.trim();
+    const dateTitle = dateEl?.getAttribute('title')?.trim() || dateEl?.textContent?.trim();
     let createdAt = Date.now();
     if (dateTitle) {
-      const parsed = Date.parse(dateTitle);
-      if (!isNaN(parsed)) createdAt = parsed;
+      const parsed = parseTurkishDate(dateTitle);
+      if (parsed) createdAt = parsed;
     }
 
     foundUserQuestion = true;

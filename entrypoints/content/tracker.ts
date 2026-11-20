@@ -153,6 +153,14 @@ export const initVisitedTracking = async () => {
       });
       if (isHighlightEnabled) {
         highlightVisitedListings(cachedRecords);
+        const currentAdId = extractClassifiedId();
+        if (currentAdId && cachedComments[currentAdId]) {
+          const existing = cachedRecords[currentAdId];
+          const first = getFirstTimestamp(existing);
+          const last = getLastTimestamp(existing);
+          const count = getVisitCount(existing);
+          highlightVisitedDetail(currentAdId, first, last, count, cachedComments[currentAdId]);
+        }
       }
     });
 
