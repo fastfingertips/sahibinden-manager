@@ -100,9 +100,11 @@ export const getUnvisitedListingUrls = (
   const seen = new Set<string>();
 
   for (const el of elements) {
-    const link = el.querySelector<HTMLAnchorElement>(
-      'a.classifiedTitle, a.refurbishment-classified-url, a[href*="/ilan/"]',
-    );
+    const link =
+      el.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a.classifiedTitle') ||
+      el.querySelector<HTMLAnchorElement>('a.classifiedTitle') ||
+      el.querySelector<HTMLAnchorElement>('a.refurbishment-classified-url') ||
+      el.querySelector<HTMLAnchorElement>('a[href*="/ilan/"]');
     const href = link?.href;
     if (href && !seen.has(href)) {
       seen.add(href);

@@ -222,6 +222,13 @@ export const highlightVisitedListings = (
   const comments = currentBadgeContext.comments || {};
   const notes = currentBadgeContext.notes || {};
 
+  // Resim hücresine yanlışlıkla eklenmiş eski rozet konteynerlerini temizle
+  document
+    .querySelectorAll(
+      'td.searchResultsLargeThumbnail .sm-visited-badges, td.searchResultsLargeThumbnailValue .sm-visited-badges',
+    )
+    .forEach((el) => el.remove());
+
   // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem)
   const listRows = document.querySelectorAll<HTMLTableRowElement>(
     '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
@@ -230,9 +237,13 @@ export const highlightVisitedListings = (
     if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) return;
 
     let id = row.getAttribute('data-id') || row.getAttribute('data-classified-id');
-    const titleLink = row.querySelector<HTMLAnchorElement>(
-      'td.searchResultsTitleValue a.classifiedTitle, a.classifiedTitle, a.refurbishment-classified-url, td.searchResultsTitleValue a, a[href*="/ilan/"]',
-    );
+    const titleLink =
+      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a.classifiedTitle') ||
+      row.querySelector<HTMLAnchorElement>(
+        'td.searchResultsTitleValue a.refurbishment-classified-url',
+      ) ||
+      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a') ||
+      row.querySelector<HTMLAnchorElement>('a.classifiedTitle');
 
     if (!id && titleLink?.href) {
       const match =
@@ -281,9 +292,10 @@ export const highlightVisitedListings = (
     if (cell.classList.contains('nativeAd')) return;
 
     let id = cell.getAttribute('data-id') || cell.getAttribute('data-classified-id');
-    const titleLink = cell.querySelector<HTMLAnchorElement>(
-      'a.classifiedTitle, a.refurbishment-classified-url, a[href*="/ilan/"]',
-    );
+    const titleLink =
+      cell.querySelector<HTMLAnchorElement>('a.classifiedTitle') ||
+      cell.querySelector<HTMLAnchorElement>('a.refurbishment-classified-url') ||
+      cell.querySelector<HTMLAnchorElement>('.classifiedTitle');
 
     if (!id && titleLink?.href) {
       const match =

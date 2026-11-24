@@ -55,11 +55,13 @@ export const visitedStyles = `
   /* Liste Görünümünde (#searchResultsTable):
      Başlığın dikey hizasını ve satır akışını KESİNLİKLE bozmamak için
      rozetler mutlak konumlandırma (absolute) ile başlığın üstündeki boşluğa yerleştirilir. */
-  #searchResultsTable td.searchResultsTitleValue {
+  #searchResultsTable td.searchResultsTitleValue,
+  table.searchResultsTable td.searchResultsTitleValue {
     position: relative !important;
   }
 
-  #searchResultsTable td.searchResultsTitleValue .sm-visited-badges {
+  #searchResultsTable td.searchResultsTitleValue .sm-visited-badges,
+  table.searchResultsTable td.searchResultsTitleValue .sm-visited-badges {
     position: absolute !important;
     top: 10px !important;
     left: 4px !important;
