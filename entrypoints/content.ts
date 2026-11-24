@@ -73,39 +73,67 @@ export default defineContentScript({
     initNotesMode(adId, title, window.location.href);
     initQnAMode(adId, title, window.location.href);
 
-    const activeAdId = adId || 'ilan';
+    const getActiveAdId = () => extractClassifiedId() || 'ilan';
 
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
+    const runSafe = (fn: () => void) => {
+      try {
+        fn();
+      } catch (err) {
+        console.error('Sahibinden Manager görev hatası:', err);
+      }
+    };
+
     const runTasks = () => {
-      handleMegaPhotoLightbox(activeAdId);
-      handleMainPageThumbnails(activeAdId);
-      handleMainPhoto(activeAdId);
-      applyVisitedToListings();
-      applyRefurbishedIgnore();
-      applyNotesToListings();
-      handlePriceHistoryAnalytics();
-      handleDescriptionCopyButton();
-      handleClassifiedDataCopyButton();
-      handleAutoExpandQnA();
-      handleDetectUserComments();
-      handleQnACopyButton();
-      handleUnvisitedOpenerButton();
-      trackFilteredAds();
+      const activeAdId = getActiveAdId();
+      runSafe(() => handleMegaPhotoLightbox(activeAdId));
+      runSafe(() => handleMainPageThumbnails(activeAdId));
+      runSafe(() => handleMainPhoto(activeAdId));
+      runSafe(() => applyVisitedToListings());
+      runSafe(() => applyRefurbishedIgnore());
+      runSafe(() => applyNotesToListings());
+      runSafe(() => handlePriceHistoryAnalytics());
+      runSafe(() => handleDescriptionCopyButton());
+      runSafe(() => handleClassifiedDataCopyButton());
+      runSafe(() => handleAutoExpandQnA());
+      runSafe(() => handleDetectUserComments());
+      runSafe(() => handleQnACopyButton());
+      runSafe(() => handleUnvisitedOpenerButton());
+      runSafe(() => trackFilteredAds());
     };
 
     const isOurOwnElement = (node: Node | null): boolean => {
       if (!node) return false;
       const el = node instanceof HTMLElement ? node : node.parentElement;
       if (!el) return false;
-      return (
-        Boolean(el.closest('[class*="sm-"]')) ||
-        (typeof el.className === 'string' && el.className.includes('sm-'))
+
+      // Tablo, liste ve sayfa iskeletine ait yerel öğeler asla dahili sayılmaz
+      const tag = el.tagName;
+      if (
+        tag === 'TR' ||
+        tag === 'TD' ||
+        tag === 'TH' ||
+        tag === 'TBODY' ||
+        tag === 'TABLE' ||
+        tag === 'UL' ||
+        tag === 'LI' ||
+        tag === 'BODY' ||
+        tag === 'HTML'
+      ) {
+        return false;
+      }
+
+      // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
+      return Boolean(
+        el.closest(
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+        ),
       );
     };
 
     const observer = new MutationObserver((mutations) => {
-      // Sadece eklentinin kendi oluşturduğu öğelerdeki mutasyonları yok say
+      // Sadece eklentinin kendi oluşturduğu UI öğelerindeki mutasyonları yok say
       const isInternal = mutations.every((m) => isOurOwnElement(m.target));
       if (isInternal) return;
 
@@ -116,6 +144,42 @@ export default defineContentScript({
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
+
+    // Sayfa içi SPA / AJAX / PJAX gezinmelerini (sayfalama, filtreleme, sıralama) yakala
+    const wrapHistoryMethod = (type: 'pushState' | 'replaceState') => {
+      const orig = history[type];
+      return function (this: History, ...args: Parameters<History['pushState']>) {
+        const result = orig.apply(this, args);
+        window.dispatchEvent(new Event('sm:locationchange'));
+        return result;
+      };
+    };
+
+    history.pushState = wrapHistoryMethod('pushState');
+    history.replaceState = wrapHistoryMethod('replaceState');
+
+    const handleNavigationChange = () => {
+      runTasks();
+      setTimeout(runTasks, 250);
+      setTimeout(runTasks, 800);
+    };
+
+    window.addEventListener('popstate', handleNavigationChange);
+    window.addEventListener('sm:locationchange', handleNavigationChange);
+    window.addEventListener('pageshow', handleNavigationChange);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        runTasks();
+      }
+    });
+
+    // Sayfa yüklenme gecikmelerini ve dinamik listeleri kaçırmamak için periyodik kontrol
+    setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        runTasks();
+      }
+    }, 1500);
 
     // İlk çalıştırma
     runTasks();

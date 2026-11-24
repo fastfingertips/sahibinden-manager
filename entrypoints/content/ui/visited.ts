@@ -222,12 +222,30 @@ export const highlightVisitedListings = (
   const comments = currentBadgeContext.comments || {};
   const notes = currentBadgeContext.notes || {};
 
-  // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem[data-id])
+  // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem)
   const listRows = document.querySelectorAll<HTMLTableRowElement>(
-    '#searchResultsTable tr.searchResultsItem[data-id]',
+    '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
   );
   listRows.forEach((row) => {
-    const id = row.getAttribute('data-id');
+    if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) return;
+
+    let id = row.getAttribute('data-id') || row.getAttribute('data-classified-id');
+    const titleLink = row.querySelector<HTMLAnchorElement>(
+      'td.searchResultsTitleValue a.classifiedTitle, a.classifiedTitle, a.refurbishment-classified-url, td.searchResultsTitleValue a, a[href*="/ilan/"]',
+    );
+
+    if (!id && titleLink?.href) {
+      const match =
+        titleLink.href.match(/(\d{8,12})\/detay/) ||
+        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
+        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
+      if (match) id = match[1];
+    }
+    if (!id && row.id) {
+      const match = row.id.match(/\d{8,12}/);
+      if (match) id = match[0];
+    }
+
     if (!id) return;
 
     const isVisited = records && records[id];
@@ -238,9 +256,6 @@ export const highlightVisitedListings = (
       if (isVisited && !row.classList.contains('sm-visited-listing')) {
         row.classList.add('sm-visited-listing');
       }
-      const titleLink = row.querySelector<HTMLAnchorElement>(
-        'td.searchResultsTitleValue a.classifiedTitle',
-      );
       if (titleLink) {
         const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
         const lastTime = isVisited ? extractLastTimestamp(records[id]) : undefined;
@@ -258,12 +273,30 @@ export const highlightVisitedListings = (
     }
   });
 
-  // 2. Galeri Görünümü (#searchResultsGallery td.searchResultsGalleryItem[data-id])
+  // 2. Galeri Görünümü (#searchResultsGallery td.searchResultsGalleryItem)
   const galleryCells = document.querySelectorAll<HTMLTableCellElement>(
-    '#searchResultsGallery td.searchResultsGalleryItem[data-id]',
+    '#searchResultsGallery td.searchResultsGalleryItem, table.searchResultsGallery td.searchResultsGalleryItem',
   );
   galleryCells.forEach((cell) => {
-    const id = cell.getAttribute('data-id');
+    if (cell.classList.contains('nativeAd')) return;
+
+    let id = cell.getAttribute('data-id') || cell.getAttribute('data-classified-id');
+    const titleLink = cell.querySelector<HTMLAnchorElement>(
+      'a.classifiedTitle, a.refurbishment-classified-url, a[href*="/ilan/"]',
+    );
+
+    if (!id && titleLink?.href) {
+      const match =
+        titleLink.href.match(/(\d{8,12})\/detay/) ||
+        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
+        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
+      if (match) id = match[1];
+    }
+    if (!id && cell.id) {
+      const match = cell.id.match(/\d{8,12}/);
+      if (match) id = match[0];
+    }
+
     if (!id) return;
 
     const isVisited = records && records[id];
@@ -274,7 +307,6 @@ export const highlightVisitedListings = (
       if (isVisited && !cell.classList.contains('sm-visited-listing')) {
         cell.classList.add('sm-visited-listing');
       }
-      const titleLink = cell.querySelector<HTMLAnchorElement>('a.classifiedTitle');
       if (titleLink) {
         const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
         const lastTime = isVisited ? extractLastTimestamp(records[id]) : undefined;

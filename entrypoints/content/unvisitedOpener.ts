@@ -57,10 +57,15 @@ export const showToast = (message: string, type: 'success' | 'info' = 'info') =>
 export const getUnvisitedListingElements = (): HTMLElement[] => {
   // 1. Liste Görünümü
   const rows = Array.from(
-    document.querySelectorAll<HTMLElement>('#searchResultsTable tr.searchResultsItem[data-id]'),
+    document.querySelectorAll<HTMLElement>(
+      '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
+    ),
   );
   if (rows.length > 0) {
     return rows.filter((row) => {
+      if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) {
+        return false;
+      }
       if (row.classList.contains('sm-visited-listing')) return false;
       if (row.classList.contains('sm-refurbished-ignored')) return false;
       if (row.style.display === 'none') return false;
@@ -71,11 +76,12 @@ export const getUnvisitedListingElements = (): HTMLElement[] => {
   // 2. Galeri Görünümü
   const galleryItems = Array.from(
     document.querySelectorAll<HTMLElement>(
-      '#searchResultsGallery td.searchResultsGalleryItem[data-id]',
+      '#searchResultsGallery td.searchResultsGalleryItem, table.searchResultsGallery td.searchResultsGalleryItem',
     ),
   );
   if (galleryItems.length > 0) {
     return galleryItems.filter((item) => {
+      if (item.classList.contains('nativeAd')) return false;
       if (item.classList.contains('sm-visited-listing')) return false;
       if (item.classList.contains('sm-refurbished-ignored')) return false;
       if (item.style.display === 'none') return false;
@@ -195,12 +201,15 @@ export const handleUnvisitedOpenerButton = () => {
     });
 
     btnContainer.appendChild(btn);
+  }
 
-    if (targetContainer) {
+  // DOM bağlantısını doğrula ve gerekirse hedef kapsayıcıya yeniden iliştir
+  if (targetContainer) {
+    if (!targetContainer.contains(btnContainer)) {
       targetContainer.appendChild(btnContainer);
-    } else {
-      searchResults.parentElement?.insertBefore(btnContainer, searchResults);
     }
+  } else if (searchResults.parentElement && !searchResults.parentElement.contains(btnContainer)) {
+    searchResults.parentElement.insertBefore(btnContainer, searchResults);
   }
 
   // Butonun sayaç ve metnini dinamik güncelle
