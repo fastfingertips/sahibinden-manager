@@ -18,6 +18,10 @@ function App() {
     isVisitedLastBadgeEnabled,
     isVisitedFirstBadgeEnabled,
     isVisitedCommentBadgeEnabled,
+    isUnvisitedOpenerEnabled,
+    unvisitedOpenerCount,
+    isUnvisitedOpenerShortcutEnabled,
+    isUnvisitedOpenerButtonEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -37,6 +41,11 @@ function App() {
     toggleVisitedHighlight,
     toggleVisitedLastBadge,
     toggleVisitedFirstBadge,
+    toggleVisitedCommentBadge,
+    toggleUnvisitedOpener,
+    changeUnvisitedOpenerCount,
+    toggleUnvisitedOpenerShortcut,
+    toggleUnvisitedOpenerButton,
     toggleNotes,
     togglePriceHistory,
     toggleHideRefurbished,
@@ -85,6 +94,14 @@ function App() {
             onToggleVisitedFirstBadge={toggleVisitedFirstBadge}
             isVisitedCommentBadgeEnabled={isVisitedCommentBadgeEnabled}
             onToggleVisitedCommentBadge={toggleVisitedCommentBadge}
+            isUnvisitedOpenerEnabled={isUnvisitedOpenerEnabled}
+            onToggleUnvisitedOpener={toggleUnvisitedOpener}
+            unvisitedOpenerCount={unvisitedOpenerCount}
+            onChangeUnvisitedOpenerCount={changeUnvisitedOpenerCount}
+            isUnvisitedOpenerShortcutEnabled={isUnvisitedOpenerShortcutEnabled}
+            onToggleUnvisitedOpenerShortcut={toggleUnvisitedOpenerShortcut}
+            isUnvisitedOpenerButtonEnabled={isUnvisitedOpenerButtonEnabled}
+            onToggleUnvisitedOpenerButton={toggleUnvisitedOpenerButton}
             isNotesEnabled={isNotesEnabled}
             onToggleNotes={toggleNotes}
             isPriceHistoryEnabled={isPriceHistoryEnabled}

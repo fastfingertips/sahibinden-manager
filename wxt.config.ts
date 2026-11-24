@@ -9,7 +9,7 @@ export default defineConfig({
   }),
   manifest: {
     name: 'Sahibinden Manager',
-    permissions: ['storage', 'downloads', 'activeTab'],
+    permissions: ['storage', 'downloads', 'activeTab', 'tabs'],
     host_permissions: ['https://*.sahibinden.com/*'],
   },
 });

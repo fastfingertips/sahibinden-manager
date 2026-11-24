@@ -76,6 +76,14 @@ interface SettingsSectionProps {
   onToggleVisitedFirstBadge?: () => void;
   isVisitedCommentBadgeEnabled?: boolean;
   onToggleVisitedCommentBadge?: () => void;
+  isUnvisitedOpenerEnabled?: boolean;
+  onToggleUnvisitedOpener?: () => void;
+  unvisitedOpenerCount?: number;
+  onChangeUnvisitedOpenerCount?: (count: number) => void;
+  isUnvisitedOpenerShortcutEnabled?: boolean;
+  onToggleUnvisitedOpenerShortcut?: () => void;
+  isUnvisitedOpenerButtonEnabled?: boolean;
+  onToggleUnvisitedOpenerButton?: () => void;
   isNotesEnabled: boolean;
   onToggleNotes: () => void;
   isPriceHistoryEnabled: boolean;
@@ -113,6 +121,14 @@ export const SettingsSection = ({
   onToggleVisitedFirstBadge,
   isVisitedCommentBadgeEnabled = true,
   onToggleVisitedCommentBadge,
+  isUnvisitedOpenerEnabled = true,
+  onToggleUnvisitedOpener,
+  unvisitedOpenerCount = 5,
+  onChangeUnvisitedOpenerCount,
+  isUnvisitedOpenerShortcutEnabled = true,
+  onToggleUnvisitedOpenerShortcut,
+  isUnvisitedOpenerButtonEnabled = true,
+  onToggleUnvisitedOpenerButton,
   isNotesEnabled,
   onToggleNotes,
   isPriceHistoryEnabled,
@@ -208,6 +224,73 @@ export const SettingsSection = ({
               >
                 Geçmişi Temizle
               </button>
+            </div>
+          )}
+        </SettingItem>
+
+        <SettingItem
+          label="Ziyaret Edilmemiş İlanları Aç"
+          description="Arama listesinde henüz incelemediğiniz ilanları arka planda yeni sekmelerde açar."
+          checked={isUnvisitedOpenerEnabled}
+          onChange={onToggleUnvisitedOpener || (() => {})}
+          borderTop
+        >
+          {isUnvisitedOpenerEnabled && (
+            <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex flex-col space-y-2 py-1.5 bg-[#f9fafb] rounded-r-xs pr-2">
+              <div className="flex items-center justify-between gap-1 flex-wrap">
+                <span className="text-[10.5px] font-medium text-[#333]">Açılacak İlan Adedi:</span>
+                <div className="flex items-center gap-1">
+                  {[3, 5, 10, 20, 0].map((cnt) => (
+                    <button
+                      key={cnt}
+                      type="button"
+                      onClick={() => onChangeUnvisitedOpenerCount?.(cnt)}
+                      className={`text-[9.5px] font-semibold px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
+                        unvisitedOpenerCount === cnt
+                          ? 'bg-[#1a4f82] text-white'
+                          : 'bg-white text-[#555] border border-[#d0dbe5] hover:bg-[#f0f6fc]'
+                      }`}
+                      title={
+                        cnt === 0
+                          ? 'Sayfadaki tüm ziyaret edilmemiş ilanları açar'
+                          : `${cnt} ilan açar`
+                      }
+                    >
+                      {cnt === 0 ? 'Tümü (Max)' : cnt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {onToggleUnvisitedOpenerShortcut && (
+                <label className="flex items-center justify-between group cursor-pointer pt-1 border-t border-[#edf2f7]">
+                  <span className="text-[10px] text-[#444] group-hover:text-[#417abb] transition-colors">
+                    Klavye Kısayolu (U tuşu)
+                  </span>
+                  <div className="sh-switch scale-75 origin-right">
+                    <input
+                      type="checkbox"
+                      checked={isUnvisitedOpenerShortcutEnabled}
+                      onChange={onToggleUnvisitedOpenerShortcut}
+                    />
+                    <div className="slider"></div>
+                  </div>
+                </label>
+              )}
+              {onToggleUnvisitedOpenerButton && (
+                <label className="flex items-center justify-between group cursor-pointer">
+                  <span className="text-[10px] text-[#444] group-hover:text-[#417abb] transition-colors">
+                    Liste Üzerinde Hızlı Aç Butonu
+                  </span>
+                  <div className="sh-switch scale-75 origin-right">
+                    <input
+                      type="checkbox"
+                      checked={isUnvisitedOpenerButtonEnabled}
+                      onChange={onToggleUnvisitedOpenerButton}
+                    />
+                    <div className="slider"></div>
+                  </div>
+                </label>
+              )}
             </div>
           )}
         </SettingItem>

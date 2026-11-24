@@ -87,6 +87,10 @@ export const useStats = () => {
   const [isVisitedLastBadgeEnabled, setIsVisitedLastBadgeEnabled] = useState(true);
   const [isVisitedFirstBadgeEnabled, setIsVisitedFirstBadgeEnabled] = useState(false);
   const [isVisitedCommentBadgeEnabled, setIsVisitedCommentBadgeEnabled] = useState(true);
+  const [isUnvisitedOpenerEnabled, setIsUnvisitedOpenerEnabled] = useState(true);
+  const [unvisitedOpenerCount, setUnvisitedOpenerCountState] = useState(5);
+  const [isUnvisitedOpenerShortcutEnabled, setIsUnvisitedOpenerShortcutEnabled] = useState(true);
+  const [isUnvisitedOpenerButtonEnabled, setIsUnvisitedOpenerButtonEnabled] = useState(true);
   const [isNotesEnabled, setIsNotesEnabled] = useState(true);
   const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
@@ -108,6 +112,14 @@ export const useStats = () => {
       const visitedLast = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
       const visitedFirst = await storage.getItem<boolean>('local:isVisitedFirstBadgeEnabled');
       const visitedComment = await storage.getItem<boolean>('local:isVisitedCommentBadgeEnabled');
+      const unvisitedOpener = await storage.getItem<boolean>('local:isUnvisitedOpenerEnabled');
+      const unvisitedCount = await storage.getItem<number>('local:unvisitedOpenerCount');
+      const unvisitedShortcut = await storage.getItem<boolean>(
+        'local:isUnvisitedOpenerShortcutEnabled',
+      );
+      const unvisitedButton = await storage.getItem<boolean>(
+        'local:isUnvisitedOpenerButtonEnabled',
+      );
       const notesOpt = await storage.getItem<boolean>('local:isNotesEnabled');
       const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
@@ -131,6 +143,12 @@ export const useStats = () => {
       setIsVisitedLastBadgeEnabled(visitedLast !== false);
       setIsVisitedFirstBadgeEnabled(visitedFirst === true);
       setIsVisitedCommentBadgeEnabled(visitedComment !== false);
+      setIsUnvisitedOpenerEnabled(unvisitedOpener !== false);
+      if (typeof unvisitedCount === 'number') {
+        setUnvisitedOpenerCountState(unvisitedCount);
+      }
+      setIsUnvisitedOpenerShortcutEnabled(unvisitedShortcut !== false);
+      setIsUnvisitedOpenerButtonEnabled(unvisitedButton !== false);
       setIsNotesEnabled(notesOpt !== false);
       setIsPriceHistoryEnabled(priceHistory !== false);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
@@ -171,6 +189,29 @@ export const useStats = () => {
       'local:isVisitedCommentBadgeEnabled',
       (newVal) => {
         setIsVisitedCommentBadgeEnabled(newVal !== false);
+      },
+    );
+    const unwatchUnvisitedOpener = storage.watch<boolean>(
+      'local:isUnvisitedOpenerEnabled',
+      (newVal) => {
+        setIsUnvisitedOpenerEnabled(newVal !== false);
+      },
+    );
+    const unwatchUnvisitedCount = storage.watch<number>('local:unvisitedOpenerCount', (newVal) => {
+      if (typeof newVal === 'number') {
+        setUnvisitedOpenerCountState(newVal);
+      }
+    });
+    const unwatchUnvisitedShortcut = storage.watch<boolean>(
+      'local:isUnvisitedOpenerShortcutEnabled',
+      (newVal) => {
+        setIsUnvisitedOpenerShortcutEnabled(newVal !== false);
+      },
+    );
+    const unwatchUnvisitedButton = storage.watch<boolean>(
+      'local:isUnvisitedOpenerButtonEnabled',
+      (newVal) => {
+        setIsUnvisitedOpenerButtonEnabled(newVal !== false);
       },
     );
     const unwatchNotesOpt = storage.watch<boolean>('local:isNotesEnabled', (newVal) => {
@@ -235,6 +276,10 @@ export const useStats = () => {
       unwatchVisitedLast();
       unwatchVisitedFirst();
       unwatchVisitedComment();
+      unwatchUnvisitedOpener();
+      unwatchUnvisitedCount();
+      unwatchUnvisitedShortcut();
+      unwatchUnvisitedButton();
       unwatchNotesOpt();
       unwatchPriceHistory();
       unwatchRefurbished();
@@ -284,6 +329,29 @@ export const useStats = () => {
     const newVal = !isVisitedCommentBadgeEnabled;
     setIsVisitedCommentBadgeEnabled(newVal);
     await storage.setItem('local:isVisitedCommentBadgeEnabled', newVal);
+  };
+
+  const toggleUnvisitedOpener = async () => {
+    const newVal = !isUnvisitedOpenerEnabled;
+    setIsUnvisitedOpenerEnabled(newVal);
+    await storage.setItem('local:isUnvisitedOpenerEnabled', newVal);
+  };
+
+  const changeUnvisitedOpenerCount = async (count: number) => {
+    setUnvisitedOpenerCountState(count);
+    await storage.setItem('local:unvisitedOpenerCount', count);
+  };
+
+  const toggleUnvisitedOpenerShortcut = async () => {
+    const newVal = !isUnvisitedOpenerShortcutEnabled;
+    setIsUnvisitedOpenerShortcutEnabled(newVal);
+    await storage.setItem('local:isUnvisitedOpenerShortcutEnabled', newVal);
+  };
+
+  const toggleUnvisitedOpenerButton = async () => {
+    const newVal = !isUnvisitedOpenerButtonEnabled;
+    setIsUnvisitedOpenerButtonEnabled(newVal);
+    await storage.setItem('local:isUnvisitedOpenerButtonEnabled', newVal);
   };
 
   const toggleNotes = async () => {
@@ -375,6 +443,10 @@ export const useStats = () => {
     isVisitedLastBadgeEnabled,
     isVisitedFirstBadgeEnabled,
     isVisitedCommentBadgeEnabled,
+    isUnvisitedOpenerEnabled,
+    unvisitedOpenerCount,
+    isUnvisitedOpenerShortcutEnabled,
+    isUnvisitedOpenerButtonEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
     isHideRefurbishedEnabled,
@@ -395,6 +467,10 @@ export const useStats = () => {
     toggleVisitedLastBadge,
     toggleVisitedFirstBadge,
     toggleVisitedCommentBadge,
+    toggleUnvisitedOpener,
+    changeUnvisitedOpenerCount,
+    toggleUnvisitedOpenerShortcut,
+    toggleUnvisitedOpenerButton,
     toggleNotes,
     togglePriceHistory,
     toggleHideRefurbished,
