@@ -9,7 +9,11 @@ export default defineConfig({
   }),
   manifest: {
     name: 'Sahibinden Manager',
+    description:
+      'Sahibinden.com için kompakt liste, ziyaret takibi, ilan eleme, not defteri ve gelişmiş filtreleme araçları.',
     permissions: ['storage', 'downloads', 'activeTab', 'tabs'],
     host_permissions: ['https://*.sahibinden.com/*'],
+    homepage_url: 'https://github.com/fastfingertips/sahibinden-manager',
+    author: 'fastfingertips',
   },
 });
