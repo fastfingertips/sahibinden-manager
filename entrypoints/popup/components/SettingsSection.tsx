@@ -90,6 +90,10 @@ interface SettingsSectionProps {
   onToggleEliminatedHighlight?: () => void;
   isPriceHistoryEnabled: boolean;
   onTogglePriceHistory: () => void;
+  isHideEliminatedEnabled?: boolean;
+  onToggleHideEliminated?: () => void;
+  isHideVisitedEnabled?: boolean;
+  onToggleHideVisited?: () => void;
   isAutoExpandQnAEnabled: boolean;
   onToggleAutoExpandQnA: () => void;
   isKeyboardNavEnabled: boolean;
@@ -137,6 +141,10 @@ export const SettingsSection = ({
   onToggleEliminatedHighlight,
   isPriceHistoryEnabled,
   onTogglePriceHistory,
+  isHideEliminatedEnabled = false,
+  onToggleHideEliminated,
+  isHideVisitedEnabled = false,
+  onToggleHideVisited,
   isAutoExpandQnAEnabled,
   onToggleAutoExpandQnA,
   isKeyboardNavEnabled,
@@ -353,14 +361,30 @@ export const SettingsSection = ({
     {/* Grup 3: Filtreleme ve Temizlik */}
     <div className="p-3 rounded-sm bg-white border border-[#dbdbdb] shadow-xs">
       <h2 className="text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2">
-        Filtreleme & Temizlik
+        Listeden İlan Gizleme (Filtreleme)
       </h2>
       <div className="space-y-2.5">
+        <SettingItem
+          label="Elenen İlanları Gizle"
+          description="Elediğiniz ilanları arama sonuç listesinden tamamen kaldırır."
+          checked={isHideEliminatedEnabled}
+          onChange={onToggleHideEliminated || (() => {})}
+        />
+
+        <SettingItem
+          label="Ziyaret Edilen İlanları Gizle"
+          description="Daha önce incelediğiniz ilanları sonuç listesinden kaldırarak yeni ilanlara odaklanmanızı sağlar."
+          checked={isHideVisitedEnabled}
+          onChange={onToggleHideVisited || (() => {})}
+          borderTop
+        />
+
         <SettingItem
           label="Yenilenmiş Cihazları Gizle (Yepy)"
           description="Arama listelerinde ve tablolarda yer alan sponsorlu yenilenmiş telefon (Yepy) satır ve bloklarını gizler."
           checked={isHideRefurbishedEnabled}
           onChange={onToggleHideRefurbished}
+          borderTop
         >
           {(isHideRefurbishedEnabled || ignoredRefurbishedCount > 0) && (
             <div className="mt-1.5 ml-1 pl-3 border-l-2 border-[#d0dbe5] flex items-center justify-between text-[10px] text-[#666] bg-[#f9fafb] py-1 px-2 rounded-r-xs">

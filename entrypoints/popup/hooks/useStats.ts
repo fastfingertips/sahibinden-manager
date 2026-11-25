@@ -124,6 +124,8 @@ export const useStats = () => {
   const [isUnvisitedOpenerButtonEnabled, setIsUnvisitedOpenerButtonEnabled] = useState(true);
   const [isNotesEnabled, setIsNotesEnabled] = useState(true);
   const [isPriceHistoryEnabled, setIsPriceHistoryEnabled] = useState(true);
+  const [isHideEliminatedEnabled, setIsHideEliminatedEnabled] = useState(false);
+  const [isHideVisitedEnabled, setIsHideVisitedEnabled] = useState(false);
   const [isHideRefurbishedEnabled, setIsHideRefurbishedEnabled] = useState(false);
   const [isHideAdsEnabled, setIsHideAdsEnabled] = useState(false);
   const [isAutoExpandQnAEnabled, setIsAutoExpandQnAEnabled] = useState(true);
@@ -155,6 +157,8 @@ export const useStats = () => {
       );
       const notesOpt = await storage.getItem<boolean>('local:isNotesEnabled');
       const priceHistory = await storage.getItem<boolean>('local:isPriceHistoryEnabled');
+      const hideEliminated = await storage.getItem<boolean>('local:isHideEliminatedEnabled');
+      const hideVisited = await storage.getItem<boolean>('local:isHideVisitedEnabled');
       const hideRefurbished = await storage.getItem<boolean>('local:isHideRefurbishedEnabled');
       const hideAds = await storage.getItem<boolean>('local:isHideAdsEnabled');
       const autoExpandQnA = await storage.getItem<boolean>('local:isAutoExpandQnAEnabled');
@@ -190,6 +194,8 @@ export const useStats = () => {
       setIsUnvisitedOpenerButtonEnabled(unvisitedButton !== false);
       setIsNotesEnabled(notesOpt !== false);
       setIsPriceHistoryEnabled(priceHistory !== false);
+      setIsHideEliminatedEnabled(hideEliminated === true);
+      setIsHideVisitedEnabled(hideVisited === true);
       setIsHideRefurbishedEnabled(hideRefurbished === true);
       setIsHideAdsEnabled(hideAds === true);
       setIsAutoExpandQnAEnabled(autoExpandQnA !== false);
@@ -260,6 +266,15 @@ export const useStats = () => {
     });
     const unwatchPriceHistory = storage.watch<boolean>('local:isPriceHistoryEnabled', (newVal) => {
       setIsPriceHistoryEnabled(newVal !== false);
+    });
+    const unwatchHideEliminated = storage.watch<boolean>(
+      'local:isHideEliminatedEnabled',
+      (newVal) => {
+        setIsHideEliminatedEnabled(newVal === true);
+      },
+    );
+    const unwatchHideVisited = storage.watch<boolean>('local:isHideVisitedEnabled', (newVal) => {
+      setIsHideVisitedEnabled(newVal === true);
     });
     const unwatchRefurbished = storage.watch<boolean>(
       'local:isHideRefurbishedEnabled',
@@ -335,6 +350,8 @@ export const useStats = () => {
       unwatchUnvisitedButton();
       unwatchNotesOpt();
       unwatchPriceHistory();
+      unwatchHideEliminated();
+      unwatchHideVisited();
       unwatchRefurbished();
       unwatchAds();
       unwatchAutoExpandQnA();
@@ -419,6 +436,18 @@ export const useStats = () => {
     const newVal = !isPriceHistoryEnabled;
     setIsPriceHistoryEnabled(newVal);
     await storage.setItem('local:isPriceHistoryEnabled', newVal);
+  };
+
+  const toggleHideEliminated = async () => {
+    const newVal = !isHideEliminatedEnabled;
+    setIsHideEliminatedEnabled(newVal);
+    await storage.setItem('local:isHideEliminatedEnabled', newVal);
+  };
+
+  const toggleHideVisited = async () => {
+    const newVal = !isHideVisitedEnabled;
+    setIsHideVisitedEnabled(newVal);
+    await storage.setItem('local:isHideVisitedEnabled', newVal);
   };
 
   const toggleHideRefurbished = async () => {
@@ -524,6 +553,8 @@ export const useStats = () => {
     isUnvisitedOpenerButtonEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
+    isHideEliminatedEnabled,
+    isHideVisitedEnabled,
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
     isAutoExpandQnAEnabled,
@@ -551,6 +582,8 @@ export const useStats = () => {
     toggleUnvisitedOpenerButton,
     toggleNotes,
     togglePriceHistory,
+    toggleHideEliminated,
+    toggleHideVisited,
     toggleHideRefurbished,
     toggleHideAds,
     toggleAutoExpandQnA,

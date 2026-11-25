@@ -1,4 +1,12 @@
 export const eliminatedStyles = `
+  /* --- Elenen İlanları Listeden Kaldırma (Gizleme) --- */
+  html.sm-hide-eliminated #searchResultsTable tr.searchResultsItem.sm-eliminated-listing,
+  html.sm-hide-eliminated table.searchResultsTable tr.searchResultsItem.sm-eliminated-listing,
+  html.sm-hide-eliminated #searchResultsGallery td.searchResultsGalleryItem.sm-eliminated-listing,
+  html.sm-hide-eliminated table.searchResultsGallery td.searchResultsGalleryItem.sm-eliminated-listing {
+    display: none !important;
+  }
+
   /* --- İlan Detay Yerel Aksiyon Butonu (Favoriler ve Not Yanı) --- */
   ul.classifiedEvents li.sm-classified-eliminated-action {
     width: auto !important;

@@ -24,6 +24,7 @@ import {
 } from './content/cqa';
 import { initKeyboardNavigation } from './content/keyboardNav';
 import { initUnvisitedOpener, handleUnvisitedOpenerButton } from './content/unvisitedOpener';
+import { initListingFilter, handleListingFilterButton } from './content/listingFilter';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
@@ -35,6 +36,7 @@ import { descriptionCopyStyles } from './content/styles/descriptionCopy';
 import { keyboardNavStyles } from './content/styles/keyboardNav';
 import { unvisitedOpenerStyles } from './content/styles/unvisitedOpener';
 import { eliminatedStyles } from './content/styles/eliminated';
+import { listingFilterStyles } from './content/styles/listingFilter';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -57,6 +59,7 @@ export default defineContentScript({
         ${keyboardNavStyles}
         ${unvisitedOpenerStyles}
         ${eliminatedStyles}
+        ${listingFilterStyles}
       `;
       document.head.appendChild(style);
     };
@@ -70,6 +73,7 @@ export default defineContentScript({
     initAdsMode();
     initKeyboardNavigation();
     initUnvisitedOpener();
+    initListingFilter();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
@@ -105,6 +109,7 @@ export default defineContentScript({
       runSafe(() => handleDetectUserComments());
       runSafe(() => handleQnACopyButton());
       runSafe(() => handleUnvisitedOpenerButton());
+      runSafe(() => handleListingFilterButton());
       runSafe(() => trackFilteredAds());
     };
 
@@ -132,7 +137,7 @@ export default defineContentScript({
       // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
       return Boolean(
         el.closest(
-          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-listing-filter-btn, .sm-filter-modal-backdrop, .sm-filter-modal-dialog, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
         ),
       );
     };

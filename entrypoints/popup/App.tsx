@@ -25,6 +25,8 @@ function App() {
     isUnvisitedOpenerButtonEnabled,
     isNotesEnabled,
     isPriceHistoryEnabled,
+    isHideEliminatedEnabled,
+    isHideVisitedEnabled,
     isHideRefurbishedEnabled,
     isHideAdsEnabled,
     isAutoExpandQnAEnabled,
@@ -52,6 +54,8 @@ function App() {
     toggleUnvisitedOpenerButton,
     toggleNotes,
     togglePriceHistory,
+    toggleHideEliminated,
+    toggleHideVisited,
     toggleHideRefurbished,
     toggleHideAds,
     toggleAutoExpandQnA,
@@ -114,6 +118,10 @@ function App() {
             onToggleNotes={toggleNotes}
             isPriceHistoryEnabled={isPriceHistoryEnabled}
             onTogglePriceHistory={togglePriceHistory}
+            isHideEliminatedEnabled={isHideEliminatedEnabled}
+            onToggleHideEliminated={toggleHideEliminated}
+            isHideVisitedEnabled={isHideVisitedEnabled}
+            onToggleHideVisited={toggleHideVisited}
             isAutoExpandQnAEnabled={isAutoExpandQnAEnabled}
             onToggleAutoExpandQnA={toggleAutoExpandQnA}
             isKeyboardNavEnabled={isKeyboardNavEnabled}

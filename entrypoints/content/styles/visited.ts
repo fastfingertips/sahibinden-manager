@@ -1,4 +1,12 @@
 export const visitedStyles = `
+  /* --- Ziyaret Edilen İlanları Listeden Kaldırma (Gizleme) --- */
+  html.sm-hide-visited #searchResultsTable tr.searchResultsItem.sm-visited-listing,
+  html.sm-hide-visited table.searchResultsTable tr.searchResultsItem.sm-visited-listing,
+  html.sm-hide-visited #searchResultsGallery td.searchResultsGalleryItem.sm-visited-listing,
+  html.sm-hide-visited table.searchResultsGallery td.searchResultsGalleryItem.sm-visited-listing {
+    display: none !important;
+  }
+
   /* --- Ziyaret Edilmiş İlan Tablo Satırı Belirginleştirme --- */
   #searchResultsTable tr.searchResultsItem.sm-visited-listing {
     opacity: 0.92 !important;
