@@ -14,6 +14,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabType>('settings');
   const {
     isFullGridEnabled,
+    compactViewMode,
     isDownloaderEnabled,
     isVisitedHighlightEnabled,
     isVisitedLastBadgeEnabled,
@@ -43,6 +44,7 @@ function App() {
     notesCount,
     eliminatedCount,
     toggleFullGrid,
+    changeCompactViewMode,
     toggleDownloader,
     toggleVisitedHighlight,
     toggleVisitedLastBadge,
@@ -96,6 +98,8 @@ function App() {
           <SettingsSection
             isFullGridEnabled={isFullGridEnabled}
             onToggleFullGrid={toggleFullGrid}
+            compactViewMode={compactViewMode}
+            onChangeCompactViewMode={changeCompactViewMode}
             isDownloaderEnabled={isDownloaderEnabled}
             onToggleDownloader={toggleDownloader}
             isVisitedHighlightEnabled={isVisitedHighlightEnabled}

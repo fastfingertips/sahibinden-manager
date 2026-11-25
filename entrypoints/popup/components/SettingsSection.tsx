@@ -66,6 +66,8 @@ const SettingSubItem = ({
 interface SettingsSectionProps {
   isFullGridEnabled: boolean;
   onToggleFullGrid: () => void;
+  compactViewMode?: 'normal' | 'mini' | 'hidden';
+  onChangeCompactViewMode?: (mode: 'normal' | 'mini' | 'hidden') => void;
   isDownloaderEnabled: boolean;
   onToggleDownloader: () => void;
   isVisitedHighlightEnabled: boolean;
@@ -117,6 +119,8 @@ interface SettingsSectionProps {
 export const SettingsSection = ({
   isFullGridEnabled,
   onToggleFullGrid,
+  compactViewMode = 'normal',
+  onChangeCompactViewMode,
   isDownloaderEnabled,
   onToggleDownloader,
   isVisitedHighlightEnabled,
@@ -185,6 +189,54 @@ export const SettingsSection = ({
           onChange={onToggleDownloader}
           borderTop
         />
+
+        <div className="pt-2 border-t border-[#f0f0f0] flex flex-col space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[11.5px] font-medium text-[#222]">Kompakt Liste Görünümü</span>
+            <div className="inline-flex rounded-xs border border-[#cbd5e1] p-0.5 bg-[#f1f5f9]">
+              <button
+                type="button"
+                onClick={() => onChangeCompactViewMode?.('normal')}
+                className={`text-[10px] px-2 py-0.5 rounded-xs font-medium transition-colors cursor-pointer ${
+                  compactViewMode === 'normal'
+                    ? 'bg-white text-[#0f172a] shadow-xs'
+                    : 'text-[#64748b] hover:text-[#0f172a]'
+                }`}
+              >
+                Standart
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeCompactViewMode?.('mini')}
+                className={`text-[10px] px-2 py-0.5 rounded-xs font-medium transition-colors cursor-pointer ${
+                  compactViewMode === 'mini'
+                    ? 'bg-[#0284c7] text-white shadow-xs'
+                    : 'text-[#64748b] hover:text-[#0f172a]'
+                }`}
+              >
+                Mini Resim
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeCompactViewMode?.('hidden')}
+                className={`text-[10px] px-2 py-0.5 rounded-xs font-medium transition-colors cursor-pointer ${
+                  compactViewMode === 'hidden'
+                    ? 'bg-[#0284c7] text-white shadow-xs'
+                    : 'text-[#64748b] hover:text-[#0f172a]'
+                }`}
+              >
+                Resimsiz
+              </button>
+            </div>
+          </div>
+          <p className="text-[10px] text-[#666] leading-snug">
+            {compactViewMode === 'mini'
+              ? 'Mini Resim: Küçük resimler ve daraltılmış satırlarla sayfada çok daha fazla ilan görünür (hover ile önizleme büyür).'
+              : compactViewMode === 'hidden'
+                ? 'Resimsiz: Resim sütunu tamamen gizlenir, ultra kompakt veri tablosu görünümü sunulur.'
+                : 'Standart: Sahibinden varsayılan büyük resimli liste görünümü.'}
+          </p>
+        </div>
       </div>
     </div>
 

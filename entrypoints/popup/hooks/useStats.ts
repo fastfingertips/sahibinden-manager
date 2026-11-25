@@ -113,6 +113,7 @@ const parseEliminated = (
 
 export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
+  const [compactViewMode, setCompactViewMode] = useState<'normal' | 'mini' | 'hidden'>('normal');
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
   const [isVisitedHighlightEnabled, setIsVisitedHighlightEnabled] = useState(true);
   const [isVisitedLastBadgeEnabled, setIsVisitedLastBadgeEnabled] = useState(true);
@@ -142,6 +143,9 @@ export const useStats = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       const fullGrid = await storage.getItem<boolean>('local:isFullGridEnabled');
+      const compactMode = await storage.getItem<'normal' | 'mini' | 'hidden'>(
+        'local:compactViewMode',
+      );
       const downloader = await storage.getItem<boolean>('local:sm-downloader-enabled');
       const visited = await storage.getItem<boolean>('local:isVisitedHighlightEnabled');
       const visitedLast = await storage.getItem<boolean>('local:isVisitedLastBadgeEnabled');
@@ -181,6 +185,9 @@ export const useStats = () => {
       const yepyCount = await storage.getItem<number>('local:filtered-yepy-count');
 
       setIsFullGridEnabled(fullGrid !== false);
+      setCompactViewMode(
+        compactMode === 'mini' || compactMode === 'hidden' ? compactMode : 'normal',
+      );
       setIsDownloaderEnabled(downloader !== false);
       setIsVisitedHighlightEnabled(visited !== false);
       setIsVisitedLastBadgeEnabled(visitedLast !== false);
@@ -214,6 +221,12 @@ export const useStats = () => {
     const unwatchGrid = storage.watch<boolean>('local:isFullGridEnabled', (newVal) => {
       setIsFullGridEnabled(newVal !== false);
     });
+    const unwatchCompactMode = storage.watch<'normal' | 'mini' | 'hidden'>(
+      'local:compactViewMode',
+      (newVal) => {
+        setCompactViewMode(newVal === 'mini' || newVal === 'hidden' ? newVal : 'normal');
+      },
+    );
     const unwatchDownloader = storage.watch<boolean>('local:sm-downloader-enabled', (newVal) => {
       setIsDownloaderEnabled(newVal !== false);
     });
@@ -339,6 +352,7 @@ export const useStats = () => {
 
     return () => {
       unwatchGrid();
+      unwatchCompactMode();
       unwatchDownloader();
       unwatchVisited();
       unwatchVisitedLast();
@@ -371,6 +385,11 @@ export const useStats = () => {
     const newVal = !isFullGridEnabled;
     setIsFullGridEnabled(newVal);
     await storage.setItem('local:isFullGridEnabled', newVal);
+  };
+
+  const changeCompactViewMode = async (mode: 'normal' | 'mini' | 'hidden') => {
+    setCompactViewMode(mode);
+    await storage.setItem('local:compactViewMode', mode);
   };
 
   const toggleDownloader = async () => {
@@ -542,6 +561,7 @@ export const useStats = () => {
 
   return {
     isFullGridEnabled,
+    compactViewMode,
     isDownloaderEnabled,
     isVisitedHighlightEnabled,
     isVisitedLastBadgeEnabled,
@@ -571,6 +591,7 @@ export const useStats = () => {
     notesCount: notes.length,
     eliminatedCount: eliminated.length,
     toggleFullGrid,
+    changeCompactViewMode,
     toggleDownloader,
     toggleVisitedHighlight,
     toggleVisitedLastBadge,

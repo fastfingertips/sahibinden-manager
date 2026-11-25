@@ -25,6 +25,7 @@ import {
 import { initKeyboardNavigation } from './content/keyboardNav';
 import { initUnvisitedOpener, handleUnvisitedOpenerButton } from './content/unvisitedOpener';
 import { initListingFilter, handleListingFilterButton } from './content/listingFilter';
+import { initCompactView, handleCompactViewButton } from './content/compactView';
 import { commonStyles } from './content/styles/common';
 import { gridStyles } from './content/styles/grid';
 import { visitedStyles } from './content/styles/visited';
@@ -37,6 +38,7 @@ import { keyboardNavStyles } from './content/styles/keyboardNav';
 import { unvisitedOpenerStyles } from './content/styles/unvisitedOpener';
 import { eliminatedStyles } from './content/styles/eliminated';
 import { listingFilterStyles } from './content/styles/listingFilter';
+import { compactViewStyles } from './content/styles/compactView';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -60,6 +62,7 @@ export default defineContentScript({
         ${unvisitedOpenerStyles}
         ${eliminatedStyles}
         ${listingFilterStyles}
+        ${compactViewStyles}
       `;
       document.head.appendChild(style);
     };
@@ -74,6 +77,7 @@ export default defineContentScript({
     initKeyboardNavigation();
     initUnvisitedOpener();
     initListingFilter();
+    initCompactView();
 
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
@@ -110,6 +114,7 @@ export default defineContentScript({
       runSafe(() => handleQnACopyButton());
       runSafe(() => handleUnvisitedOpenerButton());
       runSafe(() => handleListingFilterButton());
+      runSafe(() => handleCompactViewButton());
       runSafe(() => trackFilteredAds());
     };
 
@@ -137,7 +142,7 @@ export default defineContentScript({
       // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
       return Boolean(
         el.closest(
-          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-listing-filter-btn, .sm-filter-modal-backdrop, .sm-filter-modal-dialog, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-listing-filter-btn, .sm-compact-toggle-btn, .sm-filter-modal-backdrop, .sm-filter-modal-dialog, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
         ),
       );
     };
