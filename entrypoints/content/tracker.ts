@@ -239,12 +239,7 @@ export const initVisitedTracking = async () => {
 };
 
 export const applyVisitedToListings = () => {
-  if (
-    isHighlightEnabled &&
-    ((cachedRecords && Object.keys(cachedRecords).length > 0) ||
-      (cachedComments && Object.keys(cachedComments).length > 0) ||
-      (cachedNotes && Object.keys(cachedNotes).length > 0))
-  ) {
+  if (isHighlightEnabled) {
     highlightVisitedListings(cachedRecords);
   }
 };

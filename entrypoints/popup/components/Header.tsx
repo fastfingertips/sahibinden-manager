@@ -1,13 +1,20 @@
-export type TabType = 'settings' | 'notes' | 'history' | 'about';
+export type TabType = 'settings' | 'notes' | 'eliminated' | 'history' | 'about';
 
 interface HeaderProps {
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
   notesCount?: number;
+  eliminatedCount?: number;
   historyCount?: number;
 }
 
-export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: HeaderProps) => (
+export const Header = ({
+  activeTab,
+  onTabChange,
+  notesCount,
+  eliminatedCount,
+  historyCount,
+}: HeaderProps) => (
   <header className="mb-2.5">
     <div className="bg-[#ffda00] px-3.5 py-2 rounded-t -m-3 mb-0 flex items-center justify-between shadow-xs border-b border-black/10">
       <div className="flex flex-col">
@@ -47,6 +54,23 @@ export const Header = ({ activeTab, onTabChange, notesCount, historyCount }: Hea
         )}
         {activeTab === 'notes' && (
           <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#417abb]" />
+        )}
+      </button>
+
+      <button
+        onClick={() => onTabChange('eliminated')}
+        className={`flex-1 py-2 text-[11px] font-semibold tracking-normal transition-all relative flex items-center justify-center gap-1.5 ${
+          activeTab === 'eliminated' ? 'text-[#b91c1c]' : 'text-[#888] hover:text-[#555]'
+        }`}
+      >
+        <span>Elenenler</span>
+        {typeof eliminatedCount === 'number' && eliminatedCount > 0 && (
+          <span className="text-[9px] px-1.5 py-0.2 bg-[#fef2f2] text-[#991b1b] rounded-xs border border-[#fca5a5] font-bold">
+            {eliminatedCount}
+          </span>
+        )}
+        {activeTab === 'eliminated' && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b91c1c]" />
         )}
       </button>
 

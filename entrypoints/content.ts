@@ -8,6 +8,7 @@ import {
 } from './content/tracker';
 import { initRefurbishedMode, applyRefurbishedIgnore } from './content/refurbished';
 import { initNotesMode, applyNotesToListings } from './content/ui/notes';
+import { initEliminatedMode, applyEliminatedToListings } from './content/ui/eliminated';
 import { handlePriceHistoryAnalytics, initPriceHistory } from './content/priceHistory';
 import { initAdsMode, trackFilteredAds } from './content/ads';
 import { handleMegaPhotoLightbox, lightboxStyles } from './content/ui/lightbox';
@@ -33,6 +34,7 @@ import { adsStyles } from './content/styles/ads';
 import { descriptionCopyStyles } from './content/styles/descriptionCopy';
 import { keyboardNavStyles } from './content/styles/keyboardNav';
 import { unvisitedOpenerStyles } from './content/styles/unvisitedOpener';
+import { eliminatedStyles } from './content/styles/eliminated';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -54,6 +56,7 @@ export default defineContentScript({
         ${descriptionCopyStyles}
         ${keyboardNavStyles}
         ${unvisitedOpenerStyles}
+        ${eliminatedStyles}
       `;
       document.head.appendChild(style);
     };
@@ -71,6 +74,7 @@ export default defineContentScript({
     const adId = extractClassifiedId();
     const title = extractClassifiedTitle();
     initNotesMode(adId, title, window.location.href);
+    initEliminatedMode(adId, title, window.location.href);
     initQnAMode(adId, title, window.location.href);
 
     const getActiveAdId = () => extractClassifiedId() || 'ilan';
@@ -93,6 +97,7 @@ export default defineContentScript({
       runSafe(() => applyVisitedToListings());
       runSafe(() => applyRefurbishedIgnore());
       runSafe(() => applyNotesToListings());
+      runSafe(() => applyEliminatedToListings());
       runSafe(() => handlePriceHistoryAnalytics());
       runSafe(() => handleDescriptionCopyButton());
       runSafe(() => handleClassifiedDataCopyButton());
@@ -127,7 +132,7 @@ export default defineContentScript({
       // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
       return Boolean(
         el.closest(
-          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
         ),
       );
     };

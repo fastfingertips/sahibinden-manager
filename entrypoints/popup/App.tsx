@@ -5,6 +5,7 @@ import { useCurrentTab } from './hooks/useCurrentTab';
 import { Header, type TabType } from './components/Header';
 import { SettingsSection } from './components/SettingsSection';
 import { NotesSection } from './components/NotesSection';
+import { EliminatedSection } from './components/EliminatedSection';
 import { HistorySection } from './components/HistorySection';
 import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
@@ -29,13 +30,16 @@ function App() {
     isAutoExpandQnAEnabled,
     isKeyboardNavEnabled,
     isKeyboardNewTabEnabled,
+    isEliminatedHighlightEnabled,
     ignoredRefurbishedCount,
     filteredAdsCount,
     filteredRefurbishedCount,
     history,
     notes,
+    eliminated,
     viewedCount,
     notesCount,
+    eliminatedCount,
     toggleFullGrid,
     toggleDownloader,
     toggleVisitedHighlight,
@@ -53,6 +57,7 @@ function App() {
     toggleAutoExpandQnA,
     toggleKeyboardNav,
     toggleKeyboardNewTab,
+    toggleEliminatedHighlight,
     clearIgnoredRefurbished,
     clearFilteredAds,
     clearFilteredRefurbished,
@@ -60,6 +65,8 @@ function App() {
     clearHistory,
     removeNote,
     clearAllNotes,
+    removeEliminated,
+    clearAllEliminated,
   } = useStats();
   const { isSahibinden } = useCurrentTab();
 
@@ -69,6 +76,7 @@ function App() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         notesCount={notesCount}
+        eliminatedCount={eliminatedCount}
         historyCount={viewedCount}
       />
 
@@ -120,6 +128,8 @@ function App() {
             onClearFilteredRefurbished={clearFilteredRefurbished}
             isHideAdsEnabled={isHideAdsEnabled}
             onToggleHideAds={toggleHideAds}
+            isEliminatedHighlightEnabled={isEliminatedHighlightEnabled}
+            onToggleEliminatedHighlight={toggleEliminatedHighlight}
             filteredAdsCount={filteredAdsCount}
             onClearFilteredAds={clearFilteredAds}
             viewedCount={viewedCount}
@@ -129,6 +139,14 @@ function App() {
 
         {activeTab === 'notes' && (
           <NotesSection notes={notes} onRemoveNote={removeNote} onClearAllNotes={clearAllNotes} />
+        )}
+
+        {activeTab === 'eliminated' && (
+          <EliminatedSection
+            eliminated={eliminated}
+            onRemoveEliminated={removeEliminated}
+            onClearAllEliminated={clearAllEliminated}
+          />
         )}
 
         {activeTab === 'history' && (

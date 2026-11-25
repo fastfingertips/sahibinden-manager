@@ -86,6 +86,8 @@ interface SettingsSectionProps {
   onToggleUnvisitedOpenerButton?: () => void;
   isNotesEnabled: boolean;
   onToggleNotes: () => void;
+  isEliminatedHighlightEnabled?: boolean;
+  onToggleEliminatedHighlight?: () => void;
   isPriceHistoryEnabled: boolean;
   onTogglePriceHistory: () => void;
   isAutoExpandQnAEnabled: boolean;
@@ -131,6 +133,8 @@ export const SettingsSection = ({
   onToggleUnvisitedOpenerButton,
   isNotesEnabled,
   onToggleNotes,
+  isEliminatedHighlightEnabled = true,
+  onToggleEliminatedHighlight,
   isPriceHistoryEnabled,
   onTogglePriceHistory,
   isAutoExpandQnAEnabled,
@@ -300,6 +304,14 @@ export const SettingsSection = ({
           description="İlan detayında kişisel notlar alabilmenizi ve listelerde 'Not Var' rozetiyle görebilmenizi sağlar."
           checked={isNotesEnabled}
           onChange={onToggleNotes}
+          borderTop
+        />
+
+        <SettingItem
+          label="Elenen İlanları Belirginleştir"
+          description="Elediğiniz ilanları listede üzeri çizili ve soluk gösterir, 'Elendi' rozetiyle nedenini sunar."
+          checked={isEliminatedHighlightEnabled}
+          onChange={onToggleEliminatedHighlight || (() => {})}
           borderTop
         />
 

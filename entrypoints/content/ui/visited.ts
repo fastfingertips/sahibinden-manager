@@ -40,6 +40,7 @@ export interface VisitedBadgeOptions {
 export interface ListingBadgeContext {
   comments?: Record<string, { id?: string; text: string; createdAt: number }>;
   notes?: Record<string, { text: string; updatedAt: number; createdAt?: number }>;
+  eliminated?: Record<string, { reason: string; createdAt: number; updatedAt: number }>;
 }
 
 let currentBadgeOptions: VisitedBadgeOptions = {
@@ -58,6 +59,7 @@ export const setVisitedBadgeContext = (context: ListingBadgeContext): void => {
   currentBadgeContext = {
     comments: context.comments || currentBadgeContext.comments || {},
     notes: context.notes || currentBadgeContext.notes || {},
+    eliminated: context.eliminated || currentBadgeContext.eliminated || {},
   };
 };
 
@@ -68,6 +70,7 @@ const createOrUpdateBadge = (
   visitCount?: number,
   commentItem?: { text: string; createdAt: number },
   noteItem?: { text: string; updatedAt: number; createdAt?: number },
+  eliminatedItem?: { reason: string; createdAt: number; updatedAt: number },
   options: VisitedBadgeOptions = currentBadgeOptions,
 ): void => {
   const parent = container.parentElement;
@@ -84,9 +87,16 @@ const createOrUpdateBadge = (
   const shouldRenderFirst = showFirst && Boolean(firstTimestamp) && (!showLast || isMultiple);
   const shouldRenderComment = showComment && Boolean(commentItem?.text?.trim());
   const shouldRenderNote = Boolean(noteItem?.text?.trim());
+  const shouldRenderEliminated = Boolean(eliminatedItem);
 
   let badgesWrapper = parent.querySelector<HTMLDivElement>(':scope > .sm-visited-badges');
-  if (!shouldRenderLast && !shouldRenderFirst && !shouldRenderComment && !shouldRenderNote) {
+  if (
+    !shouldRenderLast &&
+    !shouldRenderFirst &&
+    !shouldRenderComment &&
+    !shouldRenderNote &&
+    !shouldRenderEliminated
+  ) {
     if (badgesWrapper) badgesWrapper.remove();
     parent.querySelector(':scope > .sm-visited-badge')?.remove();
     return;
@@ -204,6 +214,32 @@ const createOrUpdateBadge = (
   } else if (noteBadge) {
     noteBadge.remove();
   }
+
+  // 5. Elendi Rozeti
+  let eliminatedBadge = badgesWrapper.querySelector<HTMLSpanElement>('.sm-badge-eliminated');
+  if (shouldRenderEliminated && eliminatedItem) {
+    if (!eliminatedBadge) {
+      eliminatedBadge = document.createElement('span');
+      eliminatedBadge.className = 'sm-visited-badge sm-badge-eliminated';
+      badgesWrapper.appendChild(eliminatedBadge);
+    }
+    const labelText = 'Elendi';
+    if (eliminatedBadge.dataset.label !== labelText) {
+      eliminatedBadge.dataset.label = labelText;
+      eliminatedBadge.innerHTML = `
+        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.9;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+        </svg>
+        <span>${labelText}</span>
+      `;
+    }
+    const reasonText = eliminatedItem.reason?.trim() || 'Eleme nedeni belirtilmedi';
+    const preview = reasonText.length > 80 ? `${reasonText.slice(0, 80)}...` : reasonText;
+    eliminatedBadge.title = `Eleme Nedeni: "${preview}" (${formatVisitedDate(eliminatedItem.createdAt || eliminatedItem.updatedAt)})`;
+  } else if (eliminatedBadge) {
+    eliminatedBadge.remove();
+  }
 };
 
 export const highlightVisitedListings = (
@@ -217,10 +253,18 @@ export const highlightVisitedListings = (
   if (context) {
     setVisitedBadgeContext(context);
   }
-  if (!records && !currentBadgeContext.comments && !currentBadgeContext.notes) return;
+  if (
+    !records &&
+    !currentBadgeContext.comments &&
+    !currentBadgeContext.notes &&
+    !currentBadgeContext.eliminated
+  ) {
+    return;
+  }
 
   const comments = currentBadgeContext.comments || {};
   const notes = currentBadgeContext.notes || {};
+  const eliminated = currentBadgeContext.eliminated || {};
 
   // Resim hücresine yanlışlıkla eklenmiş eski rozet konteynerlerini temizle
   document
@@ -262,10 +306,16 @@ export const highlightVisitedListings = (
     const isVisited = records && records[id];
     const commentItem = comments[id];
     const noteItem = notes[id];
+    const eliminatedItem = eliminated[id];
 
-    if (isVisited || commentItem || noteItem) {
+    if (isVisited || commentItem || noteItem || eliminatedItem) {
       if (isVisited && !row.classList.contains('sm-visited-listing')) {
         row.classList.add('sm-visited-listing');
+      }
+      if (eliminatedItem && !row.classList.contains('sm-eliminated-listing')) {
+        row.classList.add('sm-eliminated-listing');
+      } else if (!eliminatedItem && row.classList.contains('sm-eliminated-listing')) {
+        row.classList.remove('sm-eliminated-listing');
       }
       if (titleLink) {
         const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
@@ -278,6 +328,7 @@ export const highlightVisitedListings = (
           count,
           commentItem,
           noteItem,
+          eliminatedItem,
           currentBadgeOptions,
         );
       }
@@ -314,10 +365,16 @@ export const highlightVisitedListings = (
     const isVisited = records && records[id];
     const commentItem = comments[id];
     const noteItem = notes[id];
+    const eliminatedItem = eliminated[id];
 
-    if (isVisited || commentItem || noteItem) {
+    if (isVisited || commentItem || noteItem || eliminatedItem) {
       if (isVisited && !cell.classList.contains('sm-visited-listing')) {
         cell.classList.add('sm-visited-listing');
+      }
+      if (eliminatedItem && !cell.classList.contains('sm-eliminated-listing')) {
+        cell.classList.add('sm-eliminated-listing');
+      } else if (!eliminatedItem && cell.classList.contains('sm-eliminated-listing')) {
+        cell.classList.remove('sm-eliminated-listing');
       }
       if (titleLink) {
         const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
@@ -330,6 +387,7 @@ export const highlightVisitedListings = (
           count,
           commentItem,
           noteItem,
+          eliminatedItem,
           currentBadgeOptions,
         );
       }

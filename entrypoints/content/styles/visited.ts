@@ -115,6 +115,13 @@ export const visitedStyles = `
     border: 1px solid #fde68a !important;
   }
 
+  /* Elendi / Eleme Rozeti (Kırmızı / Gül) */
+  .sm-visited-badge.sm-badge-eliminated {
+    color: #991b1b !important;
+    background-color: #fee2e2 !important;
+    border: 1px solid #fca5a5 !important;
+  }
+
   /* --- Sahibinden İlan Detay Ziyaret Bilgilendirme Paneli --- */
   .sm-detail-visited-banner {
     font-family: SHBGroteskLegacy, Roboto, sans-serif, inherit !important;

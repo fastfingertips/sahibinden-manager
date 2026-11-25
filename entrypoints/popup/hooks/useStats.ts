@@ -19,6 +19,15 @@ export interface ListingNoteItem {
   createdAt?: number;
 }
 
+export interface EliminatedListingItem {
+  adId: string;
+  reason: string;
+  title: string;
+  url: string;
+  updatedAt: number;
+  createdAt?: number;
+}
+
 const parseHistory = (records: Record<string, unknown> | null): HistoryItem[] => {
   if (!records) return [];
   const items: HistoryItem[] = [];
@@ -80,6 +89,28 @@ const parseNotes = (records: Record<string, ListingNoteItem> | null): ListingNot
   return items.sort((a, b) => b.updatedAt - a.updatedAt);
 };
 
+const parseEliminated = (
+  records: Record<string, EliminatedListingItem> | null,
+): EliminatedListingItem[] => {
+  if (!records) return [];
+  const items: EliminatedListingItem[] = [];
+  for (const [adId, val] of Object.entries(records)) {
+    if (val) {
+      const updatedAt = val.updatedAt || Date.now();
+      const createdAt = val.createdAt || updatedAt;
+      items.push({
+        adId,
+        reason: val.reason?.trim() || 'Eleme nedeni belirtilmedi',
+        title: val.title || `İlan #${adId}`,
+        url: val.url || `https://www.sahibinden.com/ilan/${adId}/detay`,
+        updatedAt,
+        createdAt,
+      });
+    }
+  }
+  return items.sort((a, b) => b.updatedAt - a.updatedAt);
+};
+
 export const useStats = () => {
   const [isFullGridEnabled, setIsFullGridEnabled] = useState(true);
   const [isDownloaderEnabled, setIsDownloaderEnabled] = useState(true);
@@ -103,6 +134,8 @@ export const useStats = () => {
   const [filteredRefurbishedCount, setFilteredRefurbishedCount] = useState(0);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [notes, setNotes] = useState<ListingNoteItem[]>([]);
+  const [eliminated, setEliminated] = useState<EliminatedListingItem[]>([]);
+  const [isEliminatedHighlightEnabled, setIsEliminatedHighlightEnabled] = useState(true);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -133,6 +166,12 @@ export const useStats = () => {
       const viewed = await storage.getItem<Record<string, unknown>>('local:viewed-listings');
       const savedNotes =
         await storage.getItem<Record<string, ListingNoteItem>>('local:listing-notes');
+      const savedEliminated = await storage.getItem<Record<string, EliminatedListingItem>>(
+        'local:eliminated-listings',
+      );
+      const eliminatedHighlight = await storage.getItem<boolean>(
+        'local:isEliminatedHighlightEnabled',
+      );
 
       const adsCount = await storage.getItem<number>('local:filtered-ads-count');
       const yepyCount = await storage.getItem<number>('local:filtered-yepy-count');
@@ -156,11 +195,13 @@ export const useStats = () => {
       setIsAutoExpandQnAEnabled(autoExpandQnA !== false);
       setIsKeyboardNavEnabled(keyboardNav !== false);
       setIsKeyboardNewTabEnabled(keyboardNewTab === true);
+      setIsEliminatedHighlightEnabled(eliminatedHighlight !== false);
       setIgnoredRefurbishedCount(ignoredRefurbished ? Object.keys(ignoredRefurbished).length : 0);
       setFilteredAdsCount(adsCount || 0);
       setFilteredRefurbishedCount(yepyCount || 0);
       setHistory(parseHistory(viewed));
       setNotes(parseNotes(savedNotes));
+      setEliminated(parseEliminated(savedEliminated));
     };
     fetchSettings();
 
@@ -262,6 +303,18 @@ export const useStats = () => {
         setNotes(parseNotes(newVal));
       },
     );
+    const unwatchEliminated = storage.watch<Record<string, EliminatedListingItem>>(
+      'local:eliminated-listings',
+      (newVal) => {
+        setEliminated(parseEliminated(newVal));
+      },
+    );
+    const unwatchEliminatedHighlight = storage.watch<boolean>(
+      'local:isEliminatedHighlightEnabled',
+      (newVal) => {
+        setIsEliminatedHighlightEnabled(newVal !== false);
+      },
+    );
     const unwatchAdsCount = storage.watch<number>('local:filtered-ads-count', (newVal) => {
       setFilteredAdsCount(newVal || 0);
     });
@@ -290,6 +343,8 @@ export const useStats = () => {
       unwatchIgnoredRefurbished();
       unwatchViewed();
       unwatchNotes();
+      unwatchEliminated();
+      unwatchEliminatedHighlight();
       unwatchAdsCount();
       unwatchYepyCount();
     };
@@ -436,6 +491,26 @@ export const useStats = () => {
     setNotes([]);
   };
 
+  const toggleEliminatedHighlight = async () => {
+    const newVal = !isEliminatedHighlightEnabled;
+    setIsEliminatedHighlightEnabled(newVal);
+    await storage.setItem('local:isEliminatedHighlightEnabled', newVal);
+  };
+
+  const removeEliminated = async (adId: string) => {
+    const records =
+      (await storage.getItem<Record<string, EliminatedListingItem>>('local:eliminated-listings')) ||
+      {};
+    delete records[adId];
+    await storage.setItem('local:eliminated-listings', records);
+    setEliminated((prev) => prev.filter((item) => item.adId !== adId));
+  };
+
+  const clearAllEliminated = async () => {
+    await storage.removeItem('local:eliminated-listings');
+    setEliminated([]);
+  };
+
   return {
     isFullGridEnabled,
     isDownloaderEnabled,
@@ -454,13 +529,16 @@ export const useStats = () => {
     isAutoExpandQnAEnabled,
     isKeyboardNavEnabled,
     isKeyboardNewTabEnabled,
+    isEliminatedHighlightEnabled,
     ignoredRefurbishedCount,
     filteredAdsCount,
     filteredRefurbishedCount,
     history,
     notes,
+    eliminated,
     viewedCount: history.length,
     notesCount: notes.length,
+    eliminatedCount: eliminated.length,
     toggleFullGrid,
     toggleDownloader,
     toggleVisitedHighlight,
@@ -478,6 +556,7 @@ export const useStats = () => {
     toggleAutoExpandQnA,
     toggleKeyboardNav,
     toggleKeyboardNewTab,
+    toggleEliminatedHighlight,
     clearIgnoredRefurbished,
     clearFilteredAds,
     clearFilteredRefurbished,
@@ -485,5 +564,7 @@ export const useStats = () => {
     clearHistory,
     removeNote,
     clearAllNotes,
+    removeEliminated,
+    clearAllEliminated,
   };
 };

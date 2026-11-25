@@ -68,6 +68,7 @@ export const getUnvisitedListingElements = (): HTMLElement[] => {
       }
       if (row.classList.contains('sm-visited-listing')) return false;
       if (row.classList.contains('sm-refurbished-ignored')) return false;
+      if (row.classList.contains('sm-eliminated-listing')) return false;
       if (row.style.display === 'none') return false;
       return row.offsetParent !== null;
     });
@@ -84,6 +85,7 @@ export const getUnvisitedListingElements = (): HTMLElement[] => {
       if (item.classList.contains('nativeAd')) return false;
       if (item.classList.contains('sm-visited-listing')) return false;
       if (item.classList.contains('sm-refurbished-ignored')) return false;
+      if (item.classList.contains('sm-eliminated-listing')) return false;
       if (item.style.display === 'none') return false;
       return item.offsetParent !== null;
     });
