@@ -2,7 +2,7 @@
   "name": "sahibinden-manager",
   "description": "Sahibinden.com için arayüz ve veri yönetim araçları.",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
