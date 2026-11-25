@@ -1,43 +1,10 @@
 import os
-import matplotlib.textpath
-from matplotlib.font_manager import FontProperties
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from PIL import Image
 
-# 1. Generate wide S SVG path
-fp = FontProperties(family='sans-serif', weight='bold')
-# Size 420, scaled horizontally by 1.45 to span widely across the logo
-tp = matplotlib.textpath.TextPath((0, 0), 'S', size=420, prop=fp)
-bb = tp.get_extents()
-
-scale_x = 1.45
-scale_y = 1.0
-
-dx = 256.0 - (bb.x0 + bb.x1) * scale_x / 2.0
-dy = 256.0 + (bb.y0 + bb.y1) * scale_y / 2.0
-
-codes = tp.codes
-verts = tp.vertices
-
-d = []
-for code, (vx, vy) in zip(codes, verts):
-    x = vx * scale_x + dx
-    y = -vy * scale_y + dy
-    if code == 1:
-        d.append(f'M {x:.2f} {y:.2f}')
-    elif code == 2:
-        d.append(f'L {x:.2f} {y:.2f}')
-    elif code == 3:
-        d.append(f'Q {x:.2f} {y:.2f}')
-    elif code == 4:
-        d.append(f'C {x:.2f} {y:.2f}')
-    elif code == 79:
-        d.append('Z')
-
-path_str = ' '.join(d)
-
-svg_content = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+# SVG with the continuous S stroke in background yellow #FFDA00, exact 68px thickness
+svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
     <clipPath id="squircle">
       <rect width="512" height="512" rx="112" fill="#FFDA00"/>
@@ -45,18 +12,21 @@ svg_content = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
   </defs>
   <rect width="512" height="512" rx="112" fill="#FFDA00"/>
   <g clip-path="url(#squircle)">
+    <!-- 3 full-bleed black diagonal stripes -->
     <line x1="9" y1="572" x2="293" y2="-60" stroke="#18181B" stroke-width="68"/>
     <line x1="114" y1="572" x2="398" y2="-60" stroke="#18181B" stroke-width="68"/>
     <line x1="219" y1="572" x2="503" y2="-60" stroke="#18181B" stroke-width="68"/>
-    <path d="{path_str}" fill="#FFDA00"/>
+    <!-- Continuous S stroke in background yellow, exact same 68px thickness -->
+    <path d="M 450 150 L 140 150 C 65 150, 65 230, 140 230 L 372 282 C 447 282, 447 362, 372 362 L 62 362" 
+          fill="none" stroke="#FFDA00" stroke-width="68" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>'''
 
 with open('public/wxt.svg', 'w', encoding='utf-8') as f:
     f.write(svg_content)
-print('Updated public/wxt.svg with wide S and full-bleed diagonal stripes')
+print('Updated public/wxt.svg with S-curve stroke')
 
-# 2. Render 1024x1024 PNG from the SVG with Chrome headless
+# Render 1024x1024 PNG from the SVG with Chrome headless
 html_preview = f'''<!DOCTYPE html>
 <html>
 <head><style>body {{ margin: 0; padding: 0; background: transparent; overflow: hidden; }}</style></head>
@@ -102,4 +72,4 @@ try:
 finally:
     driver.quit()
 
-print('All icon resolutions generated cleanly from wide S SVG!')
+print('All icon resolutions updated successfully!')
