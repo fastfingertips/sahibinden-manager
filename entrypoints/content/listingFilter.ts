@@ -1,4 +1,5 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
+import { getOrCreateToolbarContainer } from './ui/toolbar';
 
 let isHideEliminatedEnabled = false;
 let isHideVisitedEnabled = false;
@@ -293,18 +294,10 @@ export const openListingFilterModal = () => {
 };
 
 export const handleListingFilterButton = () => {
-  const searchResults = document.querySelector('#searchResultsTable, #searchResultsGallery');
-  if (!searchResults) {
-    const existingBtn = document.querySelector('.sm-listing-filter-btn');
-    if (existingBtn) existingBtn.remove();
-    return;
-  }
+  const group = getOrCreateToolbarContainer();
+  if (!group) return;
 
-  const targetContainer = document.querySelector(
-    '#searchResultsSearchFormTitle, .searchResultsSearchFormTitleBox, .searchResultsTitleBox, .searchResultsTop, .view-types',
-  );
-
-  let btn = document.querySelector<HTMLButtonElement>('.sm-listing-filter-btn');
+  let btn = group.querySelector<HTMLButtonElement>('.sm-listing-filter-btn');
   if (!btn) {
     btn = document.createElement('button');
     btn.type = 'button';
@@ -324,18 +317,12 @@ export const handleListingFilterButton = () => {
     });
   }
 
-  // Yerleşim: Varsa unvisited opener container yanına iliştir, yoksa target container'a koy
-  const openerContainer = document.querySelector('.sm-unvisited-opener-container');
-  if (openerContainer && openerContainer.parentElement) {
-    if (openerContainer.nextElementSibling !== btn) {
-      openerContainer.parentElement.insertBefore(btn, openerContainer.nextSibling);
-    }
-  } else if (targetContainer) {
-    if (!targetContainer.contains(btn)) {
-      targetContainer.appendChild(btn);
-    }
-  } else if (searchResults.parentElement && !searchResults.parentElement.contains(btn)) {
-    searchResults.parentElement.insertBefore(btn, searchResults);
+  // Toolbar içinde sıralı yerleşim: Ziyaret edilmemiş butonundan hemen sonra
+  const openerBtn = group.querySelector('.sm-unvisited-opener-btn');
+  if (openerBtn && openerBtn.nextElementSibling !== btn) {
+    openerBtn.after(btn);
+  } else if (!group.contains(btn)) {
+    group.appendChild(btn);
   }
 
   // Buton rozeti ve durumunu güncelle

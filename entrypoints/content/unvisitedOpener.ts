@@ -1,4 +1,5 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
+import { getOrCreateToolbarContainer } from './ui/toolbar';
 
 let isUnvisitedOpenerEnabled = true;
 let unvisitedOpenerCount = 5; // 0 = Tümü / Maksimum
@@ -167,26 +168,18 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 export const handleUnvisitedOpenerButton = () => {
   if (!isUnvisitedOpenerEnabled || !isUnvisitedOpenerButtonEnabled) {
-    const existing = document.querySelector('.sm-unvisited-opener-container');
+    const existing = document.querySelector('.sm-unvisited-opener-btn');
     if (existing) existing.remove();
     return;
   }
 
-  // Arama sonuçları listesi yoksa butonu ekleme
-  const searchResults = document.querySelector('#searchResultsTable, #searchResultsGallery');
-  if (!searchResults) return;
+  // Arama sonuçları listesi ve toolbar kapsayıcısını kontrol et
+  const group = getOrCreateToolbarContainer();
+  if (!group) return;
 
-  // Yerleşim hedefi: Arama formu başlığı, görünüm butonları veya arama sonuçlarının hemen öncesi
-  const targetContainer = document.querySelector(
-    '#searchResultsSearchFormTitle, .searchResultsSearchFormTitleBox, .searchResultsTitleBox, .searchResultsTop, .view-types',
-  );
-
-  let btnContainer = document.querySelector<HTMLDivElement>('.sm-unvisited-opener-container');
-  if (!btnContainer) {
-    btnContainer = document.createElement('div');
-    btnContainer.className = 'sm-unvisited-opener-container';
-
-    const btn = document.createElement('button');
+  let btn = group.querySelector<HTMLButtonElement>('.sm-unvisited-opener-btn');
+  if (!btn) {
+    btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'sm-unvisited-opener-btn';
     btn.innerHTML = `
@@ -204,25 +197,17 @@ export const handleUnvisitedOpenerButton = () => {
       openUnvisitedListings();
     });
 
-    btnContainer.appendChild(btn);
-  }
-
-  // DOM bağlantısını doğrula ve gerekirse hedef kapsayıcıya yeniden iliştir
-  if (targetContainer) {
-    if (!targetContainer.contains(btnContainer)) {
-      targetContainer.appendChild(btnContainer);
-    }
-  } else if (searchResults.parentElement && !searchResults.parentElement.contains(btnContainer)) {
-    searchResults.parentElement.insertBefore(btnContainer, searchResults);
+    group.prepend(btn);
+  } else if (btn.parentElement !== group) {
+    group.prepend(btn);
   }
 
   // Butonun sayaç ve metnini dinamik güncelle
   const unvisitedElements = getUnvisitedListingElements();
   const total = unvisitedElements.length;
-  const countBadge = btnContainer.querySelector<HTMLElement>('.sm-opener-badge');
-  const btn = btnContainer.querySelector<HTMLButtonElement>('.sm-unvisited-opener-btn');
+  const countBadge = btn.querySelector<HTMLElement>('.sm-opener-badge');
 
-  if (countBadge && btn) {
+  if (countBadge) {
     const willOpen = unvisitedOpenerCount > 0 ? Math.min(unvisitedOpenerCount, total) : total;
     countBadge.textContent = String(willOpen);
     countBadge.classList.toggle('sm-badge-empty', total === 0);

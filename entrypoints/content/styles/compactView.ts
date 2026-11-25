@@ -155,6 +155,18 @@ export const compactViewStyles = `
     font-size: 11.5px !important;
   }
 
+  html.sm-compact-mini .sm-row-eliminate-btn {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 8px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  html.sm-compact-mini .sm-row-eliminate-btn:hover {
+    transform: translateY(-50%) scale(1.08) !important;
+  }
+
   /* ========================================================
      MOD 2: Resimsiz Ultra Kompakt Mod (.sm-compact-hidden)
      ======================================================== */
@@ -208,5 +220,17 @@ export const compactViewStyles = `
     vertical-align: middle !important;
     line-height: 1.3 !important;
     font-size: 11.5px !important;
+  }
+
+  html.sm-compact-hidden .sm-row-eliminate-btn {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 8px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  html.sm-compact-hidden .sm-row-eliminate-btn:hover {
+    transform: translateY(-50%) scale(1.08) !important;
   }
 `;

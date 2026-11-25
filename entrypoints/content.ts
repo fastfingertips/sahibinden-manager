@@ -39,6 +39,7 @@ import { unvisitedOpenerStyles } from './content/styles/unvisitedOpener';
 import { eliminatedStyles } from './content/styles/eliminated';
 import { listingFilterStyles } from './content/styles/listingFilter';
 import { compactViewStyles } from './content/styles/compactView';
+import { toolbarStyles } from './content/styles/toolbar';
 
 export default defineContentScript({
   matches: ['*://*.sahibinden.com/*'],
@@ -63,6 +64,7 @@ export default defineContentScript({
         ${eliminatedStyles}
         ${listingFilterStyles}
         ${compactViewStyles}
+        ${toolbarStyles}
       `;
       document.head.appendChild(style);
     };
@@ -142,7 +144,7 @@ export default defineContentScript({
       // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
       return Boolean(
         el.closest(
-          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-listing-filter-btn, .sm-compact-toggle-btn, .sm-filter-modal-backdrop, .sm-filter-modal-dialog, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-toolbar-actions-group, .sm-unvisited-opener-btn, .sm-unvisited-opener-container, .sm-listing-filter-btn, .sm-compact-toggle-btn, .sm-filter-modal-backdrop, .sm-filter-modal-dialog, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
         ),
       );
     };

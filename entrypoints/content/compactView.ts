@@ -1,5 +1,6 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 import { showToast } from './unvisitedOpener';
+import { getOrCreateToolbarContainer } from './ui/toolbar';
 
 export type CompactViewMode = 'normal' | 'mini' | 'hidden';
 
@@ -35,18 +36,10 @@ export const cycleCompactViewMode = async () => {
 };
 
 export const handleCompactViewButton = () => {
-  const searchResults = document.querySelector('#searchResultsTable, #searchResultsGallery');
-  if (!searchResults) {
-    const existing = document.querySelector('.sm-compact-toggle-btn');
-    if (existing) existing.remove();
-    return;
-  }
+  const group = getOrCreateToolbarContainer();
+  if (!group) return;
 
-  const targetContainer = document.querySelector(
-    '#searchResultsSearchFormTitle, .searchResultsSearchFormTitleBox, .searchResultsTitleBox, .searchResultsTop, .view-types',
-  );
-
-  let btn = document.querySelector<HTMLButtonElement>('.sm-compact-toggle-btn');
+  let btn = group.querySelector<HTMLButtonElement>('.sm-compact-toggle-btn');
   if (!btn) {
     btn = document.createElement('button');
     btn.type = 'button';
@@ -66,24 +59,9 @@ export const handleCompactViewButton = () => {
     });
   }
 
-  // Yerleşim: Filtre butonu veya unvisited opener butonu yanına koy
-  const filterBtn = document.querySelector('.sm-listing-filter-btn');
-  const openerContainer = document.querySelector('.sm-unvisited-opener-container');
-
-  if (filterBtn && filterBtn.parentElement) {
-    if (filterBtn.nextElementSibling !== btn) {
-      filterBtn.parentElement.insertBefore(btn, filterBtn.nextSibling);
-    }
-  } else if (openerContainer && openerContainer.parentElement) {
-    if (openerContainer.nextElementSibling !== btn) {
-      openerContainer.parentElement.insertBefore(btn, openerContainer.nextSibling);
-    }
-  } else if (targetContainer) {
-    if (!targetContainer.contains(btn)) {
-      targetContainer.appendChild(btn);
-    }
-  } else if (searchResults.parentElement && !searchResults.parentElement.contains(btn)) {
-    searchResults.parentElement.insertBefore(btn, searchResults);
+  // Toolbar içinde sıralı yerleşim: En sağdaki buton
+  if (!group.contains(btn)) {
+    group.appendChild(btn);
   }
 
   // Buton rozeti ve durumunu güncelle

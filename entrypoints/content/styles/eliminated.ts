@@ -316,28 +316,51 @@ export const eliminatedStyles = `
   }
 
   /* --- Arama Listesi ve Galeri Satır İçi Hızlı Ele Butonu --- */
+  #searchResultsTable td.searchResultsTitleValue,
+  table.searchResultsTable td.searchResultsTitleValue {
+    position: relative !important;
+  }
+
   .sm-row-eliminate-btn {
+    position: absolute !important;
+    top: 8px !important;
+    right: 12px !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    color: #94a3b8 !important;
+    cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 17px !important;
-    height: 17px !important;
-    border-radius: 3px !important;
-    border: 1px solid #d1d5db !important;
-    background: #ffffff !important;
-    color: #6b7280 !important;
-    cursor: pointer !important;
-    margin-left: 6px !important;
-    vertical-align: middle !important;
-    opacity: 0.35 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    opacity: 0.25 !important;
     transition: all 0.15s ease !important;
+    z-index: 5 !important;
     padding: 0 !important;
+    margin: 0 !important;
     line-height: 1 !important;
+  }
+
+  #searchResultsGallery td.searchResultsGalleryItem,
+  table.searchResultsGallery td.searchResultsGalleryItem {
+    position: relative !important;
+  }
+
+  #searchResultsGallery td.searchResultsGalleryItem .sm-row-eliminate-btn,
+  table.searchResultsGallery td.searchResultsGalleryItem .sm-row-eliminate-btn {
+    top: 6px !important;
+    right: 6px !important;
+    z-index: 10 !important;
   }
 
   tr.searchResultsItem:hover .sm-row-eliminate-btn,
   td.searchResultsGalleryItem:hover .sm-row-eliminate-btn {
-    opacity: 0.85 !important;
+    opacity: 0.9 !important;
+    border-color: #cbd5e1 !important;
+    color: #64748b !important;
   }
 
   .sm-row-eliminate-btn:hover {
@@ -345,11 +368,12 @@ export const eliminatedStyles = `
     background: #fee2e2 !important;
     border-color: #fca5a5 !important;
     color: #dc2626 !important;
+    transform: scale(1.08) !important;
   }
 
   .sm-row-eliminate-btn.is-eliminated {
-    opacity: 0.9 !important;
-    background: #fee2e2 !important;
+    opacity: 1 !important;
+    background: #fef2f2 !important;
     border-color: #fca5a5 !important;
     color: #dc2626 !important;
   }
