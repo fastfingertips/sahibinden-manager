@@ -23,6 +23,5 @@ export default defineConfig({
     permissions: ['storage', 'downloads', 'activeTab', 'tabs'],
     host_permissions: ['https://*.sahibinden.com/*'],
     homepage_url: 'https://github.com/fastfingertips/sahibinden-manager',
-    author: 'fastfingertips',
   },
 });

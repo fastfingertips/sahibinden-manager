@@ -1,4 +1,5 @@
 import { formatDate as formatVisitedDate, formatTimeAgo } from '@/utils/date';
+import type { ListingCommentItem } from '../cqa';
 
 export { formatVisitedDate, formatTimeAgo };
 

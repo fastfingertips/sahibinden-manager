@@ -1,4 +1,4 @@
-import { formatDate as formatNoteDate } from '@/utils/date';
+import { formatDate as formatNoteDate, formatTimeAgo as formatNoteTimeAgo } from '@/utils/date';
 
 export interface ListingNote {
   adId: string;
@@ -13,7 +13,10 @@ let cachedNotes: Record<string, ListingNote> = {};
 let activeListingContext: { adId: string; title: string; url: string } | null = null;
 let isNotesFeatureEnabled = true;
 
-export const highlightListingNotes = () => {
+export const highlightListingNotes = (notes?: Record<string, ListingNote>) => {
+  if (notes) {
+    cachedNotes = notes;
+  }
   // Başlık hizasını ve satır akışını korumak için rozetler .sm-visited-badges
   // sistemi tarafından üstte render edilir. Eski satır içi rozetler temizlenir.
   document.querySelectorAll('.sm-note-badge').forEach((el) => el.remove());
