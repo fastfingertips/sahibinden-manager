@@ -12,7 +12,7 @@ export const applyCompactViewClass = (mode: CompactViewMode) => {
   root.classList.toggle('sm-compact-hidden', mode === 'hidden');
 };
 
-export const setCompactViewMode = async (mode: CompactViewMode, notify: boolean = true) => {
+export const setCompactViewMode = async (mode: CompactViewMode, notify = true) => {
   currentCompactMode = mode;
   applyCompactViewClass(mode);
   await storage.setItem('local:compactViewMode', mode);

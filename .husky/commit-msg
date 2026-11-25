@@ -1,0 +1,1 @@
+node tools/check-commit-msg.mjs "$1"

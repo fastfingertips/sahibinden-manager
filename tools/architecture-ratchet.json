@@ -1,0 +1,15 @@
+{
+  "limits": {
+    "component": 400,
+    "hook": 400,
+    "ui": 450,
+    "style": 450,
+    "content": 450,
+    "shared": 400
+  },
+  "maxFileLines": {
+    "entrypoints/content/ui/eliminated.ts": 606,
+    "entrypoints/popup/components/SettingsSection.tsx": 470,
+    "entrypoints/popup/hooks/useStats.ts": 625
+  }
+}

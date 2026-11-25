@@ -15,15 +15,20 @@
     "postinstall": "wxt prepare",
     "prepare": "husky",
     "lint": "eslint .",
+    "lint:strict": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "architecture:check": "node tools/architecture-audit.mjs",
+    "architecture:ratchet:update": "node tools/architecture-audit.mjs --update-ratchet",
+    "prepush": "npm run architecture:check && npm run compile && npm test",
+    "verify:push": "npm run format:check && npm run lint:strict && npm run compile && npm test && npm run architecture:check && npm run jscpd && npm run build && npm run build:firefox",
     "jscpd": "jscpd entrypoints --threshold 5"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
+    "*.{ts,tsx,js,jsx,mjs}": [
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
     "*.{css,md,json}": [
