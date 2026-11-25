@@ -1,0 +1,32 @@
+name: Hata Bildirimi (Bug Report)
+description: Beklenmeyen bir davranış veya görsel bozulma bildirin
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Sorun Açıklaması
+      description: Karşılaştığınız hatayı net bir şekilde açıklayın.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Yeniden Oluşturma Adımları
+      description: Hatayı tekrar görebilmek için izlenecek adımlar.
+      placeholder: |
+        1. Arama sonuçları sayfasına gidin
+        2. Mini Resim görünümünü açın
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Tarayıcı ve Eklenti Sürümü
+      placeholder: 'Örn: Chrome 131, Sahibinden Manager v1.1.0'
+    validations:
+      required: true

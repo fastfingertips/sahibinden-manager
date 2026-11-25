@@ -1,112 +1,80 @@
 # Sahibinden Manager
 
-[![GitHub Release](https://img.shields.io/github/v/release/fastfingertips/sahibinden-manager?style=flat-square&color=blue)](https://github.com/fastfingertips/sahibinden-manager/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/fastfingertips/sahibinden-manager/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/fastfingertips/sahibinden-manager?style=flat-square&color=2563eb)](https://github.com/fastfingertips/sahibinden-manager/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/fastfingertips/sahibinden-manager/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/fastfingertips/sahibinden-manager/actions)
-[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-success?style=flat-square)](https://github.com/fastfingertips/sahibinden-manager/blob/main/PRIVACY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-ffda00.svg?style=flat-square)](https://github.com/fastfingertips/sahibinden-manager/blob/main/LICENSE)
+[![Privacy: 100% Local](https://img.shields.io/badge/Privacy-100%25%20Local-16a34a?style=flat-square)](https://github.com/fastfingertips/sahibinden-manager/blob/main/PRIVACY.md)
 
-**Sahibinden Manager**, sahibinden.com üzerinde arama sonuçlarını filtrelemek, ziyaret geçmişini takip etmek, ilanları tek tıkla elemek, özel notlar almak ve fotoğraf indirmek için geliştirilmiş gelişmiş ve gizlilik odaklı bir tarayıcı eklentisidir.
+**Sahibinden Manager**, ilan arama ve inceleme süreçlerini hızlandırmak için geliştirilmiş, sıfır telemetri ve %100 yerel depolama odaklı açık kaynak bir tarayıcı eklentisidir (Chrome & Firefox).
 
----
-
-## Öne Çıkan Özellikler
-
-### 1. Kompakt Liste Görünümü
-
-- **Mini Resim Modu:** İlan görselleri 42x32px boyutuna küçültülür, satırlar daraltılır. Fareyle üzerine gelindiğinde (hover) görsel otomatik olarak 3.5 kat büyüyerek anlık net önizleme sunar.
-- **Resimsiz (Ultra Kompakt) Mod:** Resim sütunu tamamen gizlenir, satır yüksekliği ~30px'e iner. Tıpkı bir veri tablosu gibi tek sayfada 30-50 ilan aynı anda incelenebilir.
-- **Standart Görünüm:** Orijinal büyük resimli görünüm.
-
-### 2. Arama Toolbarı & İlan Gizleme (Filtreleme)
-
-- Sahibinden'in yerel araç çubuğuna entegre butonlar ile sayfa akışını bozmadan anında yönetim.
-- **Ayrı Filtreleme Penceresi:** Arama tablosundan elenenleri, ziyaret edilenleri, sponsorlu yenilenmiş cihazları (Yepy) ve reklam satırlarını tek tıkla gizleyebilir veya geri açabilirsiniz.
-- Sayfadaki gizlenen ögelerin anlık sayaç gösterimi.
-
-### 3. Ziyaret Edilmemiş İlanları Açma
-
-- Sayfada daha önce incelemediğiniz ilanları tek tıkla veya klavye kısayoluyla (`U` tuşu) yeni arka plan sekmelerinde açar.
-- Kaç ilan açılacağı (örn: 5 adet veya tümü) eklenti ayarlarından özelleştirilebilir.
-
-### 4. Tek Tıkla İlan Eleme (Dismiss Listing)
-
-- Arama tablosu satırında ve ilan detayında tek tıkla ilanı eleme imkânı.
-- Elenen ilanlar arama tablosunda soluklaştırılır ve üzeri çizilir veya listeden tamamen gizlenebilir.
-- İsteğe bağlı olarak eleme nedeni belirtebilme.
-
-### 5. Kişisel İlan Not Defteri
-
-- İlan detay sayfasında ilana özel notlar ekleyebilme.
-- Not eklenen ilanlar arama listesinde **"Not Var"** sarı rozetiyle öne çıkar.
-
-### 6. Ziyaret ve Zaman Rozetleri
-
-- İlanın ne zaman incelendiğini gösteren **"Son Kontrol"** (örn: _5 dk önce bakıldı_) ve **"İlk Kontrol"** rozetleri.
-- Satır hizasını bozmayan mutlak konumlandırma.
-
-### 7. Fotoğraf İndirici & Mega Lightbox
-
-- İlan ana fotoğrafını, küçük resimleri ve Mega Fotoğraf galeri görsellerini tek tıkla tam çözünürlükte indirme.
-
-### 8. Fiyat Geçmişi Analizi & Soru-Cevap
-
-- Favori ilan fiyat tarihçesinde yüzdelik değişim ve istatistik özetleri.
-- İlan soru-cevap bölümünde gizli kalan yanıtları otomatik açma ve kendi sorularınızı ayırt etme.
+![Sahibinden Manager Önizleme](assets/store/screenshot-1280x800.png)
 
 ---
 
-## Gizlilik ve Güvenlik (%100 Yerel)
+## Özellik Özeti
 
-- **Sıfır Telemetri:** Hiçbir kişisel veri, gezinti geçmişi veya kullanım istatistiği harici sunuculara gönderilmez.
-- **Yerel Depolama:** Tüm notlar, elenenler ve tercihler yalnızca tarayıcınızın kendi yerel `chrome.storage.local` alanında saklanır.
-- Detaylı bilgi için [PRIVACY.md](https://github.com/fastfingertips/sahibinden-manager/blob/main/PRIVACY.md) belgesini inceleyebilirsiniz.
+| Modül                          | Açıklama                                                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Kompakt Liste Görünümü**     | **Mini Resim** (hover ile 3.5x önizleme) ve **Resimsiz** (ultra kompakt tablo) modları ile tek ekranda çok daha fazla ilan inceleme. |
+| **Ziyaret Takibi & Rozetler**  | İncelenen ilanları satır hizasını bozmadan ilk/son ziyaret zamanı ve ziyaret sayısı rozetleriyle otomatik işaretleme.                |
+| **Tek Tıkla İlan Eleme**       | Arama listesi satırında veya detay sayfasında tek tıkla ilan eleme, isteğe bağlı eleme nedeni ekleme ve listeden gizleme.            |
+| **İlan Filtreleme Penceresi**  | Elenen, ziyaret edilen, yenilenmiş cihaz (Yepy) ve reklam satırlarını ayrı bir filtre penceresinden anlık gizleme/gösterme.          |
+| **Ziyaret Edilmemişleri Aç**   | Sayfadaki incelenmemiş ilanları tek tıkla veya `U` kısayoluyla arka plan sekmelerinde toplu açma.                                    |
+| **Kişisel Not Defteri**        | İlan detayında not ekleme/düzenleme, arama listesinde not rozeti ve popup üzerinden tüm notları yönetme.                             |
+| **Fiyat Geçmişi & Soru-Cevap** | Fiyat değişim özeti, soru-cevap yanıtlarını otomatik genişletme ve yapılandırılmış ilan verisini Markdown olarak kopyalama.          |
+| **Fotoğraf İndirici & Klavye** | İlan görsellerini yüksek çözünürlükte (`x16`) indirme, `Yukarı/Aşağı` ok tuşları ve `Enter` ile hızlı gezinme.                       |
 
 ---
 
-## Kurulum ve Dağıtım
+## Kurulum
 
-### Yöntem 1: GitHub Releases Üzerinden (Önerilen)
+### 1. Hazır Paket (GitHub Releases)
 
-1. [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından güncel sürümün `.zip` dosyasını indirin (`sahibinden-manager-*-chrome.zip` veya `firefox.zip`).
-2. ZIP arşivini bir klasöre çıkartın.
-3. Tarayıcınızda uzantı sayfasına gidin:
-   - Chrome / Brave / Edge: `chrome://extensions` (Sağ üstten **Geliştirici Modu**'nu açın).
-   - "Paketlenmemiş öğe yükle" butonuna tıklayıp çıkarttığınız klasörü seçin.
+1. [Releases](https://github.com/fastfingertips/sahibinden-manager/releases) sayfasından tarayıcınıza uygun güncel `.zip` paketini indirin (`chrome` veya `firefox`).
+2. Arşivi bir klasöre çıkartın.
+3. Chrome / Brave / Edge adres çubuğuna `chrome://extensions` yazın, **Geliştirici Modu**'nu açın ve **Paketlenmemiş öğe yükle** ile çıkarttığınız klasörü seçin.
 
-### Yöntem 2: Kaynak Koddan Derleme
+### 2. Kaynak Koddan Derleme
 
 ```bash
-# 1. Depoyu klonlayın
 git clone https://github.com/fastfingertips/sahibinden-manager.git
 cd sahibinden-manager
-
-# 2. Bağımlılıkları yükleyin
 npm install
-
-# 3. Derleme sürecini başlatın
-npm run build
-
-# Firefox için:
-npm run build:firefox
-
-# ZIP paketleri oluşturmak için:
-npm run zip
+npm run build          # Chrome MV3 (.output/chrome-mv3)
+npm run build:firefox  # Firefox (.output/firefox-mv2)
 ```
 
 ---
 
-## Teknik Altyapı
+## Proje Mimarisi
 
-- **Framework**: [WXT (Web Extension Toolbox)](https://wxt.dev/)
-- **UI**: React 19 + Tailwind CSS v4
-- **Dil**: TypeScript
-- **Kalite Kontrol**: ESLint, Prettier, Husky, lint-staged, jscpd (Kod tekrar denetimi)
-- **CI/CD**: GitHub Actions (Lint, Typecheck, Otomatik Release Paketleme)
+```text
+sahibinden-manager/
+├── entrypoints/
+│   ├── background.ts        # Sekme açma ve görsel indirme servis çalışanı
+│   ├── content.ts           # Ana içerik betiği ve DOM gözlemleyici (AJAX uyumlu)
+│   ├── content/             # Özellik modülleri (compactView, listingFilter, tracker, ui/, styles/)
+│   └── popup/               # React 19 + Tailwind CSS v4 kontrol paneli
+├── utils/                   # Tarih biçimlendirme, pano ve birim testleri
+├── public/                  # Vektörel logo ve çoklu çözünürlük simgeleri
+└── .github/workflows/       # CI kalite kapıları ve otomatik Release akışı
+```
 
 ---
 
-## Lisans ve Yasal Uyarı
+## Geliştirme ve Kalite Standartları
 
-Bu proje [MIT Lisansı](https://github.com/fastfingertips/sahibinden-manager/blob/main/LICENSE) altında yayımlanmıştır.
+- **Altyapı:** [WXT](https://wxt.dev/), React 19, TypeScript, Tailwind CSS v4
+- **Test & Analiz:** Vitest, ESLint, Prettier, `tsc --noEmit`, `jscpd`
+- **Otomasyon:** Husky + `lint-staged`, GitHub Actions (Chrome & Firefox derleme doğrulaması), Dependabot
 
-**Yasal Uyarı:** Bu eklenti bağımsız bir açık kaynak projesidir. sahibinden.com (Sahibinden Bilgi Teknolojileri Paz. ve Tic. A.Ş.) ile doğrudan veya dolaylı hiçbir resmi bağı, ortaklığı veya sponsorluğu bulunmamaktadır.
+Katkıda bulunmak için [CONTRIBUTING.md](CONTRIBUTING.md) rehberini inceleyebilirsiniz.
+
+---
+
+## Gizlilik ve Lisans
+
+- **Gizlilik:** Tüm veriler yalnızca tarayıcının yerel `chrome.storage.local` alanında tutulur; hiçbir uzak sunucuya veri aktarılmaz. Ayrıntılar için [PRIVACY.md](PRIVACY.md) dosyasına bakın.
+- **Lisans:** [MIT](LICENSE)
+
+**Yasal Uyarı:** Bu proje bağımsız bir açık kaynak geliştirici aracıdır. sahibinden.com (Sahibinden Bilgi Teknolojileri Paz. ve Tic. A.Ş.) ile herhangi bir resmi bağı, ortaklığı veya sponsorluğu bulunmamaktadır.

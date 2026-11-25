@@ -1,0 +1,20 @@
+name: Özellik İsteği (Feature Request)
+description: Eklentiye yeni bir yetenek veya iyileştirme önerin
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Çözülmek İstenen Problem
+      description: Mevcut akışta neyin eksik veya zor olduğunu açıklayın.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Önerilen Çözüm
+      description: Özelliğin nasıl çalışmasını beklediğinizi tarif edin.
+    validations:
+      required: true

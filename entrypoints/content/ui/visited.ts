@@ -1,5 +1,6 @@
 import { formatDate as formatVisitedDate, formatTimeAgo } from '@/utils/date';
 import type { ListingCommentItem } from '../cqa';
+import { extractAdIdFromElement } from '../utils';
 
 export { formatVisitedDate, formatTimeAgo };
 
@@ -274,34 +275,8 @@ export const highlightVisitedListings = (
     )
     .forEach((el) => el.remove());
 
-  // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem)
-  const listRows = document.querySelectorAll<HTMLTableRowElement>(
-    '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
-  );
-  listRows.forEach((row) => {
-    if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) return;
-
-    let id = row.getAttribute('data-id') || row.getAttribute('data-classified-id');
-    const titleLink =
-      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a.classifiedTitle') ||
-      row.querySelector<HTMLAnchorElement>(
-        'td.searchResultsTitleValue a.refurbishment-classified-url',
-      ) ||
-      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a') ||
-      row.querySelector<HTMLAnchorElement>('a.classifiedTitle');
-
-    if (!id && titleLink?.href) {
-      const match =
-        titleLink.href.match(/(\d{8,12})\/detay/) ||
-        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
-        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
-      if (match) id = match[1];
-    }
-    if (!id && row.id) {
-      const match = row.id.match(/\d{8,12}/);
-      if (match) id = match[0];
-    }
-
+  const applyListingHighlight = (el: HTMLElement, titleLink: HTMLAnchorElement | null) => {
+    const id = extractAdIdFromElement(el, titleLink);
     if (!id) return;
 
     const isVisited = records && records[id];
@@ -310,13 +285,13 @@ export const highlightVisitedListings = (
     const eliminatedItem = eliminated[id];
 
     if (isVisited || commentItem || noteItem || eliminatedItem) {
-      if (isVisited && !row.classList.contains('sm-visited-listing')) {
-        row.classList.add('sm-visited-listing');
+      if (isVisited && !el.classList.contains('sm-visited-listing')) {
+        el.classList.add('sm-visited-listing');
       }
-      if (eliminatedItem && !row.classList.contains('sm-eliminated-listing')) {
-        row.classList.add('sm-eliminated-listing');
-      } else if (!eliminatedItem && row.classList.contains('sm-eliminated-listing')) {
-        row.classList.remove('sm-eliminated-listing');
+      if (eliminatedItem && !el.classList.contains('sm-eliminated-listing')) {
+        el.classList.add('sm-eliminated-listing');
+      } else if (!eliminatedItem && el.classList.contains('sm-eliminated-listing')) {
+        el.classList.remove('sm-eliminated-listing');
       }
       if (titleLink) {
         const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
@@ -334,6 +309,22 @@ export const highlightVisitedListings = (
         );
       }
     }
+  };
+
+  // 1. Liste Görünümü (#searchResultsTable tr.searchResultsItem)
+  const listRows = document.querySelectorAll<HTMLTableRowElement>(
+    '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
+  );
+  listRows.forEach((row) => {
+    if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) return;
+    const titleLink =
+      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a.classifiedTitle') ||
+      row.querySelector<HTMLAnchorElement>(
+        'td.searchResultsTitleValue a.refurbishment-classified-url',
+      ) ||
+      row.querySelector<HTMLAnchorElement>('td.searchResultsTitleValue a') ||
+      row.querySelector<HTMLAnchorElement>('a.classifiedTitle');
+    applyListingHighlight(row, titleLink);
   });
 
   // 2. Galeri Görünümü (#searchResultsGallery td.searchResultsGalleryItem)
@@ -342,57 +333,11 @@ export const highlightVisitedListings = (
   );
   galleryCells.forEach((cell) => {
     if (cell.classList.contains('nativeAd')) return;
-
-    let id = cell.getAttribute('data-id') || cell.getAttribute('data-classified-id');
     const titleLink =
       cell.querySelector<HTMLAnchorElement>('a.classifiedTitle') ||
       cell.querySelector<HTMLAnchorElement>('a.refurbishment-classified-url') ||
       cell.querySelector<HTMLAnchorElement>('.classifiedTitle');
-
-    if (!id && titleLink?.href) {
-      const match =
-        titleLink.href.match(/(\d{8,12})\/detay/) ||
-        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
-        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
-      if (match) id = match[1];
-    }
-    if (!id && cell.id) {
-      const match = cell.id.match(/\d{8,12}/);
-      if (match) id = match[0];
-    }
-
-    if (!id) return;
-
-    const isVisited = records && records[id];
-    const commentItem = comments[id];
-    const noteItem = notes[id];
-    const eliminatedItem = eliminated[id];
-
-    if (isVisited || commentItem || noteItem || eliminatedItem) {
-      if (isVisited && !cell.classList.contains('sm-visited-listing')) {
-        cell.classList.add('sm-visited-listing');
-      }
-      if (eliminatedItem && !cell.classList.contains('sm-eliminated-listing')) {
-        cell.classList.add('sm-eliminated-listing');
-      } else if (!eliminatedItem && cell.classList.contains('sm-eliminated-listing')) {
-        cell.classList.remove('sm-eliminated-listing');
-      }
-      if (titleLink) {
-        const firstTime = isVisited ? extractFirstTimestamp(records[id]) : undefined;
-        const lastTime = isVisited ? extractLastTimestamp(records[id]) : undefined;
-        const count = isVisited ? extractVisitCount(records[id]) : 0;
-        createOrUpdateBadge(
-          titleLink,
-          firstTime,
-          lastTime,
-          count,
-          commentItem,
-          noteItem,
-          eliminatedItem,
-          currentBadgeOptions,
-        );
-      }
-    }
+    applyListingHighlight(cell, titleLink);
   });
 
   // 3. Vitrin Listeleri (ul.vitrin-list li a[href*="/ilan/"])

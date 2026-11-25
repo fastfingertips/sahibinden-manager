@@ -1,16 +1,9 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
+import { isEditableElement } from './utils';
 
 let isKeyboardNavEnabled = true;
 let isKeyboardNewTabEnabled = false;
 let currentIndex = -1;
-
-const isEditableElement = (el: Element | null): boolean => {
-  if (!el) return false;
-  const tagName = el.tagName.toUpperCase();
-  if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') return true;
-  if ((el as HTMLElement).isContentEditable) return true;
-  return false;
-};
 
 const getVisibleListings = (): HTMLElement[] => {
   // 1. Liste Görünümü

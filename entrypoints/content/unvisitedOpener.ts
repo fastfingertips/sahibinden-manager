@@ -1,18 +1,11 @@
 // WXT tarafından sağlanan global 'storage' kullanılıyor
 import { getOrCreateToolbarContainer } from './ui/toolbar';
+import { isEditableElement } from './utils';
 
 let isUnvisitedOpenerEnabled = true;
 let unvisitedOpenerCount = 5; // 0 = Tümü / Maksimum
 let isUnvisitedOpenerShortcutEnabled = true;
 let isUnvisitedOpenerButtonEnabled = true;
-
-const isEditableElement = (el: Element | null): boolean => {
-  if (!el) return false;
-  const tagName = el.tagName.toUpperCase();
-  if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') return true;
-  if ((el as HTMLElement).isContentEditable) return true;
-  return false;
-};
 
 export const showToast = (message: string, type: 'success' | 'info' = 'info') => {
   let container = document.querySelector<HTMLDivElement>('.sm-toast-container');

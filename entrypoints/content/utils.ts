@@ -4,6 +4,33 @@ export const getHighResUrl = (url: string) => {
   return url.replace(/\/(thmb_|x5_|big_|x2_|x16_)?([^/]+)$/, '/x16_$2');
 };
 
+export const isEditableElement = (el: Element | null): boolean => {
+  if (!el) return false;
+  const tagName = el.tagName.toUpperCase();
+  if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') return true;
+  if ((el as HTMLElement).isContentEditable) return true;
+  return false;
+};
+
+export const extractAdIdFromElement = (
+  el: HTMLElement,
+  titleLink: HTMLAnchorElement | null,
+): string | null => {
+  let id = el.getAttribute('data-id') || el.getAttribute('data-classified-id');
+  if (!id && titleLink?.href) {
+    const match =
+      titleLink.href.match(/(\d{8,12})\/detay/) ||
+      titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
+      titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
+    if (match) id = match[1];
+  }
+  if (!id && el.id) {
+    const match = el.id.match(/\d{8,12}/);
+    if (match) id = match[0];
+  }
+  return id;
+};
+
 export const setupDownloadButton = (
   btn: HTMLElement,
   adId: string,
