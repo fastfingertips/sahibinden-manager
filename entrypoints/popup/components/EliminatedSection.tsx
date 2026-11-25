@@ -107,7 +107,11 @@ export const EliminatedSection = ({
 
               <div className="bg-[#fef2f2] border border-[#fecaca] rounded-xs p-2 text-[10.5px] text-[#991b1b] leading-snug whitespace-pre-wrap break-words">
                 <span className="font-semibold text-[#7f1d1d]">Neden: </span>
-                {item.reason}
+                {item.reason && item.reason.trim() ? (
+                  item.reason
+                ) : (
+                  <span className="italic opacity-70">Belirtilmedi</span>
+                )}
               </div>
 
               <div className="mt-1 flex items-center justify-between text-[9.5px] text-[#888]">

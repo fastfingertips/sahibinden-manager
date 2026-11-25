@@ -3,6 +3,7 @@ import {
   formatTimeAgo as formatEliminatedTimeAgo,
 } from '@/utils/date';
 import { setVisitedBadgeContext } from './visited';
+import { showToast } from '../unvisitedOpener';
 
 export interface EliminatedListing {
   adId: string;
@@ -32,6 +33,9 @@ export const highlightEliminatedListings = () => {
     document.querySelectorAll('.sm-eliminated-listing').forEach((el) => {
       el.classList.remove('sm-eliminated-listing');
     });
+    document.querySelectorAll('.sm-row-eliminate-btn').forEach((el) => {
+      el.remove();
+    });
     return;
   }
 
@@ -40,30 +44,84 @@ export const highlightEliminatedListings = () => {
     '#searchResultsTable tr.searchResultsItem, table.searchResultsTable tr.searchResultsItem',
   );
   rows.forEach((row) => {
+    if (row.classList.contains('nativeAd') || row.classList.contains('classicNativeAd')) return;
+
     let id = row.getAttribute('data-id') || row.getAttribute('data-classified-id');
+    const titleLink = row.querySelector<HTMLAnchorElement>(
+      'td.searchResultsTitleValue a.classifiedTitle, a.classifiedTitle, a.refurbishment-classified-url, td.searchResultsTitleValue a, a[href*="/ilan/"]',
+    );
+
     if (!id && row.id) {
       const match = row.id.match(/\d{8,12}/);
       if (match) id = match[0];
     }
-    if (!id) {
-      const link = row.querySelector<HTMLAnchorElement>(
-        'td.searchResultsTitleValue a.classifiedTitle, a.classifiedTitle, a.refurbishment-classified-url, td.searchResultsTitleValue a, a[href*="/ilan/"]',
-      );
-      if (link?.href) {
-        const match =
-          link.href.match(/(\d{8,12})\/detay/) ||
-          link.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
-          link.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
-        if (match) id = match[1];
-      }
+    if (!id && titleLink?.href) {
+      const match =
+        titleLink.href.match(/(\d{8,12})\/detay/) ||
+        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
+        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
+      if (match) id = match[1];
     }
 
-    if (id && cachedEliminated[id]) {
+    if (!id) return;
+
+    const isEliminated = Boolean(cachedEliminated[id]);
+
+    if (isEliminated) {
       if (!row.classList.contains('sm-eliminated-listing')) {
         row.classList.add('sm-eliminated-listing');
       }
     } else if (row.classList.contains('sm-eliminated-listing')) {
       row.classList.remove('sm-eliminated-listing');
+    }
+
+    // Satıra tek tıkla hızlı ele butonu ekle / güncelle
+    if (titleLink && titleLink.parentElement) {
+      let btn = row.querySelector<HTMLButtonElement>('.sm-row-eliminate-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sm-row-eliminate-btn';
+        titleLink.parentElement.appendChild(btn);
+      }
+
+      btn.classList.toggle('is-eliminated', isEliminated);
+      btn.title = isEliminated
+        ? `İlan #${id} elendi. Elemeyi kaldırmak için tıklayın.`
+        : `İlanı tek tıkla ele (#${id})`;
+      btn.innerHTML = isEliminated
+        ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>`
+        : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+          </svg>`;
+
+      btn.onclick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (cachedEliminated[id!]) {
+          delete cachedEliminated[id!];
+          await storage.setItem('local:eliminated-listings', cachedEliminated);
+          showToast(`İlan #${id} elemesi kaldırıldı.`, 'info');
+        } else {
+          const adTitle = titleLink.title || titleLink.textContent?.trim() || `İlan #${id}`;
+          const adUrl = titleLink.href || `https://www.sahibinden.com/ilan/${id}/detay`;
+          const now = Date.now();
+          cachedEliminated[id!] = {
+            adId: id!,
+            reason: '',
+            title: adTitle,
+            url: adUrl,
+            createdAt: now,
+            updatedAt: now,
+          };
+          await storage.setItem('local:eliminated-listings', cachedEliminated);
+          showToast(`İlan #${id} tek tıkla elendi.`, 'info');
+        }
+      };
     }
   });
 
@@ -72,30 +130,84 @@ export const highlightEliminatedListings = () => {
     '#searchResultsGallery td.searchResultsGalleryItem, table.searchResultsGallery td.searchResultsGalleryItem',
   );
   cells.forEach((cell) => {
+    if (cell.classList.contains('nativeAd')) return;
+
     let id = cell.getAttribute('data-id') || cell.getAttribute('data-classified-id');
+    const titleLink = cell.querySelector<HTMLAnchorElement>(
+      'a.classifiedTitle, a.refurbishment-classified-url, a[href*="/ilan/"]',
+    );
+
     if (!id && cell.id) {
       const match = cell.id.match(/\d{8,12}/);
       if (match) id = match[0];
     }
-    if (!id) {
-      const link = cell.querySelector<HTMLAnchorElement>(
-        'a.classifiedTitle, a.refurbishment-classified-url, a[href*="/ilan/"]',
-      );
-      if (link?.href) {
-        const match =
-          link.href.match(/(\d{8,12})\/detay/) ||
-          link.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
-          link.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
-        if (match) id = match[1];
-      }
+    if (!id && titleLink?.href) {
+      const match =
+        titleLink.href.match(/(\d{8,12})\/detay/) ||
+        titleLink.href.match(/-(\d{8,12})(?:\/|$|\?)/) ||
+        titleLink.href.match(/\/(\d{8,12})(?:\/|$|\?)/);
+      if (match) id = match[1];
     }
 
-    if (id && cachedEliminated[id]) {
+    if (!id) return;
+
+    const isEliminated = Boolean(cachedEliminated[id]);
+
+    if (isEliminated) {
       if (!cell.classList.contains('sm-eliminated-listing')) {
         cell.classList.add('sm-eliminated-listing');
       }
     } else if (cell.classList.contains('sm-eliminated-listing')) {
       cell.classList.remove('sm-eliminated-listing');
+    }
+
+    // Galeri hücresine hızlı ele butonu
+    if (titleLink && titleLink.parentElement) {
+      let btn = cell.querySelector<HTMLButtonElement>('.sm-row-eliminate-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sm-row-eliminate-btn';
+        titleLink.parentElement.appendChild(btn);
+      }
+
+      btn.classList.toggle('is-eliminated', isEliminated);
+      btn.title = isEliminated
+        ? `İlan #${id} elendi. Elemeyi kaldırmak için tıklayın.`
+        : `İlanı tek tıkla ele (#${id})`;
+      btn.innerHTML = isEliminated
+        ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>`
+        : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+          </svg>`;
+
+      btn.onclick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (cachedEliminated[id!]) {
+          delete cachedEliminated[id!];
+          await storage.setItem('local:eliminated-listings', cachedEliminated);
+          showToast(`İlan #${id} elemesi kaldırıldı.`, 'info');
+        } else {
+          const adTitle = titleLink.title || titleLink.textContent?.trim() || `İlan #${id}`;
+          const adUrl = titleLink.href || `https://www.sahibinden.com/ilan/${id}/detay`;
+          const now = Date.now();
+          cachedEliminated[id!] = {
+            adId: id!,
+            reason: '',
+            title: adTitle,
+            url: adUrl,
+            createdAt: now,
+            updatedAt: now,
+          };
+          await storage.setItem('local:eliminated-listings', cachedEliminated);
+          showToast(`İlan #${id} tek tıkla elendi.`, 'info');
+        }
+      };
     }
   });
 };
@@ -119,7 +231,8 @@ export const updateDetailEliminatedBanner = (adId: string) => {
     titleContainer.after(banner);
   }
 
-  const reasonText = record.reason?.trim() || 'Eleme nedeni belirtilmedi';
+  const hasReason = Boolean(record.reason?.trim());
+  const reasonText = hasReason ? record.reason.trim() : 'Neden belirtilmedi';
   const createdDate = formatEliminatedDate(record.createdAt || record.updatedAt);
   const timeAgo = formatEliminatedTimeAgo(record.createdAt || record.updatedAt);
 
@@ -131,12 +244,14 @@ export const updateDetailEliminatedBanner = (adId: string) => {
       </svg>
       <div>
         <div class="sm-detail-eliminated-banner-title">Bu İlanı Elediniz</div>
-        <div class="sm-detail-eliminated-banner-reason" title="${reasonText}">Neden: "${reasonText}"</div>
+        <div class="sm-detail-eliminated-banner-reason" title="${reasonText}">
+          ${hasReason ? `Neden: "${reasonText}"` : '<span style="font-style:italic; opacity:0.8;">Neden belirtilmedi (isteğe bağlı ekleyebilirsiniz)</span>'}
+        </div>
       </div>
       <span class="sm-detail-eliminated-banner-date">(${timeAgo} · ${createdDate})</span>
     </div>
     <div class="sm-detail-eliminated-banner-actions">
-      <button type="button" class="sm-detail-eliminated-btn sm-detail-eliminated-edit-btn">Nedeni Düzenle</button>
+      <button type="button" class="sm-detail-eliminated-btn sm-detail-eliminated-edit-btn">${hasReason ? 'Nedeni Düzenle' : '+ Neden Ekle'}</button>
       <button type="button" class="sm-detail-eliminated-btn sm-detail-eliminated-un-btn">Elemeyi Kaldır</button>
     </div>
   `;
@@ -162,6 +277,7 @@ export const updateDetailEliminatedBanner = (adId: string) => {
       banner?.remove();
       const actionLi = document.querySelector('.sm-classified-eliminated-action');
       if (actionLi) updateEliminatedLinkState(actionLi, adId);
+      showToast('İlan elemesi kaldırıldı.', 'info');
     };
   }
 };
@@ -315,6 +431,7 @@ export const setupDetailEliminated = (adId: string, title: string, url: string) 
       delete link.dataset.hasEliminated;
       updateEliminatedLinkState(li, adId);
       updateDetailEliminatedBanner(adId);
+      showToast('Eleme nedeni kaydedildi.', 'success');
       closeDropdown();
     };
 
@@ -331,6 +448,7 @@ export const setupDetailEliminated = (adId: string, title: string, url: string) 
         delete link.dataset.hasEliminated;
         updateEliminatedLinkState(li, adId);
         updateDetailEliminatedBanner(adId);
+        showToast('İlan elemesi kaldırıldı.', 'info');
         closeDropdown();
       };
     }
@@ -347,9 +465,32 @@ export const setupDetailEliminated = (adId: string, title: string, url: string) 
     };
   };
 
-  link.onclick = (e) => {
+  link.onclick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const isEliminated = Boolean(cachedEliminated[adId]);
+
+    // Henüz elenmemişse: TEK TIKLA DOĞRUDAN ELE!
+    if (!isEliminated) {
+      const now = Date.now();
+      cachedEliminated[adId] = {
+        adId,
+        reason: '',
+        title: title || activeListingContext?.title || `İlan #${adId}`,
+        url: url || activeListingContext?.url || window.location.href,
+        createdAt: now,
+        updatedAt: now,
+      };
+      await storage.setItem('local:eliminated-listings', cachedEliminated);
+      delete link.dataset.hasEliminated;
+      updateEliminatedLinkState(li, adId);
+      updateDetailEliminatedBanner(adId);
+      showToast('İlan elendi.', 'info');
+      return;
+    }
+
+    // Zaten elenmişse: Neden eklemek veya düzenlemek için paneli aç/kapat
     if (dropdown) {
       closeDropdown();
     } else {
@@ -388,12 +529,12 @@ const updateEliminatedLinkState = (li: Element, adId: string) => {
   `;
 
   if (isEliminated && record) {
-    const preview = record.reason ? record.reason.trim() : 'Eleme nedeni belirtilmedi';
+    const preview = record.reason ? record.reason.trim() : 'Neden belirtilmedi';
     const created = record.createdAt || record.updatedAt;
     const timeInfo = created ? `\nElendi: ${formatEliminatedDate(created)}` : '';
-    link.title = `Elenmiş İlan: ${preview}${timeInfo}\nDüzenlemek veya kaldırmak için tıklayın`;
+    link.title = `Elenmiş İlan: ${preview}${timeInfo}\nNeden eklemek, düzenlemek veya elemeyi kaldırmak için tıklayın`;
   } else {
-    link.title = 'Bu ilanı ele ve nedenini kaydet';
+    link.title = 'Tek tıkla ilanı ele (daha sonra neden ekleyebilirsiniz)';
   }
 };
 

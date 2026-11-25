@@ -307,6 +307,45 @@ export const eliminatedStyles = `
     border-color: #ef4444 !important;
   }
 
+  /* --- Arama Listesi ve Galeri Satır İçi Hızlı Ele Butonu --- */
+  .sm-row-eliminate-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 17px !important;
+    height: 17px !important;
+    border-radius: 3px !important;
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    color: #6b7280 !important;
+    cursor: pointer !important;
+    margin-left: 6px !important;
+    vertical-align: middle !important;
+    opacity: 0.35 !important;
+    transition: all 0.15s ease !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+  }
+
+  tr.searchResultsItem:hover .sm-row-eliminate-btn,
+  td.searchResultsGalleryItem:hover .sm-row-eliminate-btn {
+    opacity: 0.85 !important;
+  }
+
+  .sm-row-eliminate-btn:hover {
+    opacity: 1 !important;
+    background: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+  }
+
+  .sm-row-eliminate-btn.is-eliminated {
+    opacity: 0.9 !important;
+    background: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+  }
+
   /* --- Arama Listesi ve Galeri Elenen İlan Vurgusu --- */
   #searchResultsTable tr.searchResultsItem.sm-eliminated-listing {
     opacity: 0.65 !important;

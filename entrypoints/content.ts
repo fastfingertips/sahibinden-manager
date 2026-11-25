@@ -132,7 +132,7 @@ export default defineContentScript({
       // Sadece eklentinin oluşturup DOM'a eklediği özel arayüz widget'ları
       return Boolean(
         el.closest(
-          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
+          '.sm-visited-badges, .sm-visited-badge, .sm-detail-visited-banner, .sm-detail-eliminated-banner, .sm-eliminated-dropdown, .sm-row-eliminate-btn, .sm-unvisited-opener-container, .sm-toast-container, .sm-copy-btn, .sm-note-dialog, .sm-notes-modal, .sm-lightbox, .sm-page-thumb-dl, .sm-main-photo-dl',
         ),
       );
     };
